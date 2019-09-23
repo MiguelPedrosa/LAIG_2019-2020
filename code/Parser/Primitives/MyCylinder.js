@@ -22,24 +22,49 @@ class MyCylinder extends CGFobject {
 
         var ang = 0;
         var alphaAng = 2 * Math.PI / this.slices;
-
-        /*
-         * Cilindro feito no eixo dos Y!
-         *TO DO: Trocar para eixo dos Z!
-         */
         var stackHeight = this.height / this.stacks;
-        for (var sIter = 0; sIter <= this.stacks; sIter++) {
-            for (var i = 0; i < this.slices; i++, ang += alphaAng) {
-                this.vertices.push(Math.cos(ang) * this.base, sIter * stackHeight, -Math.sin(ang) * this.base);
+        var radiousIncrement = (this.top - this.base) / this.stacks;
 
-                this.indices.push(i + this.slices*sIter, i + 1+ this.slices*sIter, i + this.slices*(sIter+1));
-                this.indices.push(i + 1+ this.slices*sIter, i + 1 + this.slices*(sIter+1), i + this.slices*(sIter+1));
+        for (var stackIter = 0; stackIter < this.stacks; stackIter++) {
+            for (var sliceIter = 0; sliceIter < this.slices; sliceIter++, ang += alphaAng) {
+                this.vertices.push(
+                    Math.cos(ang) * (this.base + radiousIncrement * stackIter),
+                    -Math.sin(ang) * (this.base + radiousIncrement * stackIter),
+                    stackIter * stackHeight
+                );
 
-                this.normals.push(Math.cos(ang), sIter * stackHeight, -Math.sin(ang));
-                this.texCoords.push(i / this.slices, 1);
+                this.indices.push(
+                    sliceIter + this.slices * stackIter, 
+                    sliceIter + this.slices * (stackIter + 1),
+                    sliceIter + this.slices * stackIter + 1 + (sliceIter + 1 == this.slices ? - this.slices : 0)
+                );
+                this.indices.push(
+                    sliceIter + this.slices * (stackIter + 1) + 1 + (sliceIter + 1 == this.slices ? - this.slices : 0), 
+                    sliceIter + this.slices * stackIter + 1 + (sliceIter + 1 == this.slices ? - this.slices : 0),
+                    sliceIter + this.slices * (stackIter + 1)
+                );
+
+                this.normals.push(
+                    Math.cos(ang), 
+                    stackIter * stackHeight,
+                    -Math.sin(ang)
+                );
+
+//                this.texCoords.push(sliceIter / this.slices, 1);
             }
         }
-        console.log(this.indices);
+
+        // Add top-most vertices
+        for (var sliceIter = 0; sliceIter < this.slices; sliceIter++, ang += alphaAng) {
+            this.vertices.push(
+                Math.cos(ang) * this.top,
+                -Math.sin(ang) * this.top,
+                stackIter * stackHeight
+            );
+        }
+
+        console.log("Indices = " + this.indices.length);
+        console.log("Vertices = " + this.vertices.length);
 
         this.primitiveType = this.scene.gl.TRIANGLES;
         this.initGLBuffers();
