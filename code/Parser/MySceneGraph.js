@@ -27,7 +27,7 @@ class MySceneGraph {
 
         this.nodes = [];
 
-        this.idRoot = null;                    // The id of the root element.
+        this.idRoot = null; // The id of the root element.
 
         this.axisCoords = [];
         this.axisCoords['x'] = [1, 0, 0];
@@ -293,8 +293,7 @@ class MySceneGraph {
             if (children[i].nodeName != "omni" && children[i].nodeName != "spot") {
                 this.onXMLMinorError("unknown tag <" + children[i].nodeName + ">");
                 continue;
-            }
-            else {
+            } else {
                 attributeNames.push(...["location", "ambient", "diffuse", "specular"]);
                 attributeTypes.push(...["position", "color", "color", "color"]);
             }
@@ -341,8 +340,7 @@ class MySceneGraph {
                         return aux;
 
                     global.push(aux);
-                }
-                else
+                } else
                     return "light " + attributeNames[i] + " undefined for ID = " + lightId;
             }
 
@@ -366,8 +364,7 @@ class MySceneGraph {
                         return aux;
 
                     targetLight = aux;
-                }
-                else
+                } else
                     return "light target undefined for ID = " + lightId;
 
                 global.push(...[angle, exponent, targetLight])
@@ -476,7 +473,7 @@ class MySceneGraph {
 
                         transfMatrix = mat4.translate(transfMatrix, transfMatrix, coordinates);
                         break;
-                    case 'scale':                        
+                    case 'scale':
                         this.onXMLMinorError("To do: Parse scale transformations.");
                         break;
                     case 'rotate':
@@ -558,10 +555,13 @@ class MySceneGraph {
                 var rect = new MyRectangle(this.scene, primitiveId, x1, x2, y1, y2);
 
                 this.primitives[primitiveId] = rect;
-            }
-            else if (primitiveType == 'triangle') {
+            } else if (primitiveType == 'triangle') {
                 // Construct first Dot
-                var dot1 = {x: 0, y: 0, z: 0};
+                var dot1 = {
+                    x: 0,
+                    y: 0,
+                    z: 0
+                };
                 // x1
                 dot1.x = this.reader.getFloat(grandChildren[0], 'x1');
                 if (!(dot1.x != null && !isNaN(dot1.x)))
@@ -578,7 +578,11 @@ class MySceneGraph {
                     return "unable to parse z1 of the primitive coordinates for ID = " + primitiveId;
 
                 // Construct secound Dot
-                var dot2 = {x: 0, y: 0, z: 0};
+                var dot2 = {
+                    x: 0,
+                    y: 0,
+                    z: 0
+                };
                 // x2
                 dot2.x = this.reader.getFloat(grandChildren[0], 'x2');
                 if (!(dot2.x != null && !isNaN(dot2.x)))
@@ -595,7 +599,11 @@ class MySceneGraph {
                     return "unable to parse z2 of the primitive coordinates for ID = " + primitiveId;
 
                 // Construct third Dot
-                var dot3 = {x: 0, y: 0, z: 0};
+                var dot3 = {
+                    x: 0,
+                    y: 0,
+                    z: 0
+                };
                 // x3
                 dot3.x = this.reader.getFloat(grandChildren[0], 'x3');
                 if (!(dot3.x != null && !isNaN(dot3.x)))
@@ -612,12 +620,41 @@ class MySceneGraph {
                     return "unable to parse z3 of the primitive coordinates for ID = " + primitiveId;
 
 
-                var triangle = new MyTriangle(this.scene, primitiveId, 
+                var triangle = new MyTriangle(this.scene, primitiveId,
                     dot1, dot2, dot3);
 
                 this.primitives[primitiveId] = triangle;
-            }
-            else {
+
+            } else if (primitiveType == 'cylinder') {
+                // slices
+                var slices = this.reader.getFloat(grandChildren[0], 'slices');
+                if (!(slices != null && !isNaN(slices)))
+                    return "unable to parse slices of the primitive coordinates for ID = " + primitiveId;
+
+                // stacks
+                var stacks = this.reader.getFloat(grandChildren[0], 'stacks');
+                if (!(stacks != null && !isNaN(stacks)))
+                    return "unable to parse stacks of the primitive coordinates for ID = " + primitiveId;
+
+                // top
+                var top = this.reader.getFloat(grandChildren[0], 'top');
+                if (!(top != null && !isNaN(top)))
+                    return "unable to parse top of the primitive coordinates for ID = " + primitiveId;
+
+                // base
+                var base = this.reader.getFloat(grandChildren[0], 'base');
+                if (!(base != null && !isNaN(base)))
+                    return "unable to parse base of the primitive coordinates for ID = " + primitiveId;
+
+                // height
+                var height = this.reader.getFloat(grandChildren[0], 'height');
+                if (!(height != null && !isNaN(height)))
+                    return "unable to parse height of the primitive coordinates for ID = " + primitiveId;
+
+                var cyl = new MyCylinder(this.scene, primitiveId, base, top, height, slices, stacks);
+
+                this.primitives[primitiveId] = cyl;
+            } else {
                 console.warn("To do: Parse other primitives.");
             }
         }
@@ -627,9 +664,9 @@ class MySceneGraph {
     }
 
     /**
-   * Parses the <components> block.
-   * @param {components block element} componentsNode
-   */
+     * Parses the <components> block.
+     * @param {components block element} componentsNode
+     */
     parseComponents(componentsNode) {
         var children = componentsNode.children;
 
@@ -798,7 +835,8 @@ class MySceneGraph {
         //To do: Create display loop for transversing the scene graph
 
         //To test the parsing/creation of the primitives, call the display function directly
-//        this.primitives['demoRectangle'].display();
-        this.primitives['demoTriangle'].display();
+        //this.primitives['demoRectangle'].display();
+        //this.primitives['demoTriangle'].display();
+        this.primitives['demoCylinder'].display();
     }
 }
