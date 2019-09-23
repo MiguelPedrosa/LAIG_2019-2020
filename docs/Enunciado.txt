@@ -1,0 +1,183 @@
+LAIG1920.Enunciado.T1
+Laboratório de Aplicações com Interface Gráfica
+
+Aulas Práticas
+
+MIEIC – 2019/2020
+
+
+Trabalho Prático 1
+
+Desenvolvimento de um Motor Gráfico em WebGL
+
+1. Introdução
+Pretende-se, com este trabalho, constituir uma aplicação dotada de um pequeno motor gráfico 3D. A aplicação deve ser capaz de produzir imagens de qualquer cena, sendo esta especificada através de um ficheiro de texto a ser lido pela aplicação.
+
+ 
+
+O ficheiro de texto deve respeitar um esquema próprio, a que chamaremos LXS – LAIG XML Scene graph - especificado na secção 3 deste documento, e que obedece a um conceito muito vulgar em computação gráfica: o Grafo de Cena (Scene Graph, secção 2). A sintaxe obedece ao formato de tags do XML (Extensible Markup Language).
+
+ 
+
+A aplicação deve, através de um parser, efetuar a leitura de um documento LXS (cuja extensão do ficheiro deve ser .xml) que descreve a cena, construindo simultaneamente a estrutura de dados correspondente ao grafo de cena. Só depois deve realizar a geração da imagem respectiva. As fontes de luz devem iniciar-se (on/off) de acordo com a especificação LXS e devem poder ser alteradas por meio de controlos na interface gráfica 2D. A seleção da vista ativa é também feita através de uma lista disponível na interface gráfica 2D.
+
+1.1 Componentes do trabalho
+Preparação de uma cena de teste
+Preparar uma cena especificada no esquema LXS e num ficheiro com extensão .xml, de acordo com as instruções nas secções seguintes do presente documento. Todos os ficheiros serão posteriormente divulgados e partilhados, constituindo-se assim um acervo de cenas de teste.
+
+ 
+
+Construção do parser e estrutura de dados
+ 
+
+Implementar a componente de leitura e interpretação do ficheiro .XML (parsing), utilizando para esse efeito a biblioteca WebCGF (um exemplo é fornecido com a componente de leitura parcialmente implementada, juntamente com este enunciado).
+Implementar uma estrutura de dados capaz de armazenar o grafo de cena apresentado na secção 2 deste documento.
+
+Desenho da cena
+ 
+
+Implementar um conjunto de funcionalidades que efetue a visita da estrutura de dados (e, portanto, do grafo) e que, com recurso à biblioteca WebCGF, construa a imagem correspondente usando a tecnologia WebGL.
+
+ 
+
+O trabalho deve ser desenvolvido de forma incremental:
+
+ 
+
+Versões iniciais, básicas, do parser, da estrutura interna de dados e das rotinas de visualização que permitam respetivamente ler, armazenar e visualizar primitivas e transformações simples, ignorando inicialmente luzes, materiais e texturas.
+
+Versões progressivamente estendidas do parser, da estrutura de dados e visualizador com as restantes funcionalidades enunciadas.
+ 
+
+1.2 Notas sobre a avaliação do trabalho
+Composição dos Grupos: Os trabalhos devem ser efetuados em grupos de dois estudantes. Em caso de impossibilidade (por exemplo por falta de paridade numa turma), deve ser discutida com o docente a melhor alternativa.
+
+ 
+
+Avaliação do Trabalho de Grupo: O código resultante do trabalho de grupo será apresentado e defendido em sala de aula, perante o docente respetivo. O trabalho poderá ser sujeito a uma bateria de testes, com origem em cenas representadas por ficheiros .xml, sendo a classificação atribuída dependente da adequação da resposta dada.
+
+
+Tendo em atenção as funcionalidades enunciadas, serão considerados os seguintes critérios para efeitos de Avaliação do Trabalho de Grupo:
+
+ 
+
+Estruturação e Documentação do código
+
+2 valores
+
+Primitivas e Geometria
+
+4 valores
+
+Transformações Geométricas - descrição e herança
+
+4 valores
+
+Materiais - descrição e herança
+
+3.5 valores
+
+Texturas - descrição, dimensões e herança
+
+3.5 valores
+
+Interface gráfica 2D: a) fontes de Luz - descrição e ON/OFF; b) seleção da vista ativa
+
+3 valores
+
+
+
+Avaliação Individual: Não aplicável no presente trabalho.
+
+Avaliação Global do Trabalho: Igual à avaliação do trabalho de grupo.
+
+ 
+
+De acordo com a formulação constante na ficha de unidade curricular, a avaliação deste trabalho conta para a classificação final com um peso:
+
+
+80% * 25% = 20%
+
+ 
+
+Datas Principais:
+
+Data limite de entrega do ficheiro XML no esquema LXS: 06/10/2019
+Data limite de entrega do trabalho completo: 20/10/2019
+Avaliação do trabalho em aulas: semana com início em 21/10/2019
+Prova de avaliação individual: (não aplicável)
+
+Plano de trabalhos sugerido:
+
+Semana de 23/09: Início do trabalho; criação e carregamento da estrutura de dados; Início da definição da cena de teste.
+Semana de 30/09: Desenho de primitivas base; travessia do grafo de cena com transformações; criação da cena de teste e submissão.
+Semana de 07/10: Aplicação de materiais e texturas; garantia de herança; iluminação
+Semana de 14/10: Verificações finais
+2. Grafo de Cena
+Um grafo de cena pode ser visitado como uma árvore que especifica, de forma hierárquica, uma cena 3D. Cada nó corresponde a um objeto, simples (folha) ou composto (nó intermédio).
+
+ 
+
+Todo e qualquer nó deve ter um identificador do tipo string que é definido no ficheiro .XML. Um nó pode ser instanciado várias vezes, ou seja, referenciado por vários nós seus ascendentes; por exemplo, um nó pode representar a roda de um automóvel e, por isso, ser referenciado quatro vezes diferentes.
+
+2.1. Nós tipo Folha
+Cada folha refere-se exclusivamente a um objeto simples ou primitiva, cuja geometria é interpretada e imediatamente desenhada. Deve por isso conter todos os parâmetros exigidos pela instrução respetiva.
+
+Um nó folha não contém transformações geométricas nem propriedades de aspeto (materiais, etc.).
+
+2.2. Nós Intermédios
+Subindo na hierarquia, um nó intermédio da árvore possui um ou mais nós como seus descendentes diretos, sendo que estes poderão ser folhas ou outros nós intermédios. Está reservada aos nós intermédios a declaração de eventuais transformações geométricas e propriedades de aspeto.
+
+ 
+
+Transformações Geométricas: Um nó recebe do seu antecessor uma matriz de transformações geométricas Ma. Sendo um nó intermédio, possui as suas próprias transformações geométricas, representadas por uma matriz única Mp. A matriz a aplicar ao objeto, assim como a passar aos seus eventuais descendentes, é calculada pela expressão M=Ma*Mp.
+
+ 
+
+Propriedades de aspeto: Cada nó recebe propriedades de aspeto do seu antecessor (devem ser definidos valores de "default" para o nó raiz) e pode ter definidas as suas próprias propriedades de aspeto. As regras de desambiguação a usar neste caso são definidas na especificação do esquema LXS, na secção 3 deste documento.
+
+Textura:  Cada nó recebe uma textura do seu antecessor e pode ter definida a sua própria textura, que pode ser “nula”. As regras de desambiguação a usar neste caso são definidas na especificação do esquema LXS, na secção 3 deste documento.
+
+ 
+
+2.3. Outras Entidades
+Além de objetos, a esquema LXS pressupõe a existência de outras entidades, como sejam as câmaras de visualização, as fontes de luz, as texturas e os materiais. As entidades de visualização e de iluminação, tais como as fontes de luz, interferem com todo o grafo e, por isso, não devem ser ligadas a qualquer dos nós do grafo. Por isso, o esquema exige a sua declaração na parte inicial do ficheiro .xml. As texturas e os materiais podem ser usadas nos nós intermédios, desde que tenham sido preparadas anteriormente, pelo que também é previsto declararem-se no início do ficheiro. Ao declarar-se uma textura, a respetiva imagem deve ser lida para memória a partir do ficheiro .jpg ou .png correspondente (atenção: devido a limitações de algumas placas gráficas, sugere-se que o comprimento e largura de cada textura, medidos em número de pixels, sejam potências de 2).
+
+ 
+
+A figura 1 apresenta um exemplo de um grafo de cena.
+
+ 
+
+
+
+Figura 1 - Exemplo de um grafo de cena.
+
+ 
+
+ 
+
+Note-se que o número de descendentes diretos de um nó intermédio é indeterminado, mas tem de existir pelo menos um descendente.
+
+ 
+
+Cada nó, intermédio ou folha, pode ser instanciado várias vezes, ou seja, pode ser referenciado por mais do que um nó ascendente. Por exemplo, um nó pode representar a roda de um automóvel e, por isso, ser referenciado quatro vezes diferentes como se vê na figura 2: o objeto "roda" (numeração 9) tem a sua subárvore (sugerida mas não representada) e tem as suas transformações geométricas particulares. No entanto, para que as quatro rodas tenham distintas posições no espaço, é necessário que possuam diferentes transformações geométricas. Assim, são criados os nós intermédios de instanciação 4, 2, 5 e 7, todos referindo serem compostos pelo nó 9, mas cada um dos quatro com a sua transformação geométrica, diferente das restantes.
+
+ 
+
+Figura 2 - Excerto de um grafo de cena com instanciação múltipla.
+
+3. Esquema LXS
+O esquema LXS – LAIG XML Scene graph - definido na linguagem XML, constitui um formato de especificação de cenas 3D de uma forma muito simples e fácil de interpretar. Um documento no esquema LXS pode ser escrito em qualquer editor de texto e obedece a regras de XML, baseadas em tags.
+
+ 
+
+Ao ser lido e interpretado por uma aplicação gráfica, um ficheiro no esquema LXS deve ser verificado em termos de sintaxe e de consistência da estrutura, devendo a aplicação gerar mensagens de erro ou avisos, identificando eventuais irregularidades encontradas ou situações anómalas ou indesejáveis (por exemplo a referência a um nó inexistente).
+
+ 
+
+Cada comando representa-se por um ou mais tags, contendo os parâmetros respetivos (se existirem). Um grupo de caracteres ou mesmo linhas limitado por <!-- e --> é considerado um comentário. Todo o ficheiro deve ser escrito em minúsculas.
+
+ 
+
+Um documento escrito segundo o esquema LXS estende-se por nove blocos. Cada bloco inicia-se com um termo identificador de bloco, implementado em XML na forma de uma tag. A referência a uma tag inicia-se com um identificador alfanumérico entre os dois caracteres "< >" (por exemplo <lights>) e termina com o mesmo identificador antecedido de uma barra de divisão (no mesmo exemplo, </lights>). Entre as duas ocorrências, descreve-se o conteúdo do elemento identificado pela tag. A sequência de blocos é a seguinte:
