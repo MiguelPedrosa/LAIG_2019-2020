@@ -24,8 +24,8 @@ class MySemiSphere extends CGFobject {
             for (let stackIter = 0; stackIter <= this.stacks; stackIter++) {
                 // Storing these vectores in their variables alloys us to optimize
                 // calculating both the normals and (x, y, z) coordenates
-                const theta = thetaInc*stackIter;
-                const phi   = phiInc*sliceIter;
+                const theta   = stackIter * thetaInc;
+                const phi     = sliceIter * phiInc;
                 const normalX = Math.cos(theta) * Math.cos(phi);
                 const normalY = Math.cos(theta) * Math.sin(phi);
                 const normalZ = Math.sin(theta);
