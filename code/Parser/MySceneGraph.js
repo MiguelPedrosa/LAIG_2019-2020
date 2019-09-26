@@ -654,7 +654,28 @@ class MySceneGraph {
                 var cyl = new MyCylinder(this.scene, primitiveId, base, top, height, slices, stacks);
 
                 this.primitives[primitiveId] = cyl;
-            } else {
+            } else if (primitiveType == 'sphere') {
+
+                // radius
+                var radius = this.reader.getFloat(grandChildren[0], 'radius');
+                if (!(radius != null && !isNaN(radius)))
+                    return "unable to parse radius of the primitive coordinates for ID = " + primitiveId;
+
+                // slices
+                var slices = this.reader.getFloat(grandChildren[0], 'slices');
+                if (!(slices != null && !isNaN(slices)))
+                    return "unable to parse slices of the primitive coordinates for ID = " + primitiveId;
+
+                // stacks
+                var stacks = this.reader.getFloat(grandChildren[0], 'stacks');
+                if (!(stacks != null && !isNaN(stacks)))
+                    return "unable to parse stacks of the primitive coordinates for ID = " + primitiveId;
+
+                var sphere = new MySphere(this.scene, primitiveId, radius, slices, stacks);
+
+                this.primitives[primitiveId] = sphere;
+            }  
+            else {
                 console.warn("To do: Parse other primitives.");
             }
         }
@@ -723,8 +744,7 @@ class MySceneGraph {
      * @param {message to be displayed in case of error} messageError
      */
     parseCoordinates3D(node, messageError) {
-        var position = [];
-
+        
         // x
         var x = this.reader.getFloat(node, 'x');
         if (!(x != null && !isNaN(x)))
@@ -740,7 +760,7 @@ class MySceneGraph {
         if (!(z != null && !isNaN(z)))
             return "unable to parse z-coordinate of the " + messageError;
 
-        position.push(...[x, y, z]);
+        var position = [x, y, z];
 
         return position;
     }
@@ -834,9 +854,9 @@ class MySceneGraph {
     displayScene() {
         //To do: Create display loop for transversing the scene graph
 
-        //To test the parsing/creation of the primitives, call the display function directly
-        //this.primitives['demoRectangle'].display();
-        //this.primitives['demoTriangle'].display();
-        this.primitives['demoCylinder'].display();
+        //Temporary. Used to view primitives while they're being developed
+        for (const [key, value] of Object.entries(this.primitives)) {
+            value.display();
+          }
     }
 }
