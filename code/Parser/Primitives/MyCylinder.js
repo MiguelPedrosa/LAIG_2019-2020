@@ -19,52 +19,46 @@ class MyCylinder extends CGFobject {
         this.indices = [];
         this.normals = [];
         this.texCoords = [];
+ 
+        const angRotationIncrement = 2 * Math.PI / this.slices;
+        const stackHeight = this.height / this.stacks;
+        const radiusIncrement = (this.top - this.base) / this.stacks;
+        const normalZ = (this.top - this.base) / this.height;
 
-        var ang = 0;
-        var alphaAng = 2 * Math.PI / this.slices;
-        var stackHeight = this.height / this.stacks;
-        var radiousIncrement = (this.top - this.base) / this.stacks;
+        for (let stackIter = 0; stackIter <= this.stacks; stackIter++) {
+            for (let sliceIter = 0; sliceIter <= this.slices; sliceIter++) {
+                const angRot = angRotationIncrement * sliceIter;
+                const normalX = Math.cos(angRot);
+                const normalY = -Math.sin(angRot);
+                const currentRadius = this.base + radiusIncrement * stackIter;
 
-        for (var stackIter = 0; stackIter < this.stacks; stackIter++) {
-            for (var sliceIter = 0; sliceIter < this.slices; sliceIter++, ang += alphaAng) {
                 this.vertices.push(
-                    Math.cos(ang) * (this.base + radiousIncrement * stackIter),
-                    -Math.sin(ang) * (this.base + radiousIncrement * stackIter),
-                    stackIter * stackHeight
-                );
+                    normalX * currentRadius,
+                    normalY * currentRadius,
+                    stackIter * stackHeight);
 
-                this.indices.push(
-                    sliceIter + this.slices * stackIter, 
-                    sliceIter + this.slices * (stackIter + 1),
-                    sliceIter + this.slices * stackIter + 1 + (sliceIter + 1 == this.slices ? - this.slices : 0)
-                );
-                this.indices.push(
-                    sliceIter + this.slices * (stackIter + 1) + 1 + (sliceIter + 1 == this.slices ? - this.slices : 0), 
-                    sliceIter + this.slices * stackIter + 1 + (sliceIter + 1 == this.slices ? - this.slices : 0),
-                    sliceIter + this.slices * (stackIter + 1)
-                );
+                // Vetor não esta normalizado
+                this.normals.push(normalX, normalY, normalZ);
 
-                this.normals.push(
-                    Math.cos(ang), 
-                    stackIter * stackHeight,
-                    -Math.sin(ang)
-                );
-
-//                this.texCoords.push(sliceIter / this.slices, 1);
+//              this.texCoords.push(sliceIter / this.slices, 1);
             }
         }
 
-        // Add top-most vertices
-        for (var sliceIter = 0; sliceIter < this.slices; sliceIter++, ang += alphaAng) {
-            this.vertices.push(
-                Math.cos(ang) * this.top,
-                -Math.sin(ang) * this.top,
-                stackIter * stackHeight
-            );
-        }
+        for (let stackIter = 0; stackIter < this.stacks; stackIter++) {
+            for (let sliceIter = 0; sliceIter < this.slices; sliceIter++) {
+                // Dots are stored in their own variable since some of them
+                // are reused and gives a better perspective on how
+                // the indices are pushed to the array
+                let dot1 = (this.slices +1) * (stackIter +0) + sliceIter +0;
+                let dot2 = (this.slices +1) * (stackIter +0) + sliceIter +1;
+                let dot3 = (this.slices +1) * (stackIter +1) + sliceIter +0;
+                let dot4 = (this.slices +1) * (stackIter +1) + sliceIter +1;
 
-        console.log("Indices = " + this.indices.length);
-        console.log("Vertices = " + this.vertices.length);
+                this.indices.push(
+                    dot2, dot1, dot3,
+                    dot2, dot3, dot4);
+            }
+        }
 
         this.primitiveType = this.scene.gl.TRIANGLES;
         this.initGLBuffers();
