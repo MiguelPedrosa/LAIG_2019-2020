@@ -9,7 +9,7 @@
     </views>
 
     <ambient>
-        <ambient r="0.2" g="0.2" b="0.2" a="1.0" />
+        <ambient r="1.0" g="1.0" b="1.0" a="1.0" />
         <background r="0.0" g="0.0" b="0.0" a="1.0" />
     </ambient>
 
@@ -51,13 +51,18 @@
         <primitive id="demoTriangle">
             <triangle x1="0" y1="0" z1="1" x2="4" y2="0" z2="0" x3="0" y3="0.5" z3="0"  />
         </primitive>
-        <primitive id="demoCylinder">
-            <cylinder  base="2" top="1" height ="4" slices="8"  stacks="3" />
-        </primitive>
--->
         <primitive id="demoSphere">
             <sphere radius="2" slices="20" stacks="10" />
         </primitive>
+-->
+        <primitive id="demoCylinder">
+            <cylinder  base="2" top="1" height ="4" slices="4"  stacks="3" />
+        </primitive>
+<!--
+        <primitive id="demoTorus">
+            <torus inner="1" outer="2" slices="30" loops="20" />
+        </primitive>
+-->
     </primitives>
 
     <components>
