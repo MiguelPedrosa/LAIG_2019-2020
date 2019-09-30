@@ -44,8 +44,8 @@ class MyCylinder extends CGFobject {
             }
         }
 
-        for (let stackIter = 0; stackIter < this.stacks; stackIter++) {
-            for (let sliceIter = 0; sliceIter < this.slices; sliceIter++) {
+        for (let sliceIter = 0; sliceIter < this.slices; sliceIter++) {
+            for (let stackIter = 0; stackIter < this.stacks; stackIter++) {
                 // Dots are stored in their own variable since some of them
                 // are reused and gives a better perspective on how
                 // the indices are pushed to the array
@@ -55,8 +55,9 @@ class MyCylinder extends CGFobject {
                 let dot4 = (this.slices +1) * (stackIter +1) + sliceIter +1;
 
                 this.indices.push(
-                    dot2, dot1, dot3,
-                    dot2, dot3, dot4);
+                    dot1, dot3, dot2,
+                    dot2, dot3, dot4
+                );
             }
         }
 
