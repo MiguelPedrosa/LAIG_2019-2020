@@ -41,28 +41,31 @@
             <rotate axis="x" angle="-45" />
             <rotate axis="z" angle="-45" />
         </transformation>
-    </transformations>
+
+        </transformations>
 
     <primitives>
-<!--    
+    
         <primitive id="demoRectangle">
-            <rectangle x1="-6" y1="-1" x2="0.5" y2="1" />
+            <rectangle x1="-6" y1="-1" x2="0" y2="1" />
         </primitive>
+       
         <primitive id="demoTriangle">
-            <triangle x1="0" y1="0" z1="1" x2="4" y2="0" z2="0" x3="0" y3="0.5" z3="0"  />
+            <triangle x1="0" y1="0" z1="0" x2="6" y2="0" z2="0" x3="3" y3="3" z3="0"  />
         </primitive>
-        <primitive id="demoSphere">
+
+         <primitive id="demoCylinder">
+            <cylinder  base="2" top="1" height ="2" slices="30"  stacks="3" />
+        </primitive>
+
+         <primitive id="demoSphere">
             <sphere radius="2" slices="20" stacks="10" />
         </primitive>
--->
-        <primitive id="demoCylinder">
-            <cylinder  base="2" top="1" height ="4" slices="4"  stacks="3" />
-        </primitive>
-<!--
-        <primitive id="demoTorus">
+
+       <primitive id="demoTorus">
             <torus inner="1" outer="2" slices="30" loops="20" />
         </primitive>
--->
+    
     </primitives>
 
     <components>
@@ -76,9 +79,7 @@
             </materials>
             <texture id="demoTexture"/>
 <!--
-            <children>
-                <primitiveref id="demoRectangle" />
-            </children>
+          
             <children>
                 <primitiveref id="demoTriangle" />
             </children>
@@ -90,5 +91,121 @@
             </children>
 -->
         </component>
+
+        <component id= "TV">
+            <transformation>
+                <scale x="0.5" y="0.5" z="1"/>
+                <translate x="6" y="2"/>
+             </transformation>
+
+        <materials>
+                <material id="inherit" />
+        </materials>
+
+         <children>
+                <primitiveref id="demoRectangle" />
+        </children>
+
+        </component>
+
+        </component>
+
+        <component id= "suporteTV">
+            <transformation>
+             <scale x="0.5" y="0.5" z="1"/>
+            </transformation>
+
+        <materials>
+                <material id="inherit" />
+        </materials>
+
+         <children>
+                <primitiveref id="demoTriangle" />
+        </children>
+
+        </component>
+
+
+        <component id= "mesa">
+            <transformation>
+                <rotate axis= "x" angle="90"/>
+                <scale x="0.25" y="0.25" z="1"/>
+                <translate x = "6" z="3"/>
+            </transformation>
+
+        <materials>
+                <material id="inherit" />
+        </materials>
+
+         <children>
+                <primitiveref id="demoTriangle" />
+        </children>
+
+        </component>
+
+        <component id = "sofa">
+             <materials>
+                <material id="inherit" />
+             </materials>
+
+             <children>
+                <primitiveref id="baseSofa" />
+                <primitiveref id="centroSofa"/>
+                <primitiveref id="topoSofa"/>
+             </children>
+        </component>
+
+        <component id = "baseSofa">
+                     <transformation>
+                        <rotate axis= "x" angle="90">
+                        <scale x="0.25" y="0.25" z="1"/>
+                        <translate x = "3" z="3"/>
+                    </transformation>
+
+                    <materials>
+                            <material id="inherit" />
+                    </materials>
+
+                     <children>
+                            <primitiveref id="demoTorus" />
+                    </children>
+
+        </component>
+
+           <component id = "centroSofa">
+                     <transformation>
+                        <scale x="0.25" y="0.25" z="1"/>
+                        <translate x = "3" z="3"/>
+                    </transformation>
+
+                    <materials>
+                            <material id="inherit" />
+                    </materials>
+
+                     <children>
+                            <primitiveref id="demoSphere" />
+                    </children>
+
+        </component>
+
+
+           <component id = "topoSofa">
+                     <transformation>
+                        <rotate axis= "x" angle="-45"/>
+                        <scale x="0.25" y="0.25" z="1"/>
+                        <translate x = "3" z="3"/>
+                    </transformation>
+
+                    <materials>
+                            <material id="inherit" />
+                    </materials>
+
+                     <children>
+                            <primitiveref id="demoTorus" />
+                    </children>
+
+        </component>
+
+
     </components>
 </lxs>
