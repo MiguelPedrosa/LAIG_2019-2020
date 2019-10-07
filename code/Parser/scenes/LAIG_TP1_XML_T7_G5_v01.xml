@@ -9,7 +9,7 @@
     </views>
 
     <globals>  
-        <ambient r="0.6" g="0.6" b="0.6" a="1.0" />
+        <ambient r="1" g="1.0" b="1.0" a="1.0" />
         <background r="0.05" g="0.05" b="0.05" a="1.0" />
     </globals>
 
@@ -23,6 +23,7 @@
     </lights>
 
     <textures>
+        <texture id="demoTexture" file="scenes/images/vidral.jpg" />
     </textures>
 
     <materials>
@@ -85,7 +86,7 @@
     </transformations>
 
     <primitives>
-    
+<!--
          <primitive id="demoCylinder">
             <cylinder base="2" top="1" height ="2" slices="30"  stacks="3" />
         </primitive>
@@ -98,12 +99,12 @@
             <sphere radius="2" slices="20" stacks="10" />
         </primitive>
 
-       <primitive id="demoTorus">
-            <torus inner="1" outer="2" slices="30" loops="20" />
-        </primitive>
-
         <primitive id="basicSquare">
             <rectangle x1="-0.5" y1="-0.5" x2="0.5" y2="0.5" />
+        </primitive>
+-->
+       <primitive id="demoTorus">
+            <torus inner="1" outer="2" slices="30" loops="20" />
         </primitive>
     
     </primitives>

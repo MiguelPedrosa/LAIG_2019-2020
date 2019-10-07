@@ -32,13 +32,13 @@ class MyTorus extends CGFobject {
                 const coordX = (this.outerRadius + this.innerRadius * Math.cos(theta)) * Math.cos(phi);
                 const coordY = (this.outerRadius + this.innerRadius * Math.cos(theta)) * Math.sin(phi);
                 const coordZ = this.innerRadius * Math.sin(theta);
-/*
-                const normalsX = ;
-                const normalsY = ;
-                const normalsZ = ;
-*/
+
+                const normalsX = 1;
+                const normalsY = 0;
+                const normalsZ = 0;
+
                 this.vertices.push(coordX,coordY, coordZ);
-//                this.normals.push(normalsX, normalsY, normalsZ);
+                this.normals.push(normalsX, normalsY, normalsZ);
             }
         }
 
