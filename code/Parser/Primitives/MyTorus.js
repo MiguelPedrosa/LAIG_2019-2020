@@ -22,7 +22,7 @@ class MyTorus extends CGFobject {
         // theta is the inner rotation
         const thetaInc = Math.PI * 2 / this.slices;
         // phi is the outer rotation
-        const phiInc   = Math.PI * 2 / this.loops;
+        const phiInc = Math.PI * 2 / this.loops;
 
         for (let loopIter = 0; loopIter <= this.loops; loopIter++) {
             for (let sliceIter = 0; sliceIter <= this.slices; sliceIter++) {
@@ -33,11 +33,11 @@ class MyTorus extends CGFobject {
                 const coordY = (this.outerRadius + this.innerRadius * Math.cos(theta)) * Math.sin(phi);
                 const coordZ = this.innerRadius * Math.sin(theta);
 
-                const normalsX = 1;
-                const normalsY = 0;
-                const normalsZ = 0;
+                const normalsX = Math.cos(theta) * Math.cos(phi);
+                const normalsY = Math.cos(theta) * Math.sin(phi);
+                const normalsZ = Math.sin(phi);
 
-                this.vertices.push(coordX,coordY, coordZ);
+                this.vertices.push(coordX, coordY, coordZ);
                 this.normals.push(normalsX, normalsY, normalsZ);
             }
         }
@@ -47,10 +47,10 @@ class MyTorus extends CGFobject {
                 // Dots are stored in their own variable since some of them
                 // are reused and gives a better perspective on how
                 // the indices are pushed to the array
-                let dot1 = (this.slices +1) * (loopIter +0) + sliceIter;
-                let dot2 = (this.slices +1) * (loopIter +0) + sliceIter +1;
-                let dot3 = (this.slices +1) * (loopIter +1) + sliceIter;
-                let dot4 = (this.slices +1) * (loopIter+ 1) + sliceIter +1;
+                let dot1 = (this.slices + 1) * (loopIter + 0) + sliceIter;
+                let dot2 = (this.slices + 1) * (loopIter + 0) + sliceIter + 1;
+                let dot3 = (this.slices + 1) * (loopIter + 1) + sliceIter;
+                let dot4 = (this.slices + 1) * (loopIter + 1) + sliceIter + 1;
 
                 this.indices.push(
                     dot1, dot3, dot2,

@@ -34,6 +34,8 @@ class MySceneGraph {
         this.axisCoords['y'] = [0, 1, 0];
         this.axisCoords['z'] = [0, 0, 1];
 
+        this.textures = new Map();
+
         // File reading 
         this.reader = new CGFXMLreader();
 
@@ -390,8 +392,29 @@ class MySceneGraph {
     parseTextures(texturesNode) {
 
         //For each texture in textures block, check ID and file URL
-        this.onXMLMinorError("To do: Parse textures.");
-        return null;
+        var children = texturesNode.children;
+
+        for (var j = 0; j < children.length; j++) {
+            if (children[j].nodeName == "texture") {
+
+                var id = this.parseStringAttr(children[j], 'id');
+
+                if (this.textures.has("id"))
+                    return "ERROR: already has " + id + "texture";
+
+                else {
+                    var file = this.parseStringAttr(children[j], "file");
+                    var texture = new CGFtexture(this.scene, file);
+                    this.textures[id] = texture;
+                }
+
+            } else
+                return "ERROR: not texture node";
+        }
+
+        if (this.textures.size == 0)
+            return "ERROR: invalid number of textures";
+
     }
 
     /**
@@ -474,11 +497,32 @@ class MySceneGraph {
                         transfMatrix = mat4.translate(transfMatrix, transfMatrix, coordinates);
                         break;
                     case 'scale':
-                        this.onXMLMinorError("To do: Parse scale transformations.");
+                        var coordinates = this.parseCoordinates3D(grandChildren[j], "rotate transformation for ID " + transformationID);
+                        if (!Array.isArray(coordinates))
+                            return coordinates;
+
+                        transfMatrix = mat4.scale(transfMatrix, transfMatrix, coordinates);
+
                         break;
                     case 'rotate':
                         // angle
-                        this.onXMLMinorError("To do: Parse rotate transformations.");
+                        var axis = this.reader.getString(grandChildren[j], 'axis');
+                        var angle = this.reader.getFloat(grandChildren[j], 'angle');
+                        var put_axis = [];
+
+                        if (axis == null || angle == null) {
+                            return "ERROR: axis or angle missing!"
+                        }
+                        if (axis == "x") {
+                            put_axis = [1, 0, 0];
+                        } else if (axis == "y") {
+                            put_axis = [0, 1, 0];
+                        } else if (axis == "z") {
+                            put_axis = [0, 0, 1];
+                        } else {
+                            throw "Unexpected axis value. Expected x, y, z; got ${axis}"
+                        }
+                        transfMatrix = mat4.scale(transfMatrix, transfMatrix, angle * DEGREE_TO_RAD, put_axis);
                         break;
                 }
             }
@@ -697,8 +741,7 @@ class MySceneGraph {
 
                 var torus = new MyTorus(this.scene, primitiveId, inner, outer, slices, loops);
                 this.primitives[primitiveId] = torus;
-            } 
-            else {
+            } else {
                 console.warn("To do: Parse other primitives.");
             }
         }
@@ -767,7 +810,7 @@ class MySceneGraph {
      * @param {message to be displayed in case of error} messageError
      */
     parseCoordinates3D(node, messageError) {
-        
+
         // x
         var x = this.reader.getFloat(node, 'x');
         if (!(x != null && !isNaN(x)))
@@ -880,6 +923,6 @@ class MySceneGraph {
         //Temporary. Used to view primitives while they're being developed
         for (const [key, value] of Object.entries(this.primitives)) {
             value.display();
-          }
+        }
     }
 }
