@@ -404,7 +404,8 @@ class MySceneGraph {
 
                 else {
                     var file = this.parseStringAttr(children[j], "file");
-                    this.textures.set(id, file);
+                    var texture = new CGFtexture(this.scene, file);
+                    this.textures[id] = texture;
                 }
 
             } else
