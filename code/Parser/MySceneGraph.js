@@ -697,8 +697,7 @@ class MySceneGraph {
 
                 var torus = new MyTorus(this.scene, primitiveId, inner, outer, slices, loops);
                 this.primitives[primitiveId] = torus;
-            } 
-            else {
+            } else {
                 console.warn("To do: Parse other primitives.");
             }
         }
@@ -767,7 +766,7 @@ class MySceneGraph {
      * @param {message to be displayed in case of error} messageError
      */
     parseCoordinates3D(node, messageError) {
-        
+
         // x
         var x = this.reader.getFloat(node, 'x');
         if (!(x != null && !isNaN(x)))
@@ -880,6 +879,6 @@ class MySceneGraph {
         //Temporary. Used to view primitives while they're being developed
         for (const [key, value] of Object.entries(this.primitives)) {
             value.display();
-          }
+        }
     }
 }
