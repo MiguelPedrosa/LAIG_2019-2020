@@ -34,6 +34,8 @@ class MySceneGraph {
         this.axisCoords['y'] = [0, 1, 0];
         this.axisCoords['z'] = [0, 0, 1];
 
+        this.textures = new Map();
+
         // File reading 
         this.reader = new CGFXMLreader();
 
@@ -390,8 +392,28 @@ class MySceneGraph {
     parseTextures(texturesNode) {
 
         //For each texture in textures block, check ID and file URL
-        this.onXMLMinorError("To do: Parse textures.");
-        return null;
+        var children = texturesNode.children;
+
+        for (var j = 0; j < children.length; j++) {
+            if (children[j].nodeName == "texture") {
+
+                var id = this.parseStringAttr(children[j], 'id');
+
+                if (this.textures.has("id"))
+                    return "ERROR: already has " + id + "texture";
+
+                else {
+                    var file = this.parseStringAttr(children[j], "file");
+                    this.textures.set(id, file);
+                }
+
+            } else
+                return "ERROR: not texture node";
+        }
+
+        if (this.textures.size == 0)
+            return "ERROR: invalid number of textures";
+
     }
 
     /**
@@ -499,7 +521,7 @@ class MySceneGraph {
                         } else {
                             throw "Unexpected axis value. Expected x, y, z; got ${axis}"
                         }
-                        transfMatrix = mat4.scale(transfMatrix, transfMatrix, angle, put_axis);
+                        transfMatrix = mat4.scale(transfMatrix, transfMatrix, angle * DEGREE_TO_RAD, put_axis);
                         break;
                 }
             }
