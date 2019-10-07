@@ -474,11 +474,32 @@ class MySceneGraph {
                         transfMatrix = mat4.translate(transfMatrix, transfMatrix, coordinates);
                         break;
                     case 'scale':
-                        this.onXMLMinorError("To do: Parse scale transformations.");
+                        var coordinates = this.parseCoordinates3D(grandChildren[j], "rotate transformation for ID " + transformationID);
+                        if (!Array.isArray(coordinates))
+                            return coordinates;
+
+                        transfMatrix = mat4.scale(transfMatrix, transfMatrix, coordinates);
+
                         break;
                     case 'rotate':
                         // angle
-                        this.onXMLMinorError("To do: Parse rotate transformations.");
+                        var axis = this.reader.getString(grandChildren[j], 'axis');
+                        var angle = this.reader.getFloat(grandChildren[j], 'angle');
+                        var put_axis = [];
+
+                        if (axis == null || angle == null) {
+                            return "ERROR: axis or angle missing!"
+                        }
+                        if (axis == "x") {
+                            put_axis = [1, 0, 0];
+                        } else if (axis == "y") {
+                            put_axis = [0, 1, 0];
+                        } else if (axis == "z") {
+                            put_axis = [0, 0, 1];
+                        } else {
+                            throw "Unexpected axis value. Expected x, y, z; got ${axis}"
+                        }
+                        transfMatrix = mat4.scale(transfMatrix, transfMatrix, angle, put_axis);
                         break;
                 }
             }
