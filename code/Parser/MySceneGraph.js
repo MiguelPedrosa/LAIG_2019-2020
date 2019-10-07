@@ -34,7 +34,7 @@ class MySceneGraph {
         this.axisCoords['y'] = [0, 1, 0];
         this.axisCoords['z'] = [0, 0, 1];
 
-        this.textures = new Map();
+        this.textures = [];
 
         // File reading 
         this.reader = new CGFXMLreader();
@@ -397,15 +397,17 @@ class MySceneGraph {
         for (var j = 0; j < children.length; j++) {
             if (children[j].nodeName == "texture") {
 
-                var id = this.parseStringAttr(children[j], 'id');
+                var id = this.reader.getString(children[j], 'id');
 
-                if (this.textures.has("id"))
+                if (this.textures["id"] != null)
                     return "ERROR: already has " + id + "texture";
-
                 else {
-                    var file = this.parseStringAttr(children[j], "file");
+                    var file = this.reader.getString(children[j], "file");
                     var texture = new CGFtexture(this.scene, file);
-                    this.textures[id] = texture;
+                    if(texture == null)
+                        return "Couldn't find texture file";
+                    else
+                        this.textures[id] = texture;
                 }
 
             } else
