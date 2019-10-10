@@ -404,7 +404,7 @@ class MySceneGraph {
                 else {
                     var file = this.reader.getString(children[j], "file");
                     var texture = new CGFtexture(this.scene, file);
-                    if(texture == null)
+                    if (texture == null)
                         return "Couldn't find texture file";
                     else
                         this.textures[id] = texture;
@@ -452,7 +452,6 @@ class MySceneGraph {
             this.onXMLMinorError("To do: Parse materials.");
         }
 
-        //this.log("Parsed materials");
         return null;
     }
 
@@ -764,6 +763,10 @@ class MySceneGraph {
         var grandChildren = [];
         var grandgrandChildren = [];
         var nodeNames = [];
+        var idMaterials = [];
+        var pChildren = [];
+        var cChildren = [];
+        let transformationref = null;
 
         // Any number of components.
         for (var i = 0; i < children.length; i++) {
@@ -794,15 +797,154 @@ class MySceneGraph {
             var textureIndex = nodeNames.indexOf("texture");
             var childrenIndex = nodeNames.indexOf("children");
 
-            this.onXMLMinorError("To do: Parse components.");
+            //this.onXMLMinorError("To do: Parse components.");
             // Transformations
 
-            // Materials
+            if (nodeNames[transformationIndex] == "transformation"){
+                //creates our transformation Matrix.
+                var transformationMat = mat4.create();
 
+                for (var j=0 ; j<grandChildren.length; j++){
+                    // VERIFY IF TRANSFORMATION IS "transformationref"
+                    if (grandChildren[j].nodeNames == "transformationref"){
+
+                        var transId = this.reader.getString(grandChildren[j], "id");
+
+                        if (transId != null){
+                            if (this.transformations[transId] != null){
+
+                                transformationref = transID;
+                            }
+                            else return "ERROR: transformationref parsing ";
+                            
+                        }
+                    }
+
+                    //SCALE TRANSFORMATION
+                    else if (grandChildren[j].nodeNames == "scale"){
+
+                        var sX = this.reader.getFloat(grandChildren[j], 'x');
+                        var sY = this.reader.getFloat(grandChildren[j], 'y');
+                        var sZ = this.reader.getFloat(grandChildren[j], 'z');
+
+                        //All variables must have a value greater than 0
+
+                        if (sX == null || sY == null || sZ == null || sX == 0 || sY == 0 || sZ == 0) 
+                            return "ERROR: scaling values invalid";
+
+                        //apply the scaling.
+                        mat4.scale(transformationMat, transformationMat, [sX, sY, sZ]);
+                    }
+
+                    //Translate transformation
+                    else if (grandChildren[j].nodeNames == "translate"){
+
+                        var tX = this.reader.geFloat(grandChildren[j], 'x');
+                        var tY = this.reader.geFloat(grandChildren[j], 'y');
+                        var tZ = this.reader.geFloat(grandChildren[j], 'z');
+
+                        //tx, ty, tz can´t be NULL
+                        if(tX == null || tY == null || tZ == null)
+                            return "ERROR: translate values can´t be NULL";
+
+                        mat4.translate(transformationMat, transformationMat, [tX, tY, tZ]);
+                    }
+
+                    else if (grandChildren[j].nodeNames == "rotate"){
+
+                        var axis = this.reader.getSting(grandChildren[j], "axis");
+                        var angle = this.reader.getFloat(grandChildren[j], "angle");
+
+                        if (angle == null || axis == null)
+                            return "ERROR: angle or axis value invalid";
+                        var axisNew = [];
+
+                        if (axis == 'x') axisNew = [1,0,0];
+                        else if (axis == 'y') axisNew = [0,1,0];
+                        else if (axis == 'z') axisNew = [0,0,1];
+                        else return "ERROR: axis value does not exist"
+
+                        mat4.rotate(transformationMat, transformationMat, angle * DEGREE_TO_RAD, axisNew);
+                    }
+
+
+                    
+                }
+            }
+            // Materials
+            else if (nodeNames[materialsIndex] == "materials"){
+                
+                for (var j=0 ; j<grandChildren.length; j++){
+                    var id = this.reader.getString(grandChildren[j],'id');
+                    if (id != null){
+                        if(componentID == this.root && id == "inherit") return "Root can't have inherit";
+                        if (this.materials[id] == null && id != "inherit") return "Material not defined!";
+                        idMaterials.push(id);
+                    }
+                    else return "ERROR: parsing materials";
+
+                }
+             }
             // Texture
 
+            else if (nodeNames[textureIndex] == "texture"){
+                var id = this.reader.getString(children[i],'id');
+                var length_s = this.reader.getFloat(children[i]);
+                var length_t = this.reader.getFloat(children[i]);
+
+                if (id == null || length_t == null || length_s == null) return "ERROR: failed to parse texture";
+                else if (componentID == this.root && id == "inherit") return "ERROR: root can't inherit";
+                else if (this.Texture[id] == null && id!= "inherit" && id!="none") return "ERROR: failed to parse texture";
+                else{
+                    texture.push(id);
+                    texture.push(length_s);
+                    texture.push(length_t);
+                }
+                
+            }
+
+
             // Children
+            else if (nodeNames[childrenIndex] == "children"){
+                var  grandchildren = children[i].children;
+
+                for (var j=0 ; j<grandchildren.length; j++){
+                    if (grandchildren[j].nodeName == "componentref"){
+                        var id = this.reader.getString(grandchildren[j], 'id');
+                        if (id != null){
+                            cChildren.push(id);
+                        }
+                        else return "ERROR: failed to parse children"
+                    }
+                    else if(grandchildren[j].nodeName == "primitiveref"){
+                        var id = this.reader.getString(grandchildren[j], 'id');
+
+                        if (id != null){
+                            if (this.primitives[id] == null) return "ERROR: primitive doesn't exist";
+                            pChildren.push(id);
+                        }
+                    }
+                    else return "ERROR: failed to parse children";
+                }
+            }
         }
+
+          const newComponent = {
+            id,
+            texture: {
+                id: id,
+                length_s,
+                length_t
+            },
+            idMaterials,
+            children: {
+                pChildren,
+                cChildren
+            },
+            transformationref,
+            transformationMat
+        };
+        this.components[i] = newComponent;
     }
 
 
