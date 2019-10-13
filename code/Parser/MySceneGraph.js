@@ -448,11 +448,97 @@ class MySceneGraph {
             if (this.materials[materialID] != null)
                 return "ID must be unique for each light (conflict: ID = " + materialID + ")";
 
-            //Continue here
-            this.onXMLMinorError("To do: Parse materials.");
+
+            // READ SHININESS and ID;
+            var shininess = this.reader.getFloat(materialsNode, 'shininess');
+            var id = this.reader.getString(materialsNode, 'id');
+
+            if (id == null || shininess == null) return "ERROR: null shininess or id!";
+
+            //id can't be inherit. Must guarantee that
+            if (id == "inherit") return "ERROR: material can't be inherit";
+            //Verify if that material is already on the matrix
+            if (this.materials[id] != null) return "ERROR: material already exists!";
+
+            this.materials[id] = {};
+            var child = materialsNode.children;
+            var nodeNames = [];
+
+            for (var i = 0; i < children.length; i++)
+                nodeNames.push(children[i].nodeName);
+
+            if (materialsNode.getElementsByTagName('emission').length > 1 || materialsNode.getElementsByTagName('ambient').length > 1 ||
+                materialsNode.getElementsByTagName('diffuse').length > 1 || materialsNode.getElementsByTagName('specular').length > 1)
+                return "no more than one element at the same type may be defined in material";
+
+            // gets element indices
+            var eInd = nodeNames.indexOf("emission");
+            var aInd = nodeNames.indexOf("ambient");
+            var dInd = nodeNames.indexOf("diffuse");
+            var sInd = nodeNames.indexOf("specular");
+
+            //R,G,B,A
+            var emissionr, emissiong, emissionb, emissiona;
+            var ambientr, ambientg, ambientb, ambienta;
+            var diffuser, diffuseg, diffuseb, diffusea;
+            var specularr, specularg, specularb, speculara;
+
+            if (sIndex == -1) return "ERROR: parsing specular ";
+            else {
+                specularr = this.reader.getFloat(child[dInd], 'r');
+                specularg = this, reader.getFloat(child[dInd, 'g']);
+                specularb = this.reader.getFloat(child[dInd], 'b');
+                speculara = this.reader.getFloat(child[dInd], 'a');
+            }
+            if (dIndex == -1) return "ERROR: parsing diffuse ";
+            else {
+                diffuser = this.reader.getFloat(child[dInd], 'r');
+                diffuseg = this, reader.getFloat(child[dInd, 'g']);
+                diffuseb = this.reader.getFloat(child[dInd], 'b');
+                diffusea = this.reader.getFloat(child[dInd], 'a');
+            }
+            if (aIndex == -1) return "ERROR: parsing ambient ";
+            else {
+                ambientr = this.reader.getFloat(child[dInd], 'r');
+                ambientg = this, reader.getFloat(child[dInd, 'g']);
+                ambientb = this.reader.getFloat(child[dInd], 'b');
+                ambienta = this.reader.getFloat(child[dInd], 'a');
+            }
+            if (eIndex == -1) return "ERROR: parsing ambient ";
+            else {
+                emissionr = this.reader.getFloat(child[dInd], 'r');
+                emissiong = this, reader.getFloat(child[dInd, 'g']);
+                emissionb = this.reader.getFloat(child[dInd], 'b');
+                emissiona = this.reader.getFloat(child[dInd], 'a');
+            }
+
+            //verify if values are valid!
+            if (specularr == null || specularr < 0 || specularr > 1 || specularg == null || specularg < 0 || specularg > 1 ||
+                specularb == null || specularb < 0 || specularb > 1 || speculara == null || speculara < 0 || speculara > 1 ||
+                diffuser == null || diffuser < 0 || diffuser > 1 || diffuseg == null || diffuseg < 0 || diffuseg > 1 ||
+                diffuseb == null || diffuseb < 0 || diffuseb > 1 || difusea == null || difusea < 0 || difusea > 1 ||
+                ambientr == null || ambientr < 0 || ambientr > 1 || ambientg == null || ambientg < 0 || ambientg > 1 ||
+                ambientb == null || ambientb < 0 || ambientb > 1 || ambienta == null || ambienta < 0 || ambienta > 1 ||
+                emissionr == null || emissionr < 0 || emissionr > 1 || emissiong == null || emissiong < 0 || emissiong > 1 ||
+                emissionb == null || emissionb < 0 || emissionb > 1 || emissiona == null || emissiona < 0 || emissiona > 1
+            )
+                return "ERROR: values invalid or null!! Must be >0 & <1 !!";
+
+
         }
 
+        var newMaterial = new CGFappearance(this.scene);
+
+        newMaterial.setShininess(shininess);
+        newMaterial.setEmission(emissionr, emissiong, emissionb, emissiona);
+        newMaterial.setAmbient(ambientr, ambientg, ambientb, ambienta);
+        newMaterial.setDiffuse(diffuser, diffuseg, diffuseb, diffusea);
+        newMaterial.setSpecular(specularr, specularg, specularb, speculara);
+
+        this.materials[id] = newMaterial;
+
         return null;
+
     }
 
     /**
@@ -759,7 +845,6 @@ class MySceneGraph {
         var children = componentsNode.children;
 
         this.components = [];
-
         var grandChildren = [];
         var grandgrandChildren = [];
         var nodeNames = [];
@@ -798,28 +883,27 @@ class MySceneGraph {
             var childrenIndex = nodeNames.indexOf("children");
 
             // Transformations
-            if (nodeNames[transformationIndex] == "transformation"){
+            if (nodeNames[transformationIndex] == "transformation") {
                 //creates our transformation Matrix.
                 var transformationMat = mat4.create();
 
-                for (var j=0 ; j<grandChildren.length; j++){
+                for (var j = 0; j < grandChildren.length; j++) {
                     // VERIFY IF TRANSFORMATION IS "transformationref"
-                    if (grandChildren[j].nodeNames == "transformationref"){
+                    if (grandChildren[j].nodeNames == "transformationref") {
 
                         var transId = this.reader.getString(grandChildren[j], "id");
 
-                        if (transId != null){
-                            if (this.transformations[transId] != null){
+                        if (transId != null) {
+                            if (this.transformations[transId] != null) {
 
                                 transformationref = transID;
-                            }
-                            else return "ERROR: transformationref parsing ";
-                            
+                            } else return "ERROR: transformationref parsing ";
+
                         }
                     }
 
                     // Scale TRANSFORMATION
-                    else if (grandChildren[j].nodeNames == "scale"){
+                    else if (grandChildren[j].nodeNames == "scale") {
 
                         var sX = this.reader.getFloat(grandChildren[j], 'x');
                         var sY = this.reader.getFloat(grandChildren[j], 'y');
@@ -827,27 +911,27 @@ class MySceneGraph {
 
                         //All variables must have a value greater than 0
 
-                        if (sX == null || sY == null || sZ == null || sX == 0 || sY == 0 || sZ == 0) 
+                        if (sX == null || sY == null || sZ == null || sX == 0 || sY == 0 || sZ == 0)
                             return "ERROR: scaling values invalid";
 
                         //apply the scaling.
                         mat4.scale(transformationMat, transformationMat, [sX, sY, sZ]);
                     }
                     // Translate transformation
-                    else if (grandChildren[j].nodeNames == "translate"){
+                    else if (grandChildren[j].nodeNames == "translate") {
 
                         var tX = this.reader.geFloat(grandChildren[j], 'x');
                         var tY = this.reader.geFloat(grandChildren[j], 'y');
                         var tZ = this.reader.geFloat(grandChildren[j], 'z');
 
                         //tx, ty, tz can´t be NULL
-                        if(tX == null || tY == null || tZ == null)
+                        if (tX == null || tY == null || tZ == null)
                             return "ERROR: translate values can´t be NULL";
 
                         mat4.translate(transformationMat, transformationMat, [tX, tY, tZ]);
                     }
                     // Rotate transformation
-                    else if (grandChildren[j].nodeNames == "rotate"){
+                    else if (grandChildren[j].nodeNames == "rotate") {
 
                         var axis = this.reader.getSting(grandChildren[j], "axis");
                         var angle = this.reader.getFloat(grandChildren[j], "angle");
@@ -856,9 +940,9 @@ class MySceneGraph {
                             return "ERROR: angle or axis value invalid";
                         var axisNew = [];
 
-                        if (axis == 'x') axisNew = [1,0,0];
-                        else if (axis == 'y') axisNew = [0,1,0];
-                        else if (axis == 'z') axisNew = [0,0,1];
+                        if (axis == 'x') axisNew = [1, 0, 0];
+                        else if (axis == 'y') axisNew = [0, 1, 0];
+                        else if (axis == 'z') axisNew = [0, 0, 1];
                         else return "ERROR: axis value does not exist"
 
                         mat4.rotate(transformationMat, transformationMat, angle * DEGREE_TO_RAD, axisNew);
@@ -867,23 +951,24 @@ class MySceneGraph {
             }
 
             // Materials
-            if (nodeNames[materialsIndex] == "materials"){
-                
-                for (var j=0 ; j<grandChildren.length; j++){
-                    var id = this.reader.getString(grandChildren[j],'id');
-                    if (id != null){
-                        if(componentID == this.root && id == "inherit") return "Root can't have inherit";
-                        if (this.materials[id] == null && id != "inherit") return "Material not defined!";
+            if (nodeNames[materialsIndex] == "materials") {
+
+                for (var j = 0; j < grandChildren.length; j++) {
+                    var id = this.reader.getString(grandChildren[j], 'id');
+                    console.log(id);
+                    if (id != null) {
+                        if (componentID == this.root && id == "inherit") return "Root can't have inherit";
+                        if (this.idMaterials[id] == null && id != "inherit") return "Material not defined!";
                         idMaterials.push(id);
-                    }
-                    else return "ERROR: parsing materials";
+                    } else return "ERROR: parsing materials";
 
                 }
             }
 
             // Texture
-            if (nodeNames[textureIndex] == "texture"){
-                var id = this.reader.getString(children[i],'id');
+            if (nodeNames[textureIndex] == "texture") {
+                var id = this.reader.getString(children[i], 'id');
+                console.log(id);
                 var length_s = this.reader.getFloat(children[i]);
                 var length_t = this.reader.getFloat(children[i]);
 
@@ -891,7 +976,7 @@ class MySceneGraph {
                     return "ERROR: failed to parse texture";
                 else if (componentID == this.root && id == "inherit")
                     return "ERROR: root can't inherit";
-                else if (this.Texture[id] == null && id!= "inherit" && id!="none")
+                else if (this.Texture[id] == null && id != "inherit" && id != "none")
                     return "ERROR: failed to parse texture";
                 else {
                     texture.push(id);
@@ -901,29 +986,26 @@ class MySceneGraph {
             }
 
             // Children
-            if (nodeNames[childrenIndex] == "children"){
-                var  grandchildren = children[i].children;
+            if (nodeNames[childrenIndex] == "children") {
+                var grandchildren = children[i].children;
 
-                for (var j=0 ; j<grandchildren.length; j++){
-                    if (grandchildren[j].nodeName == "componentref"){
+                for (var j = 0; j < grandchildren.length; j++) {
+                    if (grandchildren[j].nodeName == "componentref") {
                         var childID = this.reader.getString(grandchildren[j], 'id');
-                        if (childID != null){
+                        if (childID != null) {
                             cChildren.push(childID);
-                        }
-                        else return "ERROR: failed to parse children"
-                    }
-                    else if(grandchildren[j].nodeName == "primitiveref"){
+                        } else return "ERROR: failed to parse children"
+                    } else if (grandchildren[j].nodeName == "primitiveref") {
                         var childID = this.reader.getString(grandchildren[j], 'id');
 
-                        if (childID != null){
+                        if (childID != null) {
                             if (this.primitives[childID] == null) return "ERROR: primitive doesn't exist";
                             pChildren.push(childID);
                         }
-                    }
-                    else return "ERROR: failed to parse children";
+                    } else return "ERROR: failed to parse children";
                 }
             }
-            
+
             const newComponent = {
                 texture: {
                     id: id,
@@ -1066,10 +1148,10 @@ class MySceneGraph {
 
         // Check if current node is a primitive.
         // If it is, draw it. Else recursive call its' children
-        if(this.primitives[id] != null) {
+        if (this.primitives[id] != null) {
             this.drawPrimitive(id);
         } else {
-            for(var i = 0; i < this.components[id].children.cChildren.length; i++) {
+            for (var i = 0; i < this.components[id].children.cChildren.length; i++) {
                 this.processNode(this.components[id].children.cChildren[i], null, null, null, null, null, null);
             }
         }
