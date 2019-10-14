@@ -39,8 +39,7 @@ class MyCylinder extends CGFobject {
 
                 // Vetor não esta normalizado
                 this.normals.push(normalX, normalY, normalZ);
-
-//              this.texCoords.push(sliceIter / this.slices, 1);
+                this.texCoords.push(stackIter/this.stacks, 1 - sliceIter/this.slices);
             }
         }
 

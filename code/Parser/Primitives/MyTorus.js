@@ -39,6 +39,7 @@ class MyTorus extends CGFobject {
 
                 this.vertices.push(coordX, coordY, coordZ);
                 this.normals.push(normalsX, normalsY, normalsZ);
+				this.texCoords.push(sliceIter/this.slices, loopIter/this.loops);
             }
         }
 
