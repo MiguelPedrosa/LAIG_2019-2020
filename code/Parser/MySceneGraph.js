@@ -1155,7 +1155,7 @@ class MySceneGraph {
         // Check if current node is a primitive.
         // If it is, draw it. Else recursive call its' children
         if (this.primitives[nodeID] != null) {
-            this.drawPrimitive(nodeID);
+            this.drawPrimitive(nodeID, textureS, textureT);
             return null;
         }
 
@@ -1182,7 +1182,6 @@ class MySceneGraph {
         } 
         else {
             currentNodeMaterial = this.materials[currentNode["materials"]];
-         
         }
 
         currentNodeMaterial.apply();
@@ -1191,19 +1190,17 @@ class MySceneGraph {
             this.scene.pushMatrix();
             this.scene.multMatrix(currentNode["transformation"]);
 
-            
-
             this.processNode(currentNode["children"][i], currentNodeMaterial, currentNodeTexture, textureS, textureT);
 
             this.scene.popMatrix();
         }
-        
-
 
     }
 
-    drawPrimitive(id) {
-        this.primitives[id].display();
+    drawPrimitive(id, textureS, textureT) {
+        const primitiveNode = this.primitives[id];
+        primitiveNode.modifyTextCoords(textureS, textureT);
+        primitiveNode.display();
     }
 
 }
