@@ -1146,26 +1146,47 @@ class MySceneGraph {
      */
     displayScene() {
         // Display loop for transversing the scene graph
-        this.processNode(this.idRoot, null, null, null, null, null);
+        this.processNode(this.idRoot, null, null, null, null);
     }
 
 
-    processNode(nodeID, parentMaterial, parentTexture, textureS, textureT, childrenList) {
+    processNode(nodeID, parentMaterial, parentTextureID, textureS, textureT) {
         var currentNode = this.components[nodeID];
         // Check if current node is a primitive.
         // If it is, draw it. Else recursive call its' children
         if (this.primitives[nodeID] != null) {
             this.drawPrimitive(nodeID);
-        } else {
-            for (var i = 0; i < currentNode["children"].length; i++) {
-                this.scene.pushMatrix();
-                this.scene.multMatrix(currentNode["transformation"]);
-
-                this.processNode(currentNode["children"][i], null, null, null, null, null);
-
-                this.scene.popMatrix();
-            }
+            return null;
         }
+
+        // Setup Texture
+        var currentNodeTexture = null;
+        if(currentNode["texture"]["id"] === "inherit") {
+            currentNodeTexture = parentTextureID;
+            // No changes to S and T values
+        } else if(currentNode["texture"]["id"] === "none") {
+            currentNodeTexture = "none";
+            textureS = null;
+            textureT = null;
+        }
+        else {
+            currentNodeTexture = this.textures[currentNode["texture"]["id"]];
+            textureS = currentNode["texture"]["id"]["length_s"];
+            textureT = currentNode["texture"]["id"]["length_t"];
+        }
+
+        // Setup Material
+        
+
+        for (var i = 0; i < currentNode["children"].length; i++) {
+            this.scene.pushMatrix();
+            this.scene.multMatrix(currentNode["transformation"]);
+
+            this.processNode(currentNode["children"][i], null, currentNodeTexture, textureS, textureT);
+
+            this.scene.popMatrix();
+        }
+        
 
 
     }
