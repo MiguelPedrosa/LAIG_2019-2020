@@ -1176,13 +1176,24 @@ class MySceneGraph {
         }
 
         // Setup Material
-        
+        var currentNodeMaterial =null;
+         if(currentNode["materials"][currentNode["materialsIndex"]] === "inherit") {
+            currentNodeMaterial = parentMaterial;
+        } 
+        else {
+            currentNodeMaterial = this.materials[currentNode["materials"]];
+         
+        }
+
+        currentNodeMaterial.apply();
 
         for (var i = 0; i < currentNode["children"].length; i++) {
             this.scene.pushMatrix();
             this.scene.multMatrix(currentNode["transformation"]);
 
-            this.processNode(currentNode["children"][i], null, currentNodeTexture, textureS, textureT);
+            
+
+            this.processNode(currentNode["children"][i], currentNodeMaterial, currentNodeTexture, textureS, textureT);
 
             this.scene.popMatrix();
         }
