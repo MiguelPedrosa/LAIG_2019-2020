@@ -164,6 +164,7 @@
             </transformation>
             <materials>
                 <material id="wallMaterial"/>
+                <material id="floorMaterial"/>
             </materials>
             <texture id="parede" length_s="1.0" length_t="1.0"/>
             <children>
@@ -179,7 +180,8 @@
                 <rotate axis="x" angle="-90" />
             </transformation>
             <materials>
-                <material id="floorMaterial" />
+                <material id="floorMaterial"/>
+                <material id="wallMaterial"/>
             </materials>
             <texture id="none" length_s="1.0" length_t="1.0"/>
             <children>

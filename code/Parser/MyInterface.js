@@ -37,23 +37,11 @@ class MyInterface extends CGFinterface {
         this.activeKeys={};
     }
 
-    processKeyDown(event) {
-       this.activeKeys[event.code]=true;
-        if (event.code == "KeyM") {
-            this.scene.graph.KeyM = true;
-            console.log("1");
-        }
-    };
-
     processKeyUp(event) {
         //this.activeKeys[event.code]=false;
-         if (event.code == "KeyM") {
+        if (event.code == "KeyM") {
             this.scene.changeMaterialsMpressed();
-         }
-
-         console.log("2");
-            
-
+        }
     };
 
     isKeyPressed(keyCode) {

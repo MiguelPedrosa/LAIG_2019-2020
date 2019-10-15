@@ -33,7 +33,6 @@ class MySceneGraph {
         this.axisCoords['x'] = [1, 0, 0];
         this.axisCoords['y'] = [0, 1, 0];
         this.axisCoords['z'] = [0, 0, 1];
-        this.KeyM = false;
         // File reading 
         this.reader = new CGFXMLreader();
 
@@ -427,9 +426,6 @@ class MySceneGraph {
         var children = materialsNode.children;
 
         this.materials = [];
-
-        var grandChildren = [];
-        var nodeNames = [];
 
         // Any number of materials.
         for (var i = 0; i < children.length; i++) {
@@ -1165,11 +1161,11 @@ class MySceneGraph {
 
         // Setup Material
         var currentNodeMaterial = null;
-        if (currentNode["materials"][currentNode["materialsIndex"]] === "inherit") {
+        const materialIndex = currentNode["materialsIndex"];
+        if (currentNode["materials"][materialIndex] === "inherit") {
             currentNodeMaterial = parentMaterial;
         } else {
-            currentNodeMaterial = this.materials[currentNode["materials"]];
-
+            currentNodeMaterial = this.materials[currentNode["materials"][materialIndex]];
         }
 
         // Setup Texture
@@ -1189,14 +1185,6 @@ class MySceneGraph {
             currentNodeMaterial.setTexture(currentNodeTexture);
         }
 
-        if (this.KeyM == true) {
-            //console.log("KEY M PRESSED");
-            if (currentNode["materialsIndex"] >= this.materials.length) {
-                currentNode["materialsIndex"] = 0;
-            } else {
-                currentNode["materialsIndex"]++;
-            }
-        }
         currentNodeMaterial.apply();
 
         for (var i = 0; i < currentNode["children"].length; i++) {
@@ -1215,12 +1203,15 @@ class MySceneGraph {
     }
 
     changeMaterialsMpressed() {
-        for (var component in this.scene.components) {
-            component["materialIndex"]++;
-            component["materialIndex"] %= component["materials"].length;
-            console.log(component["materialIndex"]);
-        }
-
-
+        for (var key in this.components) {
+            var index = this.components[key]["materialsIndex"];
+            // Increment value
+            index++;
+            // Value can't exceed total amount of materials
+            if(index >= this.components[key]["materials"].length)
+                index = 0;
+            this.components[key]["materialsIndex"] = index;
+console.log(this.components[key]["materialsIndex"]);
+            }
     }
 }
