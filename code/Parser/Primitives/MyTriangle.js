@@ -70,4 +70,29 @@ class MyTriangle extends CGFobject {
 		this.texCoords = [...coords];
 		this.updateTexCoordsGLBuffers();
 	}
+
+	modifyTextCoords(lengthS, lengthT) {
+		var coords = [];
+
+		// Length of one 3d dot to another
+		var pitagoras = (firstDot, secoundDot) => {
+			return Math.sqrt(
+				Math.pow(secoundDot.x - firstDot.x) +
+				Math.pow(secoundDot.y - firstDot.y) +
+				Math.pow(secoundDot.z - firstDot.z));
+		}
+
+		const a = pitagoras(this.dot1, this.dot2);
+		const b = pitagoras(this.dot2, this.dot3);
+		const c = pitagoras(this.dot3, this.dot1);
+		// Math based on CoordTexturasTriangulos.pdf provided document
+		const cosineAlpha = (Math.pow(a, 2) - Math.pow(b, 2) + Math.pow(c, 2))/(2*a*c);
+		const sineAlpha = Math.sqrt(1 - Math.pow(cosineAlpha, 2));
+
+		coords.push(0, 0);
+		coords.push(a/lengthS, 0);
+		coords.push(c*cosineAlpha/lengthS, c*sineAlpha/lengthT);
+
+		this.updateTexCoords(coords);
+	}
 }

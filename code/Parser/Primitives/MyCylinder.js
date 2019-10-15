@@ -64,4 +64,7 @@ class MyCylinder extends CGFobject {
         this.initGLBuffers();
     }
 
+	modifyTextCoords(lengthS, lengthT) {
+	}
+
 }
