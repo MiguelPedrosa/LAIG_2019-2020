@@ -33,7 +33,7 @@ class MySceneGraph {
         this.axisCoords['x'] = [1, 0, 0];
         this.axisCoords['y'] = [0, 1, 0];
         this.axisCoords['z'] = [0, 0, 1];
-
+        this.KeyM = false;
         // File reading 
         this.reader = new CGFXMLreader();
 
@@ -533,15 +533,15 @@ class MySceneGraph {
             emissionb == null || emissionb < 0 || emissionb > 1 || emissiona == null || emissiona < 0 || emissiona > 1
         )
             return "ERROR: values invalid or null!! Must be >0 & <1 !!";
-                
+
         var newMaterial = new CGFappearance(this.scene);
-            
+
         newMaterial.setShininess(shininess);
         newMaterial.setEmission(emissionr, emissiong, emissionb, emissiona);
         newMaterial.setAmbient(ambientr, ambientg, ambientb, ambienta);
         newMaterial.setDiffuse(diffuser, diffuseg, diffuseb, diffusea);
         newMaterial.setSpecular(specularr, specularg, specularb, speculara);
-            
+
         this.materials[materialID] = newMaterial;
 
     }
@@ -847,9 +847,9 @@ class MySceneGraph {
      * @param {components block element} componentsNode
      */
     parseComponents(componentsNode) {
-        
+
         this.components = [];
-        
+
         var children = componentsNode.children;
         // Any number of components.
         for (var i = 0; i < children.length; i++) {
@@ -874,7 +874,11 @@ class MySceneGraph {
         //creates our transformation Matrix.
         var transformationMat = mat4.create();
         var componentMaterials = [];
-        var componentTexture = { id: "", length_s: 0, length_t: 0 }
+        var componentTexture = {
+            id: "",
+            length_s: 0,
+            length_t: 0
+        }
         var componentChildren = [];
 
         // Get id of the current component.
@@ -894,82 +898,81 @@ class MySceneGraph {
         }
 
         var transformationIndex = nodeNames.indexOf("transformation");
-        if(transformationIndex == -1)
+        if (transformationIndex == -1)
             return "node " + componentID + " does not contain a transformation node";
         var materialsIndex = nodeNames.indexOf("materials");
-        if(materialsIndex == -1)
+        if (materialsIndex == -1)
             return "node " + componentID + " does not contain a material node";
         var textureIndex = nodeNames.indexOf("texture");
-        if(textureIndex == -1)
+        if (textureIndex == -1)
             return "node " + componentID + " does not contain a texture node";
         var childrenIndex = nodeNames.indexOf("children");
-        if(childrenIndex == -1)
+        if (childrenIndex == -1)
             return "node " + componentID + " does not contain a children node";
 
         /* Transformations */
         var transformationChildren = children[transformationIndex].children;
 
         for (var j = 0; j < transformationChildren.length; j++) {
-                // VERIFY IF TRANSFORMATION IS "transformationref"
-                if (transformationChildren[j].nodeName == "transformationref") {
+            // VERIFY IF TRANSFORMATION IS "transformationref"
+            if (transformationChildren[j].nodeName == "transformationref") {
 
-                    var transId = this.reader.getString(transformationChildren[j], "id");
+                var transId = this.reader.getString(transformationChildren[j], "id");
 
-                    if (transId != null) {
-                        if (this.transformations[transId] != null) {
-                            transformationMat = transID;
-                        } else 
-                            return "ERROR: transformationref parsing ";
+                if (transId != null) {
+                    if (this.transformations[transId] != null) {
+                        transformationMat = transID;
                     } else
-                        return "Unknown transformation ref id: " + transId;
-                }
+                        return "ERROR: transformationref parsing ";
+                } else
+                    return "Unknown transformation ref id: " + transId;
+            }
 
-                // Scale TRANSFORMATION
-                else if (transformationChildren[j].nodeName == "scale") {
+            // Scale TRANSFORMATION
+            else if (transformationChildren[j].nodeName == "scale") {
 
-                    var sX = this.reader.getFloat(transformationChildren[j], 'x');
-                    var sY = this.reader.getFloat(transformationChildren[j], 'y');
-                    var sZ = this.reader.getFloat(transformationChildren[j], 'z');
+                var sX = this.reader.getFloat(transformationChildren[j], 'x');
+                var sY = this.reader.getFloat(transformationChildren[j], 'y');
+                var sZ = this.reader.getFloat(transformationChildren[j], 'z');
 
-                    //All variables must have a value greater than 0
-                    if (sX == null || sY == null || sZ == null || sX == 0 || sY == 0 || sZ == 0)
-                        return "ERROR: scaling values invalid";
+                //All variables must have a value greater than 0
+                if (sX == null || sY == null || sZ == null || sX == 0 || sY == 0 || sZ == 0)
+                    return "ERROR: scaling values invalid";
 
-                    //apply the scaling.
-                    mat4.scale(transformationMat, transformationMat, [sX, sY, sZ]);
-                }
-                // Translate transformation
-                else if (transformationChildren[j].nodeName == "translate") {
+                //apply the scaling.
+                mat4.scale(transformationMat, transformationMat, [sX, sY, sZ]);
+            }
+            // Translate transformation
+            else if (transformationChildren[j].nodeName == "translate") {
 
-                    var tX = this.reader.getFloat(transformationChildren[j], 'x');
-                    var tY = this.reader.getFloat(transformationChildren[j], 'y');
-                    var tZ = this.reader.getFloat(transformationChildren[j], 'z');
+                var tX = this.reader.getFloat(transformationChildren[j], 'x');
+                var tY = this.reader.getFloat(transformationChildren[j], 'y');
+                var tZ = this.reader.getFloat(transformationChildren[j], 'z');
 
-                    //tx, ty, tz can´t be NULL
-                    if (tX == null || tY == null || tZ == null)
-                        return "ERROR: translate values can´t be NULL";
+                //tx, ty, tz can´t be NULL
+                if (tX == null || tY == null || tZ == null)
+                    return "ERROR: translate values can´t be NULL";
 
-                    mat4.translate(transformationMat, transformationMat, [tX, tY, tZ]);
-                }
-                // Rotate transformation
-                else if (transformationChildren[j].nodeName == "rotate") {
+                mat4.translate(transformationMat, transformationMat, [tX, tY, tZ]);
+            }
+            // Rotate transformation
+            else if (transformationChildren[j].nodeName == "rotate") {
 
-                    var axis = this.reader.getString(transformationChildren[j], "axis");
-                    var angle = this.reader.getFloat(transformationChildren[j], "angle");
+                var axis = this.reader.getString(transformationChildren[j], "axis");
+                var angle = this.reader.getFloat(transformationChildren[j], "angle");
 
-                    if (angle == null || axis == null)
-                        return "ERROR: angle or axis value invalid";
-                    var axisNew = [];
+                if (angle == null || axis == null)
+                    return "ERROR: angle or axis value invalid";
+                var axisNew = [];
 
-                    if (axis == 'x') axisNew = [1, 0, 0];
-                    else if (axis == 'y') axisNew = [0, 1, 0];
-                    else if (axis == 'z') axisNew = [0, 0, 1];
-                    else return "ERROR: axis value does not exist"
+                if (axis == 'x') axisNew = [1, 0, 0];
+                else if (axis == 'y') axisNew = [0, 1, 0];
+                else if (axis == 'z') axisNew = [0, 0, 1];
+                else return "ERROR: axis value does not exist"
 
-                    mat4.rotate(transformationMat, transformationMat, angle * DEGREE_TO_RAD, axisNew);
-                }
-                else
-                    return "Unknown transformation was found:" + transformationChildren[j].nodeName;
+                mat4.rotate(transformationMat, transformationMat, angle * DEGREE_TO_RAD, axisNew);
+            } else
+                return "Unknown transformation was found:" + transformationChildren[j].nodeName;
         }
 
         /* Materials */
@@ -981,7 +984,7 @@ class MySceneGraph {
                 if (this.materials[materialID] == null && materialID != "inherit") return "Material not defined!";
                 componentMaterials.push(materialID);
             } else
-                return "ERROR: parsing materials";    
+                return "ERROR: parsing materials";
         }
 
         /* Texture */
@@ -1155,43 +1158,51 @@ class MySceneGraph {
         // Check if current node is a primitive.
         // If it is, draw it. Else recursive call its' children
         if (this.primitives[nodeID] != null) {
-            this.drawPrimitive(nodeID, textureS, textureT);
+            this.drawPrimitive(nodeID);
+
             return null;
+        }
+
+        // Setup Material
+        var currentNodeMaterial = null;
+        if (currentNode["materials"][currentNode["materialsIndex"]] === "inherit") {
+            currentNodeMaterial = parentMaterial;
+        } else {
+            currentNodeMaterial = this.materials[currentNode["materials"]];
+
         }
 
         // Setup Texture
         var currentNodeTexture = null;
-        if(currentNode["texture"]["id"] === "inherit") {
+        if (currentNode["texture"]["id"] === "inherit") {
             currentNodeTexture = parentTextureID;
+            currentNodeMaterial.setTexture(currentNodeTexture);
             // No changes to S and T values
-        } else if(currentNode["texture"]["id"] === "none") {
+        } else if (currentNode["texture"]["id"] === "none") {
             currentNodeTexture = "none";
             textureS = null;
             textureT = null;
-        }
-        else {
+        } else {
             currentNodeTexture = this.textures[currentNode["texture"]["id"]];
             textureS = currentNode["texture"]["id"]["length_s"];
             textureT = currentNode["texture"]["id"]["length_t"];
+            currentNodeMaterial.setTexture(currentNodeTexture);
         }
 
-        // Setup Material
-        var currentNodeMaterial =null;
-         if(currentNode["materials"][currentNode["materialsIndex"]] === "inherit") {
-            currentNodeMaterial = parentMaterial;
-        } 
-        else {
-            currentNodeMaterial = this.materials[currentNode["materials"]];
+        if (this.KeyM == true) {
+            //console.log("KEY M PRESSED");
+            if (currentNode["materialsIndex"] >= this.materials.length) {
+                currentNode["materialsIndex"] = 0;
+            } else {
+                currentNode["materialsIndex"]++;
+            }
         }
-
         currentNodeMaterial.apply();
 
         for (var i = 0; i < currentNode["children"].length; i++) {
             this.scene.pushMatrix();
             this.scene.multMatrix(currentNode["transformation"]);
-
             this.processNode(currentNode["children"][i], currentNodeMaterial, currentNodeTexture, textureS, textureT);
-
             this.scene.popMatrix();
         }
 
@@ -1203,4 +1214,13 @@ class MySceneGraph {
         primitiveNode.display();
     }
 
+    changeMaterialsMpressed() {
+        for (var component in this.scene.components) {
+            component["materialIndex"]++;
+            component["materialIndex"] %= component["materials"].length;
+            console.log(component["materialIndex"]);
+        }
+
+
+    }
 }

@@ -15,13 +15,13 @@ class MyRectangle extends CGFobject {
 
 		this.initBuffers();
 	}
-	
+
 	initBuffers() {
 		this.vertices = [
-			this.x1, this.y1, 0,	//0
-			this.x2, this.y1, 0,	//1
-			this.x1, this.y2, 0,	//2
-			this.x2, this.y2, 0		//3
+			this.x1, this.y1, 0, //0
+			this.x2, this.y1, 0, //1
+			this.x1, this.y2, 0, //2
+			this.x2, this.y2, 0 //3
 		];
 
 		//Counter-clockwise reference of vertices
@@ -37,7 +37,7 @@ class MyRectangle extends CGFobject {
 			0, 0, 1,
 			0, 0, 1
 		];
-		
+
 		/*
 		Texture coords (s,t)
 		+----------> s
@@ -74,11 +74,10 @@ class MyRectangle extends CGFobject {
 		const heigth = Math.abs(this.y1 - this.y2);
 
 		coords.push(0, 0);
-		coords.push(width/lengthS, 0);
-		coords.push(width/lengthS, heigth/lengthT);
-		coords.push(0, heigth/lengthT);
+		coords.push(width / lengthS, 0);
+		coords.push(width / lengthS, heigth / lengthT);
+		coords.push(0, heigth / lengthT);
 
 		this.updateTexCoords(coords);
 	}
 }
-
