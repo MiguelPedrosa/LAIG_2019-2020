@@ -24,6 +24,11 @@
 
     <textures>
         <texture id="demoTexture" file="scenes/images/vidral.jpg" />
+        <texture id="sadCat" file="scenes/images/sadCat.jpg"/>
+        <texture id="mesa" file="scenes/images/madeiraMesa.jpg"/>
+        <texture id="parede" file="scenes/images/parede.jpg"/>
+        <texture id="sofaCentro" file="scenes/images/sofaCentro.jpg"/>
+        <texture id="sofaFora" file="scenes/images/soTextura1.jpg"/>
     </textures>
 
     <materials>
@@ -36,16 +41,16 @@
 
         <material id="sofaMaterial" shininess="10">
             <emission r="0.0" g="0.0" b="0.0" a="0.0" />
-            <ambient r="1.0" g="0.8" b="0.6" a="0.0" />
-            <diffuse r="1.0" g="0.8" b="0.6" a="0.0" />
-            <specular r="1.0" g="0.8" b="0.6" a="0.0" />
+            <ambient r="0.5" g="0.5" b="0.5" a="0.0" />
+            <diffuse r="0.5" g="0.5" b="0.5" a="0.0" />
+            <specular r="0.5" g="0.5" b="0.5" a="0.0" />
         </material>
 
         <material id="mesaMaterial" shininess="10">
             <emission r="0.0" g="0.0" b="0.0" a="1.0" />
-            <ambient r="0.2" g="0.1" b="0.0" a="1.0" />
-            <diffuse r="0.2" g="0.1" b="0.0" a="1.0" />
-            <specular r="0.2" g="0.1" b="0.0" a="1.0" />
+            <ambient r="0.5" g="0.4" b="0.4" a="1.0" />
+            <diffuse r="0.5" g="0.4" b="0.4" a="1.0" />
+            <specular r="0.5" g="0.4" b="0.4" a="1.0" />
         </material>
 
         <material id="TVMaterial" shininess="10">
@@ -137,7 +142,7 @@
             <scale x="3" y="3" z="3" />
             </transformation>
             <materials>
-                <material id="default" />
+               <material id="default" />
             </materials>
             <texture id="none" length_s="1.0" length_t="1.0"/>
             <children>
@@ -160,7 +165,7 @@
             <materials>
                 <material id="wallMaterial"/>
             </materials>
-            <texture id="none" length_s="1.0" length_t="1.0"/>
+            <texture id="parede" length_s="1.0" length_t="1.0"/>
             <children>
                 <componentref id="boxInner" />
             </children>
@@ -191,7 +196,7 @@
             <materials>
                 <material id="mesaMaterial" />
             </materials>
-            <texture id="none" length_s="1.0" length_t="1.0"/>
+            <texture id="mesa" length_s="1.0" length_t="1.0"/>
             <children>
                 <componentref id="tampoMesa" />
                 <componentref id="baseMesa" />
@@ -316,7 +321,7 @@
             <texture id="none" length_s="1.0" length_t="1.0"/>
             <children>
                 <componentref id="baseSofa" />
-                <componentref id="centroSofa"/>
+               <componentref id="centroSofa"/>
                 <componentref id="topoSofa"/>
             </children>
         </component>
@@ -340,11 +345,12 @@
             <materials>
                 <material id="inherit" />
             </materials>
-            <texture id="none" length_s="1.0" length_t="1.0"/>
+            <texture id="sofaCentro" length_s="1.0" length_t="1.0"/>
             <children>
                 <primitiveref id="demoSphere" />
             </children>
         </component>
+
         <component id = "topoSofa">
             <transformation>
                 <rotate axis= "x" angle="-45"/>
@@ -353,7 +359,7 @@
             <materials>
                 <material id="inherit" />
             </materials>
-            <texture id="none" length_s="1.0" length_t="1.0"/>
+            <texture id="sofaFora" length_s="1.0" length_t="1.0"/>
             <children>
                 <primitiveref id="demoTorus" />
             </children>
@@ -657,7 +663,7 @@
                 <rotate axis="y" angle="-90"/>
             </transformation>
             <materials>
-                <material id="TVMaterial" />
+                <material id="default" />
             </materials>
             <texture id="none" length_s="1.0" length_t="1.0"/>
             <children>
@@ -704,7 +710,7 @@
             <materials>
                 <material id="inherit"/>
             </materials>
-            <texture id="none" length_s="1.0" length_t="1.0"/>
+            <texture id="sadCat" length_s="1.0" length_t="1.0"/>
             <children>
                 <primitiveref id = "basicSquare"/>
             </children>

@@ -41,6 +41,7 @@ class XMLscene extends CGFscene {
      */
     initCameras() {
         this.camera = new CGFcamera(0.4, 0.1, 500, vec3.fromValues(15, 15, 15), vec3.fromValues(0, 0, 0));
+
     }
     /**
      * Initializes the scene lights with the values read from the XML file.
@@ -81,6 +82,10 @@ class XMLscene extends CGFscene {
         }
     }
 
+
+    changeMaterialsMpressed(){
+        this.graph.changeMaterialsMpressed();
+    }
     setDefaultAppearance() {
         this.setAmbient(0.2, 0.4, 0.8, 1.0);
         this.setDiffuse(0.2, 0.4, 0.8, 1.0);
