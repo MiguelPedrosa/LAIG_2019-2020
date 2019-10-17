@@ -226,9 +226,109 @@ class MySceneGraph {
      * @param {view block element} viewsNode
      */
     parseView(viewsNode) {
-        this.onXMLMinorError("To do: Parse views and create cameras.");
 
+        this.views = [];
+
+        const defaultCameraID = this.reader.getString(viewsNode, 'default');
+
+        const children = viewsNode.children;
+        var viewCount = 0;
+
+        for(var i = 0; i < children.length; i++) {
+            if(children[i].nodeName === "perspective") {
+                // Create perspective camera
+                if(this.createPerspective(children[i]) == null)
+                    //Increment view if no problems were found
+                    viewCount++;
+            }
+            else if(children[i].nodeName === "ortho") {
+                // Create ortho camera
+                if(this.createOrtho(children[i]) == null)
+                    //Increment view if no problems were found
+                    viewCount++;
+            }
+            else {
+                console.log("Camera named " + children[i].nodeName + " wasn't parsed, was instead ignored");
+            }
+        }
+
+        if(viewCount === 0)
+            return "Error: No camera was parsed"
+
+        if(defaultCameraID === null || this.views[defaultCameraID] == null) {
+            console.warn("Missing default view.");
+            // TODO: add default view
+        }
+
+        this.onXMLMinorError("To do: Parse views and create cameras.");
         return null;
+    }
+
+    createPerspective(perspectiveNode) {
+
+        const viewID = this.reader.getString(perspectiveNode, 'id');
+        if(viewID == null)
+            return "Missing ID attribute from a view";
+        
+        // Parse atributes near and far. In case missing, assume values
+        var near = this.reader.getString(perspectiveNode, 'near');
+        if(near == null) {
+            near = 0.1;
+            console.warn("Missing atribute near on node " + viewID + ". Using value " + near);
+        }
+        var far = this.reader.getString(perspectiveNode, 'far');
+        if(far == null) {
+            far = 10;
+            console.warn("Missing atribute far on node " + viewID + ". Using value " + far);
+        }
+        if(far <= near) {
+            const extraDistance = 10;
+            far = near + extraDistance;
+            console.warn("Error in view " + viewID + ": Far isn't bigger than near. Addind to far extra units: " + extraDistance);
+        }
+
+        const from = {
+            x: 0,
+            y: 0,
+            z: 0
+        }
+        const to = {
+            x: 0,
+            y: 0,
+            z: 0
+        }
+
+        const perspectiveChildren = perspectiveNode.children;
+        
+        const fromIndex = perspectiveChildren.map(elem => elem.name).indexOf('from');
+        if(fromIndex == null) {
+            console.warn();
+        }
+        const toIndex = perspectiveChildren.map(elem => elem.name).indexOf('to');
+
+
+        return null
+    }
+
+    createOrtho(orthoNode) {
+
+        const viewID = this.reader.getString(orthoNode, 'id');
+        if(viewID == null)
+            return "Missing ID attribute from a view";
+        
+        // Parse atributes near and far. In case missing, assume values
+        var near = this.reader.getString(orthoNode, 'near');
+        if(near == null) {
+            near = 0.1;
+            console.warn("Missing atribute near on node " + viewID + ". Using value " + near);
+        }
+        var far = this.reader.getString(orthoNode, 'far');
+        if(far == null) {
+            far = 10;
+            console.warn("Missing atribute far on node " + viewID + ". Using value " + far);
+        }
+
+        return null
     }
 
     /**
@@ -399,7 +499,7 @@ class MySceneGraph {
                 var textureID = this.reader.getString(children[j], 'id');
 
                 if (this.textures[textureID] != null)
-                    return "ERROR: already has " + textureID + "texture";
+                    console.warn("ERROR: already has " + textureID + "texture");
                 else {
                     var file = this.reader.getString(children[j], "file");
                     var texture = new CGFtexture(this.scene, file);
