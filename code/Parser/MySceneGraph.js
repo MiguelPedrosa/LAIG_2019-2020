@@ -229,8 +229,6 @@ class MySceneGraph {
 
         this.views = [];
 
-        const defaultCameraID = this.reader.getString(viewsNode, 'default');
-
         const children = viewsNode.children;
         var viewCount = 0;
 
@@ -255,9 +253,11 @@ class MySceneGraph {
         if(viewCount === 0)
             return "Error: No camera was parsed"
 
-        if(defaultCameraID === null || this.views[defaultCameraID] == null) {
-            console.warn("Missing default view.");
-            // TODO: add default view
+        var defaultCameraID = this.reader.getString(viewsNode, 'default');
+
+        if(defaultCameraID == null || this.views[defaultCameraID] == null) {
+            defaultCameraID = Object.keys(this.views)[0];
+            console.warn("Missing default view. Assuming default as node with id: " + defaultCameraID);
         }
 
         this.onXMLMinorError("To do: Parse views and create cameras.");
@@ -270,12 +270,13 @@ class MySceneGraph {
         if(viewID == null)
             return "Missing ID attribute from a view";
         
-        // Parse atributes near and far. In case missing, assume values
+        // Parse atributes near, far and angle. In case missing, assume values
         var near = this.reader.getString(perspectiveNode, 'near');
         if(near == null) {
             near = 0.1;
             console.warn("Missing atribute near on node " + viewID + ". Using value " + near);
         }
+
         var far = this.reader.getString(perspectiveNode, 'far');
         if(far == null) {
             far = 10;
@@ -286,26 +287,53 @@ class MySceneGraph {
             far = near + extraDistance;
             console.warn("Error in view " + viewID + ": Far isn't bigger than near. Addind to far extra units: " + extraDistance);
         }
-
-        const from = {
-            x: 0,
-            y: 0,
-            z: 0
-        }
-        const to = {
-            x: 0,
-            y: 0,
-            z: 0
+        var angle = this.reader.getString(perspectiveNode, 'angle');
+        if(angle == null) {
+            angle = 45;
+            console.warn("Missing atribute angle on node " + viewID + ". Assuming an angle of " + angle);
         }
 
+        // Parse child nodes: 'from' and 'to'. In case of error assumes values
         const perspectiveChildren = perspectiveNode.children;
+        const perspectiveChildrenNames = [];
+        for(var i = 0; i < perspectiveChildren.length; i++)
+            perspectiveChildrenNames.push(perspectiveChildren[i].nodeName);
         
-        const fromIndex = perspectiveChildren.map(elem => elem.name).indexOf('from');
-        if(fromIndex == null) {
-            console.warn();
+        var from = null;
+        const fromIndex = perspectiveChildrenNames.indexOf('from');
+        if(fromIndex == -1) {
+            console.warn("Error in view node " + viewID + ": No 'from' node found. Assuming origin.");
+            from = [0, 0, 0];
+        } else {
+            var error = "from perspective node. Node id = " + viewID;
+            from = this.parseCoordinates3D(perspectiveChildren[fromIndex], error);
+            if(!Array.isArray(from)) {
+                console.warn("Values of view node " + viewID + " were invalid. Assuming origin.");
+                from = [0, 0, 0];
+            }
         }
-        const toIndex = perspectiveChildren.map(elem => elem.name).indexOf('to');
 
+        var to = null;
+        const toIndex = perspectiveChildrenNames.indexOf('to');
+        if(toIndex == -1) {
+            const distance = 10;
+            console.warn("Error in view node 'from' of " + viewID + ": No 'to' node found. Assuming translation from 'from' by " + distance);
+            to = [from[0] + distance, from[1] + distance, from[2] + distance];
+        } else {
+            var error = "to perspective node. Node id = " + viewID;
+            to = this.parseCoordinates3D(perspectiveChildren[toIndex], error);
+            if(!Array.isArray(to)) {
+                const distance = 10;
+                console.warn("Values of view node 'to' of " + viewID + " were invalid. Assuming distance from near.");
+                to = [from[0] + distance, from[1] + distance, from[2] + distance];
+            }        
+        }
+
+        this.views[viewID] = {
+            type: 'perspective',
+            near: near, far: far, angle: angle,
+            from: from, to: to
+        }
 
         return null
     }
@@ -316,7 +344,7 @@ class MySceneGraph {
         if(viewID == null)
             return "Missing ID attribute from a view";
         
-        // Parse atributes near and far. In case missing, assume values
+        // Parse atributes near, far, left, right, top and bottom. In case missing, assume values
         var near = this.reader.getString(orthoNode, 'near');
         if(near == null) {
             near = 0.1;
@@ -327,7 +355,87 @@ class MySceneGraph {
             far = 10;
             console.warn("Missing atribute far on node " + viewID + ". Using value " + far);
         }
+        if(far <= near) {
+            const extraDistance = 10;
+            far = near + extraDistance;
+            console.warn("Error in view " + viewID + ": Far isn't bigger than near. Addind to far extra units: " + extraDistance);
+        }
+        var left = this.reader.getString(orthoNode, 'left');
+        if(left == null) {
+            left = 10;
+            console.warn("Missing atribute left on node " + viewID + ". Using value " + left);
+        }
+        var right = this.reader.getString(orthoNode, 'right');
+        if(right == null) {
+            right = 10;
+            console.warn("Missing atribute right on node " + viewID + ". Using value " + right);
+        }
+        var top = this.reader.getString(orthoNode, 'top');
+        if(top == null) {
+            top = 10;
+            console.warn("Missing atribute top on node " + viewID + ". Using value " + top);
+        }
+        var bottom = this.reader.getString(orthoNode, 'bottom');
+        if(bottom == null) {
+            bottom = 10;
+            console.warn("Missing atribute bottom on node " + viewID + ". Using value " + bottom);
+        }
 
+        // Parse child nodes: 'from' and 'to'. In case of error assumes values
+        const orthoChildren = orthoNode.children;
+        const orthoChildrenNames = [];
+        for(var i = 0; i < orthoChildren.length; i++)
+            orthoChildrenNames.push(orthoChildren[i].nodeName);
+        
+        var from = null;
+        const fromIndex = orthoChildrenNames.indexOf('from');
+        if(fromIndex == -1) {
+            console.warn("Error in view node " + viewID + ": No 'from' node found. Assuming origin.");
+            from = [0, 0, 0];
+        } else {
+            var error = "from ortho node. Node id = " + viewID;
+            from = this.parseCoordinates3D(orthoChildren[fromIndex], error);
+            if(!Array.isArray(from)) {
+                console.warn("Values of view node " + viewID + " were invalid. Assuming origin.");
+                from = [0, 0, 0];
+            }
+        }
+
+        var to = null;
+        const toIndex = orthoChildrenNames.indexOf('to');
+        if(toIndex == -1) {
+            const distance = 10;
+            console.warn("Error in view node 'from' of " + viewID + ": No 'to' node found. Assuming translation from 'from' by " + distance);
+            to = [from[0] + distance, from[1] + distance, from[2] + distance];
+        } else {
+            var error = "to ortho node. Node id = " + viewID;
+            to = this.parseCoordinates3D(orthoChildren[toIndex], error);
+            if(!Array.isArray(to)) {
+                const distance = 10;
+                console.warn("Values of view node 'to' of " + viewID + " were invalid. Assuming distance from near.");
+                to = [from[0] + distance, from[1] + distance, from[2] + distance];
+            }        
+        }
+
+        var up = null;
+        const upIndex = orthoChildrenNames.indexOf('up');
+        if(upIndex == -1) {
+            console.log("Missing value in view node " + viewID + ": No 'up' node found. Assuming default [0, 1, 0]");
+            up = [0, 1, 0];
+        } else {
+            var error = "up ortho node. Node id = " + viewID;
+            up = this.parseCoordinates3D(orthoChildren[upIndex], error);
+            if(!Array.isArray(up)) {
+                console.warn("Values of view node 'up' of " + viewID + " were invalid. Assuming default [0, 1, 0]");
+                up = [0, 1, 0];
+            }        
+        }
+
+        this.views[viewID] = {
+            type: 'ortho',
+            near: near, far: far, left: left, right: right, top: top, bottom: bottom,
+            from: from, to: to, up: up
+        }
         return null
     }
 
