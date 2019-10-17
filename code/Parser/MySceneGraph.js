@@ -253,14 +253,14 @@ class MySceneGraph {
         if(viewCount === 0)
             return "Error: No camera was parsed"
 
-        var defaultCameraID = this.reader.getString(viewsNode, 'default');
+        this.defaultCameraID = this.reader.getString(viewsNode, 'default');
 
-        if(defaultCameraID == null || this.views[defaultCameraID] == null) {
-            defaultCameraID = Object.keys(this.views)[0];
+        if(this.defaultCameraID == null || this.views[this.defaultCameraID] == null) {
+            this.defaultCameraID = Object.keys(this.views)[0];
             console.warn("Missing default view. Assuming default as node with id: " + defaultCameraID);
         }
-
-        this.onXMLMinorError("To do: Parse views and create cameras.");
+        
+        this.log("Parsed views");
         return null;
     }
 
@@ -1419,7 +1419,6 @@ class MySceneGraph {
             if(index >= this.components[key]["materials"].length)
                 index = 0;
             this.components[key]["materialsIndex"] = index;
-console.log(this.components[key]["materialsIndex"]);
             }
     }
 }
