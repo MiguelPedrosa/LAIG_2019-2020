@@ -13,17 +13,33 @@
     </views>
 
     <globals>  
-        <ambient r="1" g="1.0" b="1.0" a="1.0" />
+        <ambient r="0.6" g="0.6" b="0.6" a="1.0" />
         <background r="0.05" g="0.05" b="0.05" a="1.0" />
     </globals>
 
     <lights>
         <omni id="defaultLight" enabled="1">
             <location x="9.8" y="11.9" z="10" w="1.0" />
-            <ambient r="0" g="0.0" b="0.0" a="1.0" />
+            <ambient r="1.0" g="1.0" b="1.0" a="1.0" />
             <diffuse r="1.0" g="1.0" b="1.0" a="1.0" />
             <specular r="1.0" g="1.0" b="1.0" a="1.0" />
+            <attenuation constant="0" linear="0" quadratic="1" /> 
         </omni>
+        <omni id="sol" enabled="0">
+            <location x="2" y="0.5" z="-10" w="1" />
+            <ambient r="1" g="0.4" b="0" a="1" />
+            <diffuse r="1" g="0.4" b="0" a="1" />
+            <specular r="1" g="0.4" b="0" a="1" />
+            <attenuation constant="1" linear="0" quadratic="0" /> 
+        </omni>
+        <spot id="luz_spot" enabled="0" angle="10" exponent="1">
+            <location x="10" y="10" z="10" w="1" />
+            <target x="2" y="7" z="2" />
+            <ambient r="1" g="1" b="1" a="1" />
+            <diffuse r="1" g="1" b="1" a="1" />
+            <specular r="1" g="1" b="1" a="1" />
+            <attenuation constant="0" linear="1" quadratic="0" /> 
+        </spot>
     </lights>
 
     <textures>
@@ -110,34 +126,27 @@
     </transformations>
 
     <primitives>
-         <primitive id="demoCylinder">
+        <primitive id="demoCylinder">
             <cylinder base="2" top="1" height ="2" slices="30"  stacks="3" />
         </primitive>
-
         <primitive id="demoCylinder2">
             <cylinder base="2" top="2" height ="2" slices="30"  stacks="3" />
         </primitive>
-
          <primitive id="demoCylinder3">
             <cylinder base="2" top="1.5" height ="2" slices="30"  stacks="3" />
         </primitive>
-
-
-         <primitive id="coneS4">
+        <primitive id="coneS4">
             <cylinder base="2" top="1" height ="1" slices="4"  stacks="2" />
         </primitive>
-
-         <primitive id="demoSphere">
+        <primitive id="demoSphere">
             <sphere radius="2" slices="20" stacks="10" />
         </primitive>
-
         <primitive id="basicSquare">
             <rectangle x1="-0.5" y1="-0.5" x2="0.5" y2="0.5" />
         </primitive>
-       <primitive id="demoTorus">
+        <primitive id="demoTorus">
             <torus inner="1" outer="2" slices="30" loops="20" />
         </primitive>
-    
     </primitives>
 
     <components>
@@ -155,8 +164,8 @@
                 <componentref id="floor" />
                 <componentref id="mesa" />
                 <componentref id="TV" />
-                <componentref id ="lamp"/>
-                <componentref id = "quadro"/>
+                <componentref id="lamp"/>
+                <componentref id="quadro"/>
             </children>
         </component>
 
@@ -216,7 +225,7 @@
             <materials>
                 <material id="inherit" />
             </materials>
-            <texture id="none" length_s="1.0" length_t="1.0"/>
+            <texture id="inherit" length_s="1.0" length_t="1.0"/>
             <children>
                 <componentref id="CubeFull" />
             </children>
@@ -228,7 +237,7 @@
             <materials>
                 <material id="inherit" />
             </materials>
-            <texture id="none" length_s="1.0" length_t="1.0"/>
+            <texture id="inherit" length_s="1.0" length_t="1.0"/>
             <children>
                 <primitiveref id="demoCylinder" />
             </children>
@@ -339,7 +348,7 @@
             <materials>
                 <material id="inherit" />
             </materials>
-            <texture id="none" length_s="1.0" length_t="1.0"/>
+            <texture id="sofaFora" length_s="1.0" length_t="1.0"/>
             <children>
                 <primitiveref id="demoTorus" />
             </children>
@@ -514,7 +523,7 @@
             <materials>
                 <material id="inherit" />
             </materials>
-            <texture id="none" length_s="1.0" length_t="1.0"/>
+            <texture id="inherit" length_s="1.0" length_t="1.0"/>
             <children>
                 <componentref id="CubeFull_front" />
                 <componentref id="CubeFull_back" />
@@ -531,7 +540,7 @@
             <materials>
                 <material id="inherit" />
             </materials>
-            <texture id="none" length_s="1.0" length_t="1.0"/>
+            <texture id="inherit" length_s="1.0" length_t="1.0"/>
             <children>
                 <primitiveref id="basicSquare" />
             </children>
@@ -544,7 +553,7 @@
             <materials>
                 <material id="inherit" />
             </materials>
-            <texture id="none" length_s="1.0" length_t="1.0"/>
+            <texture id="inherit" length_s="1.0" length_t="1.0"/>
             <children>
                 <primitiveref id="basicSquare" />
             </children>
@@ -557,7 +566,7 @@
             <materials>
                 <material id="inherit" />
             </materials>
-            <texture id="none" length_s="1.0" length_t="1.0"/>
+            <texture id="inherit" length_s="1.0" length_t="1.0"/>
             <children>
                 <primitiveref id="basicSquare" />
             </children>
@@ -570,7 +579,7 @@
             <materials>
                 <material id="inherit" />
             </materials>
-            <texture id="none" length_s="1.0" length_t="1.0"/>
+            <texture id="inherit" length_s="1.0" length_t="1.0"/>
             <children>
                 <primitiveref id="basicSquare" />
             </children>
@@ -583,7 +592,7 @@
             <materials>
                 <material id="inherit" />
             </materials>
-            <texture id="none" length_s="1.0" length_t="1.0"/>
+            <texture id="inherit" length_s="1.0" length_t="1.0"/>
             <children>
                 <primitiveref id="basicSquare" />
             </children>
@@ -596,7 +605,7 @@
             <materials>
                 <material id="inherit" />
             </materials>
-            <texture id="none" length_s="1.0" length_t="1.0"/>
+            <texture id="inherit" length_s="1.0" length_t="1.0"/>
             <children>
                 <primitiveref id="basicSquare" />
             </children>
