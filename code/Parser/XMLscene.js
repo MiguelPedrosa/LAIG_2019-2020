@@ -11,6 +11,9 @@ class XMLscene extends CGFscene {
     constructor(myinterface) {
         super();
 
+        // Altered by the interface. Used to check if light should be on/off
+        this.lightStates = [];
+
         this.interface = myinterface;
     }
 
@@ -58,22 +61,30 @@ class XMLscene extends CGFscene {
             if (this.graph.lights.hasOwnProperty(key)) {
                 var light = this.graph.lights[key];
 
+                this.lightStates[key] = (light[0] === true ? true : false);
+
                 this.lights[i].setPosition(light[2][0], light[2][1], light[2][2], light[2][3]);
                 this.lights[i].setAmbient(light[3][0], light[3][1], light[3][2], light[3][3]);
                 this.lights[i].setDiffuse(light[4][0], light[4][1], light[4][2], light[4][3]);
                 this.lights[i].setSpecular(light[5][0], light[5][1], light[5][2], light[5][3]);
+                //light[6] is attenuation
 
                 if (light[1] == "spot") {
                     this.lights[i].setSpotCutOff(light[6]);
                     this.lights[i].setSpotExponent(light[7]);
                     this.lights[i].setSpotDirection(light[8][0], light[8][1], light[8][2]);
+                } else if(light[1] == "omni") {
+                    // Do nothing, all functions should have been called
                 }
 
-                this.lights[i].setVisible(true);
-                if (light[0])
+                if (this.lightStates[key] === true) {
+                    this.lights[i].setVisible(true);
                     this.lights[i].enable();
-                else
+                }
+                else {
+                    this.lights[i].setVisible(false);
                     this.lights[i].disable();
+                }
 
                 this.lights[i].update();
 
@@ -104,6 +115,8 @@ class XMLscene extends CGFscene {
 
         this.initLights();
 
+        this.interface.addLights(this.lightStates);
+
         this.sceneInited = true;
     }
 
@@ -127,12 +140,24 @@ class XMLscene extends CGFscene {
         this.pushMatrix();
         this.axis.display();
 
-        for (var i = 0; i < this.lights.length; i++) {
-            this.lights[i].setVisible(true);
-            this.lights[i].enable();
-        }
-
         if (this.sceneInited) {
+
+            var lightIterator = 0;
+            for (var id in this.lightStates) {
+                if(this.lightStates.hasOwnProperty(id)) {
+                    if (this.lightStates[id] === true) {
+                        this.lights[lightIterator].enable();
+                        this.lights[lightIterator].setVisible(true);
+                    }
+                    else {
+                        this.lights[lightIterator].disable();
+                        this.lights[lightIterator].setVisible(false);
+                    }
+//                    console.log("Light named " + id + " is " + (this.lightStates[id] ? "true" : "false"));
+                    ++lightIterator;
+                }
+            }
+
             // Draw axis
             this.setDefaultAppearance();
 

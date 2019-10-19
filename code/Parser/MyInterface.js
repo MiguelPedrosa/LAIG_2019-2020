@@ -19,7 +19,6 @@ class MyInterface extends CGFinterface {
         //  http://workshop.chromeexperiments.com/examples/gui
 
         this.gui = new dat.GUI();
-        this.gui.addFolder("Lights");
         this.gui.addFolder("Cameras");
 
         // add a group of controls (and open/expand by defult)
@@ -48,5 +47,15 @@ class MyInterface extends CGFinterface {
         return this.activeKeys[keyCode] || false;
     }
 
+    addLights(lights) {
+        var lightsFolder = this.gui.addFolder("Lights");
+        lightsFolder.open();
+        // Add each light, its name and behaviour to folder
+        for(var key in lights) {
+            lightsFolder.add(this.scene.lightStates, key)
+                .name(key)
+                .onChange(boolean => this.scene.lightStates[key] = (boolean === true ? true : false ));
+        }
+    }
   
 }
