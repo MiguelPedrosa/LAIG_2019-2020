@@ -269,15 +269,19 @@ class MySceneGraph {
         const viewID = this.reader.getString(perspectiveNode, 'id');
         if(viewID == null)
             return "Missing ID attribute from a view";
+        if(this.views[viewID] != null) {
+            console.warn("View ID value " + viewID + " is duplicated. Only first is used");
+            return null;
+        }
         
         // Parse atributes near, far and angle. In case missing, assume values
-        var near = this.reader.getString(perspectiveNode, 'near');
+        var near = this.reader.getFloat(perspectiveNode, 'near');
         if(near == null) {
             near = 0.1;
             console.warn("Missing atribute near on node " + viewID + ". Using value " + near);
         }
 
-        var far = this.reader.getString(perspectiveNode, 'far');
+        var far = this.reader.getFloat(perspectiveNode, 'far');
         if(far == null) {
             far = 10;
             console.warn("Missing atribute far on node " + viewID + ". Using value " + far);
@@ -287,7 +291,7 @@ class MySceneGraph {
             far = near + extraDistance;
             console.warn("Error in view " + viewID + ": Far isn't bigger than near. Addind to far extra units: " + extraDistance);
         }
-        var angle = this.reader.getString(perspectiveNode, 'angle');
+        var angle = this.reader.getFloat(perspectiveNode, 'angle');
         if(angle == null) {
             angle = 45;
             console.warn("Missing atribute angle on node " + viewID + ". Assuming an angle of " + angle);
@@ -329,11 +333,7 @@ class MySceneGraph {
             }        
         }
 
-        this.views[viewID] = {
-            type: 'perspective',
-            near: near, far: far, angle: angle,
-            from: from, to: to
-        }
+        this.views[viewID] = new CGFcamera(angle*DEGREE_TO_RAD, near, far, vec3.fromValues(... from), vec3.fromValues(... to));
 
         return null
     }
@@ -343,14 +343,18 @@ class MySceneGraph {
         const viewID = this.reader.getString(orthoNode, 'id');
         if(viewID == null)
             return "Missing ID attribute from a view";
+        if(this.views[viewID] != null) {
+            console.warn("View ID value " + viewID + " is duplicated. Only first is used");
+            return null;
+        }
         
         // Parse atributes near, far, left, right, top and bottom. In case missing, assume values
-        var near = this.reader.getString(orthoNode, 'near');
+        var near = this.reader.getFloat(orthoNode, 'near');
         if(near == null) {
             near = 0.1;
             console.warn("Missing atribute near on node " + viewID + ". Using value " + near);
         }
-        var far = this.reader.getString(orthoNode, 'far');
+        var far = this.reader.getFloat(orthoNode, 'far');
         if(far == null) {
             far = 10;
             console.warn("Missing atribute far on node " + viewID + ". Using value " + far);
@@ -360,22 +364,22 @@ class MySceneGraph {
             far = near + extraDistance;
             console.warn("Error in view " + viewID + ": Far isn't bigger than near. Addind to far extra units: " + extraDistance);
         }
-        var left = this.reader.getString(orthoNode, 'left');
+        var left = this.reader.getFloat(orthoNode, 'left');
         if(left == null) {
             left = 10;
             console.warn("Missing atribute left on node " + viewID + ". Using value " + left);
         }
-        var right = this.reader.getString(orthoNode, 'right');
+        var right = this.reader.getFloat(orthoNode, 'right');
         if(right == null) {
             right = 10;
             console.warn("Missing atribute right on node " + viewID + ". Using value " + right);
         }
-        var top = this.reader.getString(orthoNode, 'top');
+        var top = this.reader.getFloat(orthoNode, 'top');
         if(top == null) {
             top = 10;
             console.warn("Missing atribute top on node " + viewID + ". Using value " + top);
         }
-        var bottom = this.reader.getString(orthoNode, 'bottom');
+        var bottom = this.reader.getFloat(orthoNode, 'bottom');
         if(bottom == null) {
             bottom = 10;
             console.warn("Missing atribute bottom on node " + viewID + ". Using value " + bottom);
@@ -431,11 +435,11 @@ class MySceneGraph {
             }        
         }
 
-        this.views[viewID] = {
-            type: 'ortho',
-            near: near, far: far, left: left, right: right, top: top, bottom: bottom,
-            from: from, to: to, up: up
-        }
+        this.views[viewID] = new CGFcameraOrtho(left, right, bottom, top, near, far,
+            vec3.fromValues(... from),
+            vec3.fromValues(... to),
+            vec3.fromValues(... up));
+
         return null
     }
 
