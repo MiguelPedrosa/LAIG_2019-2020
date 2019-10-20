@@ -14,6 +14,9 @@ class XMLscene extends CGFscene {
         // Altered by the interface. Used to check if light should be on/off
         this.lightStates = [];
 
+        this.currentCameraID = null;
+        this.cameraChanged = false;
+
         this.interface = myinterface;
     }
 
@@ -23,8 +26,6 @@ class XMLscene extends CGFscene {
      */
     init(application) {
         super.init(application);
-
-        this.sceneInited = false;
 
         this.initCameras();
 
@@ -43,9 +44,10 @@ class XMLscene extends CGFscene {
      * Initializes the scene cameras.
      */
     initCameras() {
-        this.camera = new CGFcamera(0.4, 0.1, 500, vec3.fromValues(15, 15, 15), vec3.fromValues(0, 0, 0));
-
+        this.fallBackCamera = new CGFcamera(0.4, 0.1, 500, vec3.fromValues(15, 15, 15), vec3.fromValues(0, 0, 0));
+        this.camera = this.fallBackCamera;
     }
+
     /**
      * Initializes the scene lights with the values read from the XML file.
      */
@@ -96,7 +98,13 @@ class XMLscene extends CGFscene {
         }
     }
 
+    addSceneViews() {
+        this.currentCameraID = this.graph.defaultCameraID;
+        this.camera = this.graph.views[this.currentCameraID] || this.fallBackCamera;
+        this.interface.setActiveCamera(this.camera);
+    }
 
+    
     changeMaterialsMpressed(){
         this.graph.changeMaterialsMpressed();
     }
@@ -110,6 +118,7 @@ class XMLscene extends CGFscene {
      * As loading is asynchronous, this may be called already after the application has started the run loop
      */
     onGraphLoaded() {
+
         this.axis = new CGFaxis(this, this.graph.referenceLength);
 
         this.gl.clearColor(this.graph.background[0], this.graph.background[1], this.graph.background[2], this.graph.background[3]);
@@ -117,8 +126,10 @@ class XMLscene extends CGFscene {
         this.setGlobalAmbientLight(this.graph.ambient[0], this.graph.ambient[1], this.graph.ambient[2], this.graph.ambient[3]);
 
         this.initLights();
-
         this.interface.addLights(this.lightStates);
+        this.interface.addViews(this.graph.views);
+
+        this.addSceneViews();
 
         this.sceneInited = true;
     }
@@ -142,6 +153,12 @@ class XMLscene extends CGFscene {
 
         this.pushMatrix();
         this.axis.display();
+
+        if(this.cameraChanged === true) {
+            this.camera = this.graph.views[this.currentCameraID] || this.fallBackCamera;
+            this.interface.setActiveCamera(this.camera);
+            this.cameraChanged = false;
+        }
 
         if (this.sceneInited) {
 
