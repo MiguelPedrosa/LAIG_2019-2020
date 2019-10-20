@@ -50,12 +50,10 @@ class MyInterface extends CGFinterface {
     addLights(lights) {
         var lightsFolder = this.gui.addFolder("Lights");
         lightsFolder.open();
-        // Add each light, its name and behaviour to folder
         for(var key in lights) {
-            lightsFolder.add(this.scene.lightStates, key)
-                .name(key)
-                .onChange(boolean => this.scene.lightStates[key] = (boolean === true ? true : false ));
+            lightsFolder.add(this.scene.lightStates, key);
         }
+
     }
   
 }
