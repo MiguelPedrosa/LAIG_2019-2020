@@ -1492,6 +1492,10 @@ class MySceneGraph {
 
         this.scene.pushMatrix();
         this.scene.multMatrix(currentNode["transformation"]);
+
+        //Apply currentNode's animation
+        this.animations[currentNode["animationID"]].apply();
+
         for (var i = 0; i < currentNode["children"].length; i++) {
             this.processNode(currentNode["children"][i], currentNodeMaterial, currentNodeTexture, textureS, textureT);
         }

@@ -134,6 +134,11 @@ class XMLscene extends CGFscene {
         this.sceneInited = true;
     }
 
+    update(t) {
+        for(var key in this.graph.animations)
+            this.graph.animations[key].update(t);
+    }
+
     /**
      * Displays the scene.
      */
