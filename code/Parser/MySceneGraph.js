@@ -27,6 +27,8 @@ class MySceneGraph {
 
         this.nodes = [];
 
+        this.animations = [];
+
         this.idRoot = null; // The id of the root element.
 
         this.axisCoords = [];
@@ -232,34 +234,32 @@ class MySceneGraph {
         const children = viewsNode.children;
         var viewCount = 0;
 
-        for(var i = 0; i < children.length; i++) {
-            if(children[i].nodeName === "perspective") {
+        for (var i = 0; i < children.length; i++) {
+            if (children[i].nodeName === "perspective") {
                 // Create perspective camera
-                if(this.createPerspective(children[i]) == null)
+                if (this.createPerspective(children[i]) == null)
                     //Increment view if no problems were found
                     viewCount++;
-            }
-            else if(children[i].nodeName === "ortho") {
+            } else if (children[i].nodeName === "ortho") {
                 // Create ortho camera
-                if(this.createOrtho(children[i]) == null)
+                if (this.createOrtho(children[i]) == null)
                     //Increment view if no problems were found
                     viewCount++;
-            }
-            else {
+            } else {
                 console.log("Camera named " + children[i].nodeName + " wasn't parsed, was instead ignored");
             }
         }
 
-        if(viewCount === 0)
+        if (viewCount === 0)
             return "Error: No camera was parsed"
 
         this.defaultCameraID = this.reader.getString(viewsNode, 'default');
 
-        if(this.defaultCameraID == null || this.views[this.defaultCameraID] == null) {
+        if (this.defaultCameraID == null || this.views[this.defaultCameraID] == null) {
             this.defaultCameraID = Object.keys(this.views)[0];
             console.warn("Missing default view. Assuming default as node with id: " + defaultCameraID);
         }
-        
+
         this.log("Parsed views");
         return null;
     }
@@ -267,32 +267,32 @@ class MySceneGraph {
     createPerspective(perspectiveNode) {
 
         const viewID = this.reader.getString(perspectiveNode, 'id');
-        if(viewID == null)
+        if (viewID == null)
             return "Missing ID attribute from a view";
-        if(this.views[viewID] != null) {
+        if (this.views[viewID] != null) {
             console.warn("View ID value " + viewID + " is duplicated. Only first is used");
             return null;
         }
-        
+
         // Parse atributes near, far and angle. In case missing, assume values
         var near = this.reader.getFloat(perspectiveNode, 'near');
-        if(near == null) {
+        if (near == null) {
             near = 0.1;
             console.warn("Missing atribute near on node " + viewID + ". Using value " + near);
         }
 
         var far = this.reader.getFloat(perspectiveNode, 'far');
-        if(far == null) {
+        if (far == null) {
             far = 10;
             console.warn("Missing atribute far on node " + viewID + ". Using value " + far);
         }
-        if(far <= near) {
+        if (far <= near) {
             const extraDistance = 10;
             far = near + extraDistance;
             console.warn("Error in view " + viewID + ": Far isn't bigger than near. Addind to far extra units: " + extraDistance);
         }
         var angle = this.reader.getFloat(perspectiveNode, 'angle');
-        if(angle == null) {
+        if (angle == null) {
             angle = 45;
             console.warn("Missing atribute angle on node " + viewID + ". Assuming an angle of " + angle);
         }
@@ -300,18 +300,18 @@ class MySceneGraph {
         // Parse child nodes: 'from' and 'to'. In case of error assumes values
         const perspectiveChildren = perspectiveNode.children;
         const perspectiveChildrenNames = [];
-        for(var i = 0; i < perspectiveChildren.length; i++)
+        for (var i = 0; i < perspectiveChildren.length; i++)
             perspectiveChildrenNames.push(perspectiveChildren[i].nodeName);
-        
+
         var from = null;
         const fromIndex = perspectiveChildrenNames.indexOf('from');
-        if(fromIndex == -1) {
+        if (fromIndex == -1) {
             console.warn("Error in view node " + viewID + ": No 'from' node found. Assuming origin.");
             from = [0, 0, 0];
         } else {
             var error = "from perspective node. Node id = " + viewID;
             from = this.parseCoordinates3D(perspectiveChildren[fromIndex], error);
-            if(!Array.isArray(from)) {
+            if (!Array.isArray(from)) {
                 console.warn("Values of view node " + viewID + " were invalid. Assuming origin.");
                 from = [0, 0, 0];
             }
@@ -319,21 +319,21 @@ class MySceneGraph {
 
         var to = null;
         const toIndex = perspectiveChildrenNames.indexOf('to');
-        if(toIndex == -1) {
+        if (toIndex == -1) {
             const distance = 10;
             console.warn("Error in view node 'from' of " + viewID + ": No 'to' node found. Assuming translation from 'from' by " + distance);
             to = [from[0] + distance, from[1] + distance, from[2] + distance];
         } else {
             var error = "to perspective node. Node id = " + viewID;
             to = this.parseCoordinates3D(perspectiveChildren[toIndex], error);
-            if(!Array.isArray(to)) {
+            if (!Array.isArray(to)) {
                 const distance = 10;
                 console.warn("Values of view node 'to' of " + viewID + " were invalid. Assuming distance from near.");
                 to = [from[0] + distance, from[1] + distance, from[2] + distance];
-            }        
+            }
         }
 
-        this.views[viewID] = new CGFcamera(angle*DEGREE_TO_RAD, near, far, vec3.fromValues(... from), vec3.fromValues(... to));
+        this.views[viewID] = new CGFcamera(angle * DEGREE_TO_RAD, near, far, vec3.fromValues(...from), vec3.fromValues(...to));
 
         return null
     }
@@ -341,46 +341,46 @@ class MySceneGraph {
     createOrtho(orthoNode) {
 
         const viewID = this.reader.getString(orthoNode, 'id');
-        if(viewID == null)
+        if (viewID == null)
             return "Missing ID attribute from a view";
-        if(this.views[viewID] != null) {
+        if (this.views[viewID] != null) {
             console.warn("View ID value " + viewID + " is duplicated. Only first is used");
             return null;
         }
-        
+
         // Parse atributes near, far, left, right, top and bottom. In case missing, assume values
         var near = this.reader.getFloat(orthoNode, 'near');
-        if(near == null) {
+        if (near == null) {
             near = 0.1;
             console.warn("Missing atribute near on node " + viewID + ". Using value " + near);
         }
         var far = this.reader.getFloat(orthoNode, 'far');
-        if(far == null) {
+        if (far == null) {
             far = 10;
             console.warn("Missing atribute far on node " + viewID + ". Using value " + far);
         }
-        if(far <= near) {
+        if (far <= near) {
             const extraDistance = 10;
             far = near + extraDistance;
             console.warn("Error in view " + viewID + ": Far isn't bigger than near. Addind to far extra units: " + extraDistance);
         }
         var left = this.reader.getFloat(orthoNode, 'left');
-        if(left == null) {
+        if (left == null) {
             left = 10;
             console.warn("Missing atribute left on node " + viewID + ". Using value " + left);
         }
         var right = this.reader.getFloat(orthoNode, 'right');
-        if(right == null) {
+        if (right == null) {
             right = 10;
             console.warn("Missing atribute right on node " + viewID + ". Using value " + right);
         }
         var top = this.reader.getFloat(orthoNode, 'top');
-        if(top == null) {
+        if (top == null) {
             top = 10;
             console.warn("Missing atribute top on node " + viewID + ". Using value " + top);
         }
         var bottom = this.reader.getFloat(orthoNode, 'bottom');
-        if(bottom == null) {
+        if (bottom == null) {
             bottom = 10;
             console.warn("Missing atribute bottom on node " + viewID + ". Using value " + bottom);
         }
@@ -388,18 +388,18 @@ class MySceneGraph {
         // Parse child nodes: 'from' and 'to'. In case of error assumes values
         const orthoChildren = orthoNode.children;
         const orthoChildrenNames = [];
-        for(var i = 0; i < orthoChildren.length; i++)
+        for (var i = 0; i < orthoChildren.length; i++)
             orthoChildrenNames.push(orthoChildren[i].nodeName);
-        
+
         var from = null;
         const fromIndex = orthoChildrenNames.indexOf('from');
-        if(fromIndex == -1) {
+        if (fromIndex == -1) {
             console.warn("Error in view node " + viewID + ": No 'from' node found. Assuming origin.");
             from = [0, 0, 0];
         } else {
             var error = "from ortho node. Node id = " + viewID;
             from = this.parseCoordinates3D(orthoChildren[fromIndex], error);
-            if(!Array.isArray(from)) {
+            if (!Array.isArray(from)) {
                 console.warn("Values of view node " + viewID + " were invalid. Assuming origin.");
                 from = [0, 0, 0];
             }
@@ -407,38 +407,38 @@ class MySceneGraph {
 
         var to = null;
         const toIndex = orthoChildrenNames.indexOf('to');
-        if(toIndex == -1) {
+        if (toIndex == -1) {
             const distance = 10;
             console.warn("Error in view node 'from' of " + viewID + ": No 'to' node found. Assuming translation from 'from' by " + distance);
             to = [from[0] + distance, from[1] + distance, from[2] + distance];
         } else {
             var error = "to ortho node. Node id = " + viewID;
             to = this.parseCoordinates3D(orthoChildren[toIndex], error);
-            if(!Array.isArray(to)) {
+            if (!Array.isArray(to)) {
                 const distance = 10;
                 console.warn("Values of view node 'to' of " + viewID + " were invalid. Assuming distance from near.");
                 to = [from[0] + distance, from[1] + distance, from[2] + distance];
-            }        
+            }
         }
 
         var up = null;
         const upIndex = orthoChildrenNames.indexOf('up');
-        if(upIndex == -1) {
+        if (upIndex == -1) {
             console.log("Missing value in view node " + viewID + ": No 'up' node found. Assuming default [0, 1, 0]");
             up = [0, 1, 0];
         } else {
             var error = "up ortho node. Node id = " + viewID;
             up = this.parseCoordinates3D(orthoChildren[upIndex], error);
-            if(!Array.isArray(up)) {
+            if (!Array.isArray(up)) {
                 console.warn("Values of view node 'up' of " + viewID + " were invalid. Assuming default [0, 1, 0]");
                 up = [0, 1, 0];
-            }        
+            }
         }
 
         this.views[viewID] = new CGFcameraOrtho(left, right, bottom, top, near, far,
-            vec3.fromValues(... from),
-            vec3.fromValues(... to),
-            vec3.fromValues(... up));
+            vec3.fromValues(...from),
+            vec3.fromValues(...to),
+            vec3.fromValues(...up));
 
         return null
     }
@@ -560,7 +560,7 @@ class MySceneGraph {
             var attenuationLinear = 0;
             var attenuationQuadratric = 0;
             var attenuationIndex = nodeNames.indexOf('attenuation');
-            if(attenuationIndex == -1) {
+            if (attenuationIndex == -1) {
                 console.warn("Missing attenuation node in light " + lightId + ". Assuming linear of 1");
                 attenuationConstant = 0;
                 attenuationLinear = 1;
@@ -569,10 +569,10 @@ class MySceneGraph {
             attenuationConstant = this.reader.getFloat(grandChildren[attenuationIndex], 'constant');
             attenuationLinear = this.reader.getFloat(grandChildren[attenuationIndex], 'linear');
             attenuationQuadratric = this.reader.getFloat(grandChildren[attenuationIndex], 'quadratic');
-            if(attenuationConstant == null || attenuationLinear == null || attenuationQuadratric == null ||
-                !((attenuationConstant > 0 && attenuationConstant <= 1 && attenuationLinear == 0 && attenuationQuadratric == 0)
-                || (attenuationLinear > 0 && attenuationLinear <= 1 && attenuationConstant == 0 && attenuationQuadratric == 0)
-                || (attenuationQuadratric > 0 && attenuationQuadratric <= 1 && attenuationLinear == 0 && attenuationConstant == 0))) {
+            if (attenuationConstant == null || attenuationLinear == null || attenuationQuadratric == null ||
+                !((attenuationConstant > 0 && attenuationConstant <= 1 && attenuationLinear == 0 && attenuationQuadratric == 0) ||
+                    (attenuationLinear > 0 && attenuationLinear <= 1 && attenuationConstant == 0 && attenuationQuadratric == 0) ||
+                    (attenuationQuadratric > 0 && attenuationQuadratric <= 1 && attenuationLinear == 0 && attenuationConstant == 0))) {
 
                 console.warn("Attenuation values on light " + lightId + " were invalid. Assuming 0, 1, 0");
                 attenuationConstant = 0;
@@ -1245,17 +1245,15 @@ class MySceneGraph {
             if (materialID != null) {
                 if (componentID == this.root && materialID == "inherit") {
                     console.warn("Root can't have inherit");
-                }
-                else if (this.materials[materialID] == null && materialID != "inherit") {
+                } else if (this.materials[materialID] == null && materialID != "inherit") {
                     console.warn("Material not defined: " + materialID + " on node " + componentID);
-                }
-                else
+                } else
                     componentMaterials.push(materialID);
             } else {
                 console.warn("ERROR: parsing materials. Missing an id of node " + componentID);
             }
         }
-        if(componentMaterials.length < 1) {
+        if (componentMaterials.length < 1) {
             console.warn("Component " + componentID + " must have at least one material");
             return null;
         }
@@ -1269,15 +1267,15 @@ class MySceneGraph {
 
         if (textureID == null)
             return "ERROR: failed to parse texture";
-        if(textureID !== "inherit" && textureID !== "none") {
+        if (textureID !== "inherit" && textureID !== "none") {
             length_s = this.reader.getFloat(textureNode, 'length_s');
             length_t = this.reader.getFloat(textureNode, 'length_t');
-            if(length_t == null) {
+            if (length_t == null) {
                 const defaultValue = 1.0;
                 console.warn("Missing length_t in texture named " + textureID + ". Assuming " + defaultValue);
                 length_t = defaultValue;
             }
-            if(length_s == null) {
+            if (length_s == null) {
                 const defaultValue = 1.0;
                 console.warn("Missing length_s in texture named " + textureID + ". Assuming " + defaultValue);
                 length_s = defaultValue;
@@ -1291,11 +1289,11 @@ class MySceneGraph {
             console.warn("ERROR: failed to parse texture of id = " + textureID);
             return null;
         }
-        
+
         componentTexture["id"] = textureID;
         componentTexture["length_s"] = length_s;
         componentTexture["length_t"] = length_t;
-        
+
 
         /* Children */
         var childrenChildren = children[childrenIndex].children;
@@ -1447,8 +1445,8 @@ class MySceneGraph {
         if (this.primitives[nodeID] != null) {
             this.drawPrimitive(nodeID, textureS, textureT);
             return null;
-        // If component isn«t found, the program doesn't try to draw it
-        } else if(this.components[nodeID] == null) {
+            // If component isn«t found, the program doesn't try to draw it
+        } else if (this.components[nodeID] == null) {
             console.warn("Couldn't find component named: " + nodeID);
             return null;
         }
@@ -1459,7 +1457,7 @@ class MySceneGraph {
         var currentNodeMaterial = null;
         const materialIndex = currentNode["materialsIndex"];
         if (currentNode["materials"][materialIndex] === "inherit") {
-            if(parentMaterial === "none") {
+            if (parentMaterial === "none") {
                 console.warn("Attempted to apply an inherit material to component " + nodeID + " but parent has value none");
                 return null;
             }
@@ -1471,7 +1469,7 @@ class MySceneGraph {
         // Setup Texture
         var currentNodeTexture = null;
         if (currentNode["texture"]["id"] === "inherit") {
-            if(parentTextureID === "none") {
+            if (parentTextureID === "none") {
                 console.warn("Attempted to apply an inherit texture to component " + nodeID + " but parent has value none");
             } else {
                 currentNodeTexture = parentTextureID;
@@ -1515,9 +1513,27 @@ class MySceneGraph {
             // Increment value
             index++;
             // Value can't exceed total amount of materials
-            if(index >= this.components[key]["materials"].length)
+            if (index >= this.components[key]["materials"].length)
                 index = 0;
             this.components[key]["materialsIndex"] = index;
-            }
+        }
+    }
+
+    parseAnimations(animationsNode) {
+        var child = animationsNode.children;
+
+        for (var i = 0; i < child.length; i++) {
+            this.parseKeyFrameAnimation(child[i])
+        }
+        this.log("Parsed animations");
+        return null;
+    }
+
+    parseKeyFrameAnimation(keyNode) {
+
+        var time = this.reader.getFloat(keyNode, 'time');
+
+        this.animations[id] = new LinearAnimation(this.scene, time);
+
     }
 }
