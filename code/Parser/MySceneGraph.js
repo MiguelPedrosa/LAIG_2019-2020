@@ -1,15 +1,16 @@
 var DEGREE_TO_RAD = Math.PI / 180;
 
 // Order of the groups in the XML document.
-var SCENE_INDEX = 0;
-var VIEWS_INDEX = 1;
-var GLOBALS_INDEX = 2;
-var LIGHTS_INDEX = 3;
-var TEXTURES_INDEX = 4;
-var MATERIALS_INDEX = 5;
+var SCENE_INDEX           = 0;
+var VIEWS_INDEX           = 1;
+var GLOBALS_INDEX         = 2;
+var LIGHTS_INDEX          = 3;
+var TEXTURES_INDEX        = 4;
+var MATERIALS_INDEX       = 5;
 var TRANSFORMATIONS_INDEX = 6;
-var PRIMITIVES_INDEX = 7;
-var COMPONENTS_INDEX = 8;
+var ANIMATIONS_INDEX      = 7;
+var PRIMITIVES_INDEX      = 8;
+var COMPONENTS_INDEX      = 9;
 
 /**
  * MySceneGraph class, representing the scene graph.
@@ -169,6 +170,18 @@ class MySceneGraph {
 
             //Parse transformations block
             if ((error = this.parseTransformations(nodes[index])) != null)
+                return error;
+        }
+
+        // <animations>
+        if ((index = nodeNames.indexOf("animations")) == -1)
+            return "tag <animations> missing";
+        else {
+            if (index != ANIMATIONS_INDEX)
+                this.onXMLMinorError("tag <animations> out of order");
+
+            //Parse animations block
+            if ((error = this.parseAnimations(nodes[index])) != null)
                 return error;
         }
 
@@ -848,7 +861,7 @@ class MySceneGraph {
                         } else {
                             throw "Unexpected axis value. Expected x, y, z; got ${axis}"
                         }
-                        transfMatrix = mat4.scale(transfMatrix, transfMatrix, angle * DEGREE_TO_RAD, put_axis);
+                        transfMatrix = mat4.rotate(transfMatrix, transfMatrix, angle * DEGREE_TO_RAD, put_axis);
                         break;
                 }
             }
@@ -857,6 +870,143 @@ class MySceneGraph {
 
         this.log("Parsed transformations");
         return null;
+    }
+
+    /**
+     * Parses the <animations> block.
+     * @param {animations block element} animationsNode
+     */
+    parseAnimations(animationsNode) {
+        const children = animationsNode.children;
+
+        for (var i = 0; i < children.length; i++) {
+            if (children[i].nodeName != "animation") {
+                this.onXMLMinorError("unknown tag <" + children[i].nodeName + ">");
+                continue;
+            } else {
+                this.parseSingleAnimation(children[i]);
+            }
+        }
+        
+        this.log("Parsed animations");
+        return null;
+    }
+
+    parseSingleAnimation(animationNode) {
+
+        // Get id of the current animation.
+        var animationID = this.reader.getString(animationNode, 'id');
+        if (animationID == null) {
+            console.warn("no ID defined for animation");
+            return;
+        }
+        
+        // Checks for repeated IDs.
+        if (this.animations[animationID] != null) {
+            console.warn("ID must be unique for each transformation (conflict: ID = " + animationID + ")");
+            return;
+        }
+
+        const keyframesNode = animationNode.children;
+        var keyFrames = []; //Variable to store all processed keyframes
+        for(let i = 0; i < keyframesNode.length; i++) {
+            const currentKeyFrame = keyframesNode[i];
+            
+            // Parse time
+            const time = this.reader.getFloat(currentKeyFrame, 'instant');
+            if(time == null) {
+                console.warn("Missing instant atribute in animation node: " + animationID);
+                continue;
+            }
+            if(time <= 0) {
+                console.warn("Instant atribute in animation node: " + animationID + 
+                    " was smaller or equal to 0. Couldn't be parsed");
+                continue;
+            }
+            // Boolean to check if timestamp already exists, done this way
+            // since there isn't a way to skip/continue an outer loop
+            var isRepeted = false;
+            for(var k in keyFrames) {
+                if(k.time === time) {
+                    console.warn("Animation node: " + animationID + 
+                        " has repeted instants. Only first will be parsed");
+                    isRepeted = true;
+                }
+            }
+            if(isRepeted === true) continue;
+
+            // Parse transformations
+            var transformationMatrix = mat4.create();
+            const keyTransformations = currentKeyFrame.children;
+            // Order expected is: translate, rotate and finally scale
+            if(keyTransformations.length != 3) {
+                console.warn("Key frame " + animationID + " at instant " + time + 
+                    " contains wrong amount of transformations. Won't be parsed");
+                continue;
+            }
+            // Parse transformation: translate
+            if(keyTransformations[0].nodeName !== 'translate') {
+                console.warn("First transformation node of keyframe " + time +
+                    " of node " + animationID + " isn't translate. Assumed no translation");
+            } else {
+                var coordinates = this.parseCoordinates3D(keyTransformations[0], "translate transformation for ID " + animationID);
+                if (!Array.isArray(coordinates)) {
+                    console.warn("Couldn't parse translate coordenates of keyframe " + time + 
+                        " of node " + animationID + ". No translation assumed");
+                } else {
+                    transformationMatrix = mat4.translate(transformationMatrix, transformationMatrix, coordinates);
+                }
+            }
+            // Parse transformation: scale
+            if(keyTransformations[1].nodeName !== 'scale') {
+                console.warn("First transformation node of keyframe " + time +
+                    " of node " + animationID + " isn't scale. Assumed no translation");
+            } else {
+                var coordinates = this.parseCoordinates3D(keyTransformations[1], "scale transformation for ID " + animationID);
+                if (!Array.isArray(coordinates)) {
+                    console.warn("Couldn't parse scale coordenates of keyframe " + time + 
+                        " of node " + animationID + ". No translation assumed");
+                } else {
+                    transformationMatrix = mat4.scale(transformationMatrix, transformationMatrix, coordinates);
+                }
+            }
+            // Parse transformation: rotate
+            if(keyTransformations[2].nodeName !== 'rotate') {
+                console.warn("First transformation node of keyframe " + time +
+                    " of node " + animationID + " isn't rotate. Assumed no translation");
+            } else {
+                let rotationX = this.reader.getFloat(keyTransformations[2], 'angle_x');
+                if(rotationX == null || rotationX < 0 || rotationX > 360) {
+                    console.warn("RotationX of keyframe " + time + " of node " + animationID + 
+                        " had invalid value. Assumed no rotation");
+                    rotationX = 0;
+                }
+                mat4.rotate(transformationMatrix, transformationMatrix, rotationX * DEGREE_TO_RAD, [1, 0, 0]);
+                let rotationY = this.reader.getFloat(keyTransformations[2], 'angle_y');
+                if(rotationY == null || rotationY < 0 || rotationY > 360) {
+                    console.warn("RotationY of keyframe " + time + " of node " + animationID + 
+                        " had invalid value. Assumed no rotation");
+                } else {
+                    mat4.rotate(transformationMatrix, transformationMatrix, rotationY * DEGREE_TO_RAD, [0, 1, 0]);
+                }
+                let rotationZ = this.reader.getFloat(keyTransformations[2], 'angle_z');
+                if(rotationZ == null || rotationZ < 0 || rotationZ > 360) {
+                    console.warn("RotationZ of keyframe " + time + " of node " + animationID + 
+                        " had invalid value. Assumed no rotation");
+                } else {
+                    mat4.rotate(transformationMatrix, transformationMatrix, rotationZ * DEGREE_TO_RAD, [0, 0, 1]);
+                }
+            }
+            /* Increase index by one because id=0 has to be an identity matrix
+            ** that is inserted when constructor is called 
+            */
+            keyFrames[i +1] = {
+                time: time,
+                matrix: transformationMatrix
+            }
+        }
+
+        this.animations[animationID] = new KeyFrameAnimation(this.scene, keyFrames);
     }
 
     /**
@@ -1149,6 +1299,7 @@ class MySceneGraph {
             console.warn("node " + componentID + " does not contain a transformation node");
             return null;
         }
+        var animationIndex = nodeNames.indexOf("animationref");
         var materialsIndex = nodeNames.indexOf("materials");
         if (materialsIndex == -1) {
             console.warn("node " + componentID + " does not contain a material node");
@@ -1167,7 +1318,6 @@ class MySceneGraph {
 
         /* Transformations */
         var transformationChildren = children[transformationIndex].children;
-
         for (var j = 0; j < transformationChildren.length; j++) {
             // VERIFY IF TRANSFORMATION IS "transformationref"
             if (transformationChildren[j].nodeName == "transformationref") {
@@ -1238,6 +1388,16 @@ class MySceneGraph {
             }
         }
 
+        /* Animation */
+        var animationID = null;
+        if(animationIndex != -1) {
+            var animation = children[animationIndex];
+            animationID = this.reader.getString(animation, 'id');
+            if(animationID == null) {
+                console.warn("Missing animation ID from component " + componentID);
+            }
+        }
+        
         /* Materials */
         var materialChildren = children[materialsIndex].children;
         for (var j = 0; j < materialChildren.length; j++) {
@@ -1312,6 +1472,7 @@ class MySceneGraph {
 
         var newComponent = {
             transformation: transformationMat,
+            animationID: animationID,
             materials: componentMaterials,
             materialsIndex: 0,
             texture: componentTexture,
@@ -1492,7 +1653,8 @@ class MySceneGraph {
         this.scene.multMatrix(currentNode["transformation"]);
 
         //Apply currentNode's animation
-        this.animations[currentNode["animationID"]].apply();
+        if(currentNode["animationID"] != null)
+            this.animations[currentNode["animationID"]].apply();
 
         for (var i = 0; i < currentNode["children"].length; i++) {
             this.processNode(currentNode["children"][i], currentNodeMaterial, currentNodeTexture, textureS, textureT);
@@ -1519,21 +1681,4 @@ class MySceneGraph {
         }
     }
 
-    parseAnimations(animationsNode) {
-        var child = animationsNode.children;
-
-        for (var i = 0; i < child.length; i++) {
-            this.parseKeyFrameAnimation(child[i])
-        }
-        this.log("Parsed animations");
-        return null;
-    }
-
-    parseKeyFrameAnimation(keyNode) {
-
-        var time = this.reader.getFloat(keyNode, 'time');
-
-        this.animations[id] = new LinearAnimation(this.scene, time);
-
-    }
 }
