@@ -14,7 +14,8 @@ class KeyFrameAnimation extends Animation {
         this.keyframes = keyframes;
         this.currentFrame = 1;
 
-        var identityMatrix; mat4.identity(identityMatrix);
+        var identityMatrix = mat4.create();
+        mat4.identity(identityMatrix);
         this.keyframes[0] = {
             time: 0,
             matrix: identityMatrix
@@ -22,7 +23,7 @@ class KeyFrameAnimation extends Animation {
 
         // Store and update animation matrix each time
         // this.update() is called
-        this.currentAnimationMatrix = null;
+        this.currentAnimationMatrix = mat4.create();
         this.currentAnimationMatrixOffset = this.keyframes[this.currentFrame - 1].matrix;
 
         this.firstTimeBool = true;
@@ -37,6 +38,7 @@ class KeyFrameAnimation extends Animation {
     */
     update(t) {
 
+        /* Once animation is done, no point in continuously trying to alter the matrix */
         if(this.isAnimationDone === true) {
             return;
         }
@@ -46,19 +48,24 @@ class KeyFrameAnimation extends Animation {
             this.firstTimeBool = false;
         }
 
-        const timeInterval = t - this.firstTime;
-        const incrementMatrix = (this.keyframes[this.currentFrame].matrix - this.keyframes[this.currentFrame -1].matrix)
-            / (this.keyframes[this.currentFrame].time - this.keyframes[this.currentFrame -1].time);
+        /* Helper lambas that reduce the amont of code*/
+        const getMatrix = (pos) => this.keyframes[pos].matrix;
+        const getTime = (pos) => this.keyframes[pos].time;
+
+        const timeInterval = (t - this.firstTime) / 1000;
+        console.log("Interval = " + timeInterval);
+        const incrementMatrix = (getMatrix(this.currentFrame) - getMatrix(this.currentFrame -1))
+            / (getTime(this.currentFrame) - getTime(this.currentFrame -1));
 
         this.currentAnimationMatrix = this.currentAnimationMatrixOffset 
-            + (timeInterval- this.keyframes[this.currentFrame -1].time) * incrementMatrix;
+            + (timeInterval - getTime(this.currentFrame -1)) * incrementMatrix;
 
-        if(timeInterval >= this.keyframes[this.currentFrame].time) {
-            this.currentAnimationMatrixOffset = this.keyframes[this.currentFrame].matrix;
+        if(timeInterval >= getTime(this.currentFrame)) {
+            this.currentAnimationMatrixOffset = getMatrix(this.currentFrame);
             this.currentFrame++;
             if(this.currentFrame >= this.keyframes.length) {
                 this.isAnimationDone = true;
-                this.currentAnimationMatrix = this.keyframes[this.keyframes.length -1].matrix;
+                this.currentAnimationMatrix = getMatrix(this.keyframes.length -1);
             }
         }
     }
