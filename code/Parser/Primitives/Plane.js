@@ -1,5 +1,5 @@
 class Plane extends CGFobject {
-    constructor(scene) {
+    constructor(scene, uDiv, vDiv) {
         super(scene);
     }
 
