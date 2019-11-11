@@ -47,7 +47,7 @@ class KeyFrameAnimation extends Animation {
         if(this.firstTimeBool === true) {
             this.firstTime = t;
             this.firstTimeBool = false;
-            return;
+//            return;
         }
 
         /* Helper lambas that reduce the amont of code*/
@@ -57,34 +57,39 @@ class KeyFrameAnimation extends Animation {
         const getScaleAt = (pos, key) => this.keyframes[pos].scale[key];
 
         const timeInterval = (t - this.firstTime) / 1000;
-        console.log("Interval = " + timeInterval);
         
         this.currentAnimationMatrix = mat4.create();
         const timeFrame = getTime(this.currentFrame) - getTime(this.currentFrame -1);
         const incrementTranslation = [
-            (getTranslationAt(this.currentFrame, 0) - getTranslationAt(this.currentFrame -1, 0)) / timeFrame * timeInterval + getTranslationAt(this.currentFrame -1, 0),
-            (getTranslationAt(this.currentFrame, 1) - getTranslationAt(this.currentFrame -1, 1)) / timeFrame * timeInterval + getTranslationAt(this.currentFrame -1, 1),
-            (getTranslationAt(this.currentFrame, 2) - getTranslationAt(this.currentFrame -1, 2)) / timeFrame * timeInterval + getTranslationAt(this.currentFrame -1, 2),
+            (getTranslationAt(this.currentFrame, 0) - getTranslationAt(this.currentFrame -1, 0))
+                / timeFrame * (timeInterval - getTime(this.currentFrame -1)) + getTranslationAt(this.currentFrame -1, 0),
+            (getTranslationAt(this.currentFrame, 1) - getTranslationAt(this.currentFrame -1, 1))
+                / timeFrame * (timeInterval - getTime(this.currentFrame -1)) + getTranslationAt(this.currentFrame -1, 1),
+            (getTranslationAt(this.currentFrame, 2) - getTranslationAt(this.currentFrame -1, 2))
+                / timeFrame * (timeInterval - getTime(this.currentFrame -1)) + getTranslationAt(this.currentFrame -1, 2),
         ];
         const incrementRotation = [
-            (getRotationAt(this.currentFrame, 0) - getRotationAt(this.currentFrame -1, 0)) / timeFrame * timeInterval + getRotationAt(this.currentFrame -1, 0),
-            (getRotationAt(this.currentFrame, 1) - getRotationAt(this.currentFrame -1, 1)) / timeFrame * timeInterval + getRotationAt(this.currentFrame -1, 1),
-            (getRotationAt(this.currentFrame, 2) - getRotationAt(this.currentFrame -1, 2)) / timeFrame * timeInterval + getRotationAt(this.currentFrame -1, 2),
+            (getRotationAt(this.currentFrame, 0) - getRotationAt(this.currentFrame -1, 0)) 
+                / timeFrame * (timeInterval - getTime(this.currentFrame -1)) + getRotationAt(this.currentFrame -1, 0),
+            (getRotationAt(this.currentFrame, 1) - getRotationAt(this.currentFrame -1, 1)) 
+                / timeFrame * (timeInterval - getTime(this.currentFrame -1)) + getRotationAt(this.currentFrame -1, 1),
+            (getRotationAt(this.currentFrame, 2) - getRotationAt(this.currentFrame -1, 2)) 
+                / timeFrame * (timeInterval - getTime(this.currentFrame -1)) + getRotationAt(this.currentFrame -1, 2),
         ];
-        console.log("incrementRotation = " + incrementRotation);
         const incrementScale = [
-            (getScaleAt(this.currentFrame, 0) - getScaleAt(this.currentFrame -1, 0) ) / timeFrame * timeInterval + getScaleAt(this.currentFrame -1, 0),
-            (getScaleAt(this.currentFrame, 1) - getScaleAt(this.currentFrame -1, 1) ) / timeFrame * timeInterval + getScaleAt(this.currentFrame -1, 1),
-            (getScaleAt(this.currentFrame, 2) - getScaleAt(this.currentFrame -1, 2) ) / timeFrame * timeInterval + getScaleAt(this.currentFrame -1, 2),
+            (getScaleAt(this.currentFrame, 0) - getScaleAt(this.currentFrame -1, 0) )
+                / timeFrame * (timeInterval - getTime(this.currentFrame -1)) + getScaleAt(this.currentFrame -1, 0),
+            (getScaleAt(this.currentFrame, 1) - getScaleAt(this.currentFrame -1, 1) )
+                / timeFrame * (timeInterval - getTime(this.currentFrame -1)) + getScaleAt(this.currentFrame -1, 1),
+            (getScaleAt(this.currentFrame, 2) - getScaleAt(this.currentFrame -1, 2) )
+                / timeFrame * (timeInterval - getTime(this.currentFrame -1)) + getScaleAt(this.currentFrame -1, 2),
         ];
         
-        mat4.rotateY(this.currentAnimationMatrix, this.currentAnimationMatrix, incrementRotation[1]);
-/*
-        mat4.rotateX(this.currentAnimationMatrix, this.currentAnimationMatrix, incrementRotation[0]);
-        mat4.rotateZ(this.currentAnimationMatrix, this.currentAnimationMatrix, incrementRotation[2]);
         mat4.translate(this.currentAnimationMatrix, this.currentAnimationMatrix, vec3.fromValues(... incrementTranslation));
+        mat4.rotateX(this.currentAnimationMatrix, this.currentAnimationMatrix, incrementRotation[0]);
+        mat4.rotateY(this.currentAnimationMatrix, this.currentAnimationMatrix, incrementRotation[1]);
+        mat4.rotateZ(this.currentAnimationMatrix, this.currentAnimationMatrix, incrementRotation[2]);
         mat4.scale(this.currentAnimationMatrix, this.currentAnimationMatrix, vec3.fromValues(... incrementScale));
-*/
         
         if(timeInterval >= getTime(this.currentFrame)) {
             this.currentFrame++;
