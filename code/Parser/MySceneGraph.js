@@ -983,21 +983,21 @@ class MySceneGraph {
                 rotationY = 0;
                 rotationZ = 0;
             } else {
-                let rotationX = this.reader.getFloat(keyTransformations[2], 'angle_x');
+                rotationX = this.reader.getFloat(keyTransformations[2], 'angle_x');
                 if(rotationX == null || rotationX < 0 || rotationX > 360) {
                     console.warn("RotationX of keyframe " + time + " of node " + animationID + 
                         " had invalid value. Assumed no rotation");
                     rotationX = 0;
                 }
                 rotationX *= DEGREE_TO_RAD;
-                let rotationY = this.reader.getFloat(keyTransformations[2], 'angle_y');
+                rotationY = this.reader.getFloat(keyTransformations[2], 'angle_y');
                 if(rotationY == null || rotationY < 0 || rotationY > 360) {
                     console.warn("RotationY of keyframe " + time + " of node " + animationID + 
                         " had invalid value. Assumed no rotation");
                     rotationY = 0;
                 }
                 rotationY *= DEGREE_TO_RAD;
-                let rotationZ = this.reader.getFloat(keyTransformations[2], 'angle_z');
+                rotationZ = this.reader.getFloat(keyTransformations[2], 'angle_z');
                 if(rotationZ == null || rotationZ < 0 || rotationZ > 360) {
                     console.warn("RotationZ of keyframe " + time + " of node " + animationID + 
                         " had invalid value. Assumed no rotation");
