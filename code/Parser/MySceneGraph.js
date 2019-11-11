@@ -936,7 +936,9 @@ class MySceneGraph {
             if(isRepeted === true) continue;
 
             // Parse transformations
-            var transformationMatrix = mat4.create();
+            var translationValues  = [];
+            var rotationValues  = [];
+            var scaleValues  = [];
             const keyTransformations = currentKeyFrame.children;
             // Order expected is: translate, rotate and finally scale
             if(keyTransformations.length != 3) {
@@ -948,32 +950,38 @@ class MySceneGraph {
             if(keyTransformations[0].nodeName !== 'translate') {
                 console.warn("First transformation node of keyframe " + time +
                     " of node " + animationID + " isn't translate. Assumed no translation");
+                translationValues = [0, 0, 0];
             } else {
-                var coordinates = this.parseCoordinates3D(keyTransformations[0], "translate transformation for ID " + animationID);
-                if (!Array.isArray(coordinates)) {
+                translationValues = this.parseCoordinates3D(keyTransformations[0], "translate transformation for ID " + animationID);
+                if (!Array.isArray(translationValues)) {
                     console.warn("Couldn't parse translate coordenates of keyframe " + time + 
                         " of node " + animationID + ". No translation assumed");
-                } else {
-                    transformationMatrix = mat4.translate(transformationMatrix, transformationMatrix, coordinates);
+                    translationValues = [0, 0, 0];
                 }
             }
             // Parse transformation: scale
             if(keyTransformations[1].nodeName !== 'scale') {
                 console.warn("First transformation node of keyframe " + time +
-                    " of node " + animationID + " isn't scale. Assumed no translation");
+                    " of node " + animationID + " isn't scale. Assumed no scale");
+                scaleValues = [1, 1, 1];
             } else {
-                var coordinates = this.parseCoordinates3D(keyTransformations[1], "scale transformation for ID " + animationID);
-                if (!Array.isArray(coordinates)) {
+                scaleValues = this.parseCoordinates3D(keyTransformations[1], "scale transformation for ID " + animationID);
+                if (!Array.isArray(scaleValues)) {
                     console.warn("Couldn't parse scale coordenates of keyframe " + time + 
                         " of node " + animationID + ". No translation assumed");
-                } else {
-                    transformationMatrix = mat4.scale(transformationMatrix, transformationMatrix, coordinates);
+                    scaleValues = [1, 1, 1]; 
                 }
             }
             // Parse transformation: rotate
+            var rotationX = null;
+            var rotationY = null;
+            var rotationZ = null;
             if(keyTransformations[2].nodeName !== 'rotate') {
                 console.warn("First transformation node of keyframe " + time +
                     " of node " + animationID + " isn't rotate. Assumed no translation");
+                rotationX = 0;
+                rotationY = 0;
+                rotationZ = 0;
             } else {
                 let rotationX = this.reader.getFloat(keyTransformations[2], 'angle_x');
                 if(rotationX == null || rotationX < 0 || rotationX > 360) {
@@ -981,28 +989,30 @@ class MySceneGraph {
                         " had invalid value. Assumed no rotation");
                     rotationX = 0;
                 }
-                mat4.rotate(transformationMatrix, transformationMatrix, rotationX * DEGREE_TO_RAD, [1, 0, 0]);
+                rotationX *= DEGREE_TO_RAD;
                 let rotationY = this.reader.getFloat(keyTransformations[2], 'angle_y');
                 if(rotationY == null || rotationY < 0 || rotationY > 360) {
                     console.warn("RotationY of keyframe " + time + " of node " + animationID + 
                         " had invalid value. Assumed no rotation");
-                } else {
-                    mat4.rotate(transformationMatrix, transformationMatrix, rotationY * DEGREE_TO_RAD, [0, 1, 0]);
+                    rotationY = 0;
                 }
+                rotationY *= DEGREE_TO_RAD;
                 let rotationZ = this.reader.getFloat(keyTransformations[2], 'angle_z');
                 if(rotationZ == null || rotationZ < 0 || rotationZ > 360) {
                     console.warn("RotationZ of keyframe " + time + " of node " + animationID + 
                         " had invalid value. Assumed no rotation");
-                } else {
-                    mat4.rotate(transformationMatrix, transformationMatrix, rotationZ * DEGREE_TO_RAD, [0, 0, 1]);
+                    rotationZ = 0;
                 }
+                rotationZ *= DEGREE_TO_RAD;
             }
-            /* Increase index by one because id=0 has to be an identity matrix
-            ** that is inserted when constructor is called 
-            */
+            rotationValues = [rotationX, rotationY, rotationZ];
+            console.log("ID(" + animationID + ") Rot = " + rotationValues)
+
             keyFrames[i +1] = {
                 time: time,
-                matrix: transformationMatrix
+                translation: translationValues,
+                rotation: rotationValues,
+                scale: scaleValues
             }
         }
 
