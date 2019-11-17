@@ -1,16 +1,16 @@
 var DEGREE_TO_RAD = Math.PI / 180;
 
 // Order of the groups in the XML document.
-var SCENE_INDEX           = 0;
-var VIEWS_INDEX           = 1;
-var GLOBALS_INDEX         = 2;
-var LIGHTS_INDEX          = 3;
-var TEXTURES_INDEX        = 4;
-var MATERIALS_INDEX       = 5;
+var SCENE_INDEX = 0;
+var VIEWS_INDEX = 1;
+var GLOBALS_INDEX = 2;
+var LIGHTS_INDEX = 3;
+var TEXTURES_INDEX = 4;
+var MATERIALS_INDEX = 5;
 var TRANSFORMATIONS_INDEX = 6;
-var ANIMATIONS_INDEX      = 7;
-var PRIMITIVES_INDEX      = 8;
-var COMPONENTS_INDEX      = 9;
+var ANIMATIONS_INDEX = 7;
+var PRIMITIVES_INDEX = 8;
+var COMPONENTS_INDEX = 9;
 
 /**
  * MySceneGraph class, representing the scene graph.
@@ -887,7 +887,7 @@ class MySceneGraph {
                 this.parseSingleAnimation(children[i]);
             }
         }
-        
+
         this.log("Parsed animations");
         return null;
     }
@@ -900,7 +900,7 @@ class MySceneGraph {
             console.warn("no ID defined for animation");
             return;
         }
-        
+
         // Checks for repeated IDs.
         if (this.animations[animationID] != null) {
             console.warn("ID must be unique for each transformation (conflict: ID = " + animationID + ")");
@@ -909,74 +909,74 @@ class MySceneGraph {
 
         const keyframesNode = animationNode.children;
         var keyFrames = []; //Variable to store all processed keyframes
-        for(let i = 0; i < keyframesNode.length; i++) {
+        for (let i = 0; i < keyframesNode.length; i++) {
             const currentKeyFrame = keyframesNode[i];
-            
+
             // Parse time
             const time = this.reader.getFloat(currentKeyFrame, 'instant');
-            if(time == null) {
+            if (time == null) {
                 console.warn("Missing instant atribute in animation node: " + animationID);
                 continue;
             }
-            if(time <= 0) {
-                console.warn("Instant atribute in animation node: " + animationID + 
+            if (time <= 0) {
+                console.warn("Instant atribute in animation node: " + animationID +
                     " was smaller or equal to 0. Couldn't be parsed");
                 continue;
             }
             // Boolean to check if timestamp already exists, done this way
             // since there isn't a way to skip/continue an outer loop
             var isRepeted = false;
-            for(var k in keyFrames) {
-                if(k.time === time) {
-                    console.warn("Animation node: " + animationID + 
+            for (var k in keyFrames) {
+                if (k.time === time) {
+                    console.warn("Animation node: " + animationID +
                         " has repeted instants. Only first will be parsed");
                     isRepeted = true;
                 }
             }
-            if(isRepeted === true) continue;
+            if (isRepeted === true) continue;
 
             // Parse transformations
-            var translationValues  = [];
-            var rotationValues  = [];
-            var scaleValues  = [];
+            var translationValues = [];
+            var rotationValues = [];
+            var scaleValues = [];
             const keyTransformations = currentKeyFrame.children;
             // Order expected is: translate, rotate and finally scale
-            if(keyTransformations.length != 3) {
-                console.warn("Key frame " + animationID + " at instant " + time + 
+            if (keyTransformations.length != 3) {
+                console.warn("Key frame " + animationID + " at instant " + time +
                     " contains wrong amount of transformations. Won't be parsed");
                 continue;
             }
             // Parse transformation: translate
-            if(keyTransformations[0].nodeName !== 'translate') {
+            if (keyTransformations[0].nodeName !== 'translate') {
                 console.warn("First transformation node of keyframe " + time +
                     " of node " + animationID + " isn't translate. Assumed no translation");
                 translationValues = [0, 0, 0];
             } else {
                 translationValues = this.parseCoordinates3D(keyTransformations[0], "translate transformation for ID " + animationID);
                 if (!Array.isArray(translationValues)) {
-                    console.warn("Couldn't parse translate coordenates of keyframe " + time + 
+                    console.warn("Couldn't parse translate coordenates of keyframe " + time +
                         " of node " + animationID + ". No translation assumed");
                     translationValues = [0, 0, 0];
                 }
             }
             // Parse transformation: scale
-            if(keyTransformations[1].nodeName !== 'scale') {
+            if (keyTransformations[1].nodeName !== 'scale') {
                 console.warn("First transformation node of keyframe " + time +
                     " of node " + animationID + " isn't scale. Assumed no scale");
                 scaleValues = [1, 1, 1];
             } else {
                 scaleValues = this.parseCoordinates3D(keyTransformations[1], "scale transformation for ID " + animationID);
                 if (!Array.isArray(scaleValues)) {
-                    console.warn("Couldn't parse scale coordenates of keyframe " + time + 
+                    console.warn("Couldn't parse scale coordenates of keyframe " + time +
                         " of node " + animationID + ". No translation assumed");
-                    scaleValues = [1, 1, 1]; 
+                    scaleValues = [1, 1, 1];
                 }
             }
             // Parse transformation: rotate
             var rotationX = null;
             var rotationY = null;
             var rotationZ = null;
-            if(keyTransformations[2].nodeName !== 'rotate') {
+            if (keyTransformations[2].nodeName !== 'rotate') {
                 console.warn("First transformation node of keyframe " + time +
                     " of node " + animationID + " isn't rotate. Assumed no translation");
                 rotationX = 0;
@@ -984,22 +984,22 @@ class MySceneGraph {
                 rotationZ = 0;
             } else {
                 rotationX = this.reader.getFloat(keyTransformations[2], 'angle_x');
-                if(rotationX == null || rotationX < 0 || rotationX > 360) {
-                    console.warn("RotationX of keyframe " + time + " of node " + animationID + 
+                if (rotationX == null || rotationX < 0 || rotationX > 360) {
+                    console.warn("RotationX of keyframe " + time + " of node " + animationID +
                         " had invalid value. Assumed no rotation");
                     rotationX = 0;
                 }
                 rotationX *= DEGREE_TO_RAD;
                 rotationY = this.reader.getFloat(keyTransformations[2], 'angle_y');
-                if(rotationY == null || rotationY < 0 || rotationY > 360) {
-                    console.warn("RotationY of keyframe " + time + " of node " + animationID + 
+                if (rotationY == null || rotationY < 0 || rotationY > 360) {
+                    console.warn("RotationY of keyframe " + time + " of node " + animationID +
                         " had invalid value. Assumed no rotation");
                     rotationY = 0;
                 }
                 rotationY *= DEGREE_TO_RAD;
                 rotationZ = this.reader.getFloat(keyTransformations[2], 'angle_z');
-                if(rotationZ == null || rotationZ < 0 || rotationZ > 360) {
-                    console.warn("RotationZ of keyframe " + time + " of node " + animationID + 
+                if (rotationZ == null || rotationZ < 0 || rotationZ > 360) {
+                    console.warn("RotationZ of keyframe " + time + " of node " + animationID +
                         " had invalid value. Assumed no rotation");
                     rotationZ = 0;
                 }
@@ -1008,7 +1008,7 @@ class MySceneGraph {
             rotationValues = [rotationX, rotationY, rotationZ];
             console.log("ID(" + animationID + ") Rot = " + rotationValues)
 
-            keyFrames[i +1] = {
+            keyFrames[i + 1] = {
                 time: time,
                 translation: translationValues,
                 rotation: rotationValues,
@@ -1400,14 +1400,14 @@ class MySceneGraph {
 
         /* Animation */
         var animationID = null;
-        if(animationIndex != -1) {
+        if (animationIndex != -1) {
             var animation = children[animationIndex];
             animationID = this.reader.getString(animation, 'id');
-            if(animationID == null) {
+            if (animationID == null) {
                 console.warn("Missing animation ID from component " + componentID);
             }
         }
-        
+
         /* Materials */
         var materialChildren = children[materialsIndex].children;
         for (var j = 0; j < materialChildren.length; j++) {
@@ -1663,7 +1663,7 @@ class MySceneGraph {
         this.scene.multMatrix(currentNode["transformation"]);
 
         //Apply currentNode's animation
-        if(currentNode["animationID"] != null)
+        if (currentNode["animationID"] != null)
             this.animations[currentNode["animationID"]].apply();
 
         for (var i = 0; i < currentNode["children"].length; i++) {
