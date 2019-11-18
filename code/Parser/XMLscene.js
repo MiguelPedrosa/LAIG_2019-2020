@@ -38,6 +38,8 @@ class XMLscene extends CGFscene {
 
         this.axis = new CGFaxis(this);
         this.setUpdatePeriod(100);
+        this.RTTtexture = new CGFtextureRTT(this,this.gl.canvas.width,this.gl.canvas.height);
+        this.securityCamera = new MySecurityCamera(this);
     }
 
     /**
@@ -47,6 +49,7 @@ class XMLscene extends CGFscene {
         this.fallBackCamera = new CGFcamera(0.4, 0.1, 500, vec3.fromValues(15, 15, 15), vec3.fromValues(0, 0, 0));
         this.camera = this.fallBackCamera;
     }
+
 
     /**
      * Initializes the scene lights with the values read from the XML file.
@@ -142,7 +145,7 @@ class XMLscene extends CGFscene {
     /**
      * Displays the scene.
      */
-    display() {
+    render() {
         // ---- BEGIN Background, camera and axis setup
 
         // Clear image and depth buffer everytime we update the scene
@@ -193,5 +196,16 @@ class XMLscene extends CGFscene {
 
         this.popMatrix();
         // ---- END Background, camera and axis setup
+    }
+
+    display() {
+        this.RTTtexture.attachToFrameBuffer();
+        this.render();
+        this.RTTtexture.detachFromFrameBuffer();
+        this.render();
+        this.gl.disable(this.gl.DEPTH_TEST);
+        this.securityCamera.display();
+        this.gl.enable(this.gl.DEPTH_TEST);
+
     }
 }
