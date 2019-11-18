@@ -1,5 +1,5 @@
 class Patch extends CGFobject {
-    constructor(scene, nPointsU, nPointsV, uDiv, vDiv, points) {
+    constructor(scene, primitiveId, nPointsU, nPointsV, npartsU, npartsV, points) {
         super(scene);
         this.scene = scene;
 
@@ -12,7 +12,7 @@ class Patch extends CGFobject {
             this.controlPoints
         );
 
-        this.nurb = new CGFnurbsObject(this.scene, uDiv, vDiv, surface );
+        this.nurb = new CGFnurbsObject(this.scene, npartsU, npartsV, surface);
     }
 
     calculateControlVertexes(nPointsU, nPointsV, points) {
