@@ -1379,6 +1379,7 @@ class MySceneGraph {
             length_t: 0
         }
         var componentChildren = [];
+        var primitiveChildren = [];
 
         // Get id of the current component.
         var componentID = this.reader.getString(componentNode, 'id');
@@ -1569,8 +1570,11 @@ class MySceneGraph {
                 console.warn("Couldn't read child id of component " + componentID);
                 continue;
             }
-            if (childrenChildren[j].nodeName === "componentref" || childrenChildren[j].nodeName === "primitiveref") {
+            if (childrenChildren[j].nodeName === "componentref") {
                 componentChildren.push(childID);
+            }
+            else if(childrenChildren[j].nodeName === "primitiveref") {
+                primitiveChildren.push(childID);
             } else {
                 console.warn("Node name of component " + componentID + " couldn't be identified: " + childrenChildren[j].nodeName);
             }
@@ -1582,7 +1586,8 @@ class MySceneGraph {
             materials: componentMaterials,
             materialsIndex: 0,
             texture: componentTexture,
-            children: componentChildren
+            componentChildren: componentChildren,
+            primitiveChildren: primitiveChildren,
         };
         this.components[componentID] = newComponent;
     }
@@ -1707,13 +1712,8 @@ class MySceneGraph {
 
 
     processNode(nodeID, parentMaterial, parentTextureID, textureS, textureT) {
-        // Check if current node is a primitive.
-        // If it is, draw it. Else recursive call its' children
-        if (this.primitives[nodeID] != null) {
-            this.drawPrimitive(nodeID, textureS, textureT);
-            return null;
-            // If component isn«t found, the program doesn't try to draw it
-        } else if (this.components[nodeID] == null) {
+        
+        if (this.components[nodeID] == null) {
             console.warn("Couldn't find component named: " + nodeID);
             return null;
         }
@@ -1762,11 +1762,20 @@ class MySceneGraph {
         if (currentNode["animationID"] != null)
             this.animations[currentNode["animationID"]].apply();
 
-        for (var i = 0; i < currentNode["children"].length; i++) {
-            this.processNode(currentNode["children"][i], currentNodeMaterial, currentNodeTexture, textureS, textureT);
-        }
-        this.scene.popMatrix();
 
+        // Process children components
+        for (var i = 0; i < currentNode["componentChildren"].length; i++) {
+            this.processNode(currentNode["componentChildren"][i], currentNodeMaterial, currentNodeTexture, textureS, textureT);
+        }
+        
+        // Process children primitives
+        for (var i = 0; i < currentNode["primitiveChildren"].length; i++) {
+            if(currentNode["primitiveChildren"][i] != null) {
+                this.drawPrimitive(currentNode["primitiveChildren"][i], textureS, textureT);
+            }
+        }
+
+        this.scene.popMatrix();
     }
 
     drawPrimitive(id, textureS, textureT) {
