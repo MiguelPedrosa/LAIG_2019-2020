@@ -26,4 +26,8 @@ class Plane extends CGFobject {
     display() {
         this.nurb.display();
     }
+
+    modifyTextCoords(lengthS, lengthT) {
+
+    }
 }
