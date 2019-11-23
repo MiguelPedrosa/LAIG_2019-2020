@@ -140,6 +140,7 @@ class XMLscene extends CGFscene {
     update(t) {
         for(var key in this.graph.animations)
             this.graph.animations[key].update(t);
+        this.securityCamera.update(t);
     }
 
     /**

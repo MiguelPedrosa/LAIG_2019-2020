@@ -11,7 +11,10 @@ class MySecurityCamera extends CGFobject {
     	 this.scene.setActiveShader(this.shader);
     	 this.scene.RTTtexture.bind();
     	 this.rectangle.display();
+        
     	 this.scene.setActiveShader(this.scene.defaultShader);
-
+    }
+    update(t){
+         this.shader.setUniformsValues({ timeFactor: (t / 1000) % 100 });
     }
 }
