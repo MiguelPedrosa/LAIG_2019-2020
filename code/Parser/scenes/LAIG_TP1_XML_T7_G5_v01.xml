@@ -192,13 +192,16 @@
             <cylinder base="2" top="1.5" height ="2" slices="30"  stacks="3" />
         </primitive>
         <primitive id="coneS4">
-            <cylinder base="2" top="1" height ="1" slices="4"  stacks="2" />
+            <cylinder2 base="2" top="1" height ="1" slices="4"  stacks="2" />
         </primitive>
         <primitive id="demoSphere">
             <sphere radius="2" slices="20" stacks="10" />
         </primitive>
         <primitive id="basicSquare">
             <rectangle x1="-0.5" y1="-0.5" x2="0.5" y2="0.5" />
+        </primitive>
+        <primitive id="basicPlane">
+            <plane npartsU="5" npartsV="10"/>
         </primitive>
         <primitive id="demoTorus">
             <torus inner="1" outer="2" slices="30" loops="20" />
@@ -247,7 +250,6 @@
             <transformation>
                 <translate x="5" y="0" z="5" />
                 <scale x="10" y="10" z="10"/>
-                <rotate axis="x" angle="-90" />
             </transformation>
             <materials>
                 <material id="floorMaterial"/>
@@ -255,7 +257,7 @@
             </materials>
             <texture id="none" length_s="1.0" length_t="1.0"/>
             <children>
-                <primitiveref id="basicSquare" />
+                <primitiveref id="basicPlane"/>
             </children>
         </component>
 
