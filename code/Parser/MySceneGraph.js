@@ -1006,7 +1006,6 @@ class MySceneGraph {
                 rotationZ *= DEGREE_TO_RAD;
             }
             rotationValues = [rotationX, rotationY, rotationZ];
-            console.log("ID(" + animationID + ") Rot = " + rotationValues)
 
             keyFrames[i + 1] = {
                 time: time,
