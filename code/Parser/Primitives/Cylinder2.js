@@ -17,8 +17,8 @@ class Cylinder2 extends CGFobject {
         this.scene.popMatrix();
     }
 
-    modifyTextCoords(lengthS, lengthT) {
-    }
+	modifyTextCoords(lengthS, lengthT) {
+	}
 }
 
 class Cylinder2_half extends CGFobject {
@@ -56,7 +56,7 @@ class Cylinder2_half extends CGFobject {
 
         var surface = new CGFnurbsSurface(1, 3, controlPoints);
 
-        this.nurb = new CGFnurbsObject(this.scene, slices, stacks, surface);
+        this.nurb = new CGFnurbsObject(this.scene, stacks, slices, surface);
     }
 
     display() {
