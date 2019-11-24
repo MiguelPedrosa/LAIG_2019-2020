@@ -10,9 +10,13 @@
             <from x="1" y="15" z="100" />
             <to x="1" y="5" z="0" />
         </ortho>
+        <perspective id = "securityCamera" near="0.1" far="500" angle="60">
+          <from x="30" y="15" z="40" />
+          <to x="0" y="0" z="0" />
+        </perspective>
     </views>
 
-    <globals>  
+    <globals>
         <ambient r="0.6" g="0.6" b="0.6" a="1.0" />
         <background r="0.05" g="0.3" b="1.0" a="1.0" />
     </globals>
@@ -23,14 +27,14 @@
             <ambient r="1.0" g="1.0" b="1.0" a="1.0" />
             <diffuse r="1.0" g="1.0" b="1.0" a="1.0" />
             <specular r="1.0" g="1.0" b="1.0" a="1.0" />
-            <attenuation constant="0" linear="0.5" quadratic="0" /> 
+            <attenuation constant="0" linear="0.5" quadratic="0" />
         </omni>
         <omni id="sol" enabled="0">
             <location x="2" y="0.5" z="-10" w="1" />
             <ambient r="1" g="0.4" b="0" a="1" />
             <diffuse r="1" g="0.4" b="0" a="1" />
             <specular r="1" g="0.4" b="0" a="1" />
-            <attenuation constant="1" linear="0" quadratic="0" /> 
+            <attenuation constant="1" linear="0" quadratic="0" />
         </omni>
         <spot id="luz_spot" enabled="0" angle="10" exponent="1">
             <location x="10" y="10" z="10" w="1" />
@@ -38,7 +42,7 @@
             <ambient r="1" g="1" b="1" a="1" />
             <diffuse r="1" g="1" b="1" a="1" />
             <specular r="1" g="1" b="1" a="1" />
-            <attenuation constant="0" linear="0" quadratic="1" /> 
+            <attenuation constant="0" linear="0" quadratic="1" />
         </spot>
     </lights>
 
@@ -396,7 +400,7 @@
         </component>
         <component id = "baseSofa">
             <transformation>
-                <translate x="0" y="-1" z="0"/> 
+                <translate x="0" y="-1" z="0"/>
                 <rotate axis="x" angle="90" />
             </transformation>
             <materials>
@@ -725,7 +729,7 @@
                 <primitiveref id = "demoSphere"/>
             </children>
         </component>
-          
+
 
         <component id = "quadro">
             <transformation>
@@ -789,7 +793,7 @@
         <!-- Construção de uma bola a cair -->
 
          <component id="fallingBall">
-            <transformation> 
+            <transformation>
                     <translate x="7.5" y="0.8" z="6.5"/>
                      <scale x="0.05" y="0.05" z="0.05"/>
             </transformation>

@@ -6,7 +6,7 @@ var DEGREE_TO_RAD = Math.PI / 180;
 class XMLscene extends CGFscene {
     /**
      * @constructor
-     * @param {MyInterface} myinterface 
+     * @param {MyInterface} myinterface
      */
     constructor(myinterface) {
         super();
@@ -107,7 +107,7 @@ class XMLscene extends CGFscene {
         this.interface.setActiveCamera(this.camera);
     }
 
-    
+
     changeMaterialsMpressed(){
         this.graph.changeMaterialsMpressed();
     }
@@ -117,7 +117,7 @@ class XMLscene extends CGFscene {
         this.setSpecular(0.2, 0.4, 0.8, 1.0);
         this.setShininess(10.0);
     }
-    /** Handler called when the graph is finally loaded. 
+    /** Handler called when the graph is finally loaded.
      * As loading is asynchronous, this may be called already after the application has started the run loop
      */
     onGraphLoaded() {
@@ -146,9 +146,9 @@ class XMLscene extends CGFscene {
     /**
      * Displays the scene.
      */
-    render() {
+    render(camera) {
         // ---- BEGIN Background, camera and axis setup
-
+        this.camera = camera;
         // Clear image and depth buffer everytime we update the scene
         this.gl.viewport(0, 0, this.gl.canvas.width, this.gl.canvas.height);
         this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
@@ -186,24 +186,32 @@ class XMLscene extends CGFscene {
                     lightIterator++;
                 }
             }
-            
+
             // Draw axis
             this.setDefaultAppearance();
-            
+
             // Displays the scene (MySceneGraph function).
             this.graph.displayScene();
         }
-        
+
 
         this.popMatrix();
         // ---- END Background, camera and axis setup
     }
 
     display() {
+        var cameraAux = this.camera;
         this.RTTtexture.attachToFrameBuffer();
-        this.render();
+        for(var i in this.graph.views){
+          if(i == 'securityCamera'){
+            this.render(this.graph.views[i]);
+
+            break;
+          }
+        }
         this.RTTtexture.detachFromFrameBuffer();
-        this.render();
+        this.render(cameraAux);
+        this.interface.setActiveCamera(this.camera);
         this.gl.disable(this.gl.DEPTH_TEST);
         this.securityCamera.display();
         this.gl.enable(this.gl.DEPTH_TEST);
