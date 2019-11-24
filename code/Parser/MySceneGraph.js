@@ -1252,14 +1252,14 @@ class MySceneGraph {
                 this.primitives[primitiveId] = plane;
             } else if (primitiveType == 'patch') {
 
-                // npointsU
-                var npointsU = this.reader.getFloat(grandChildren[0], 'npointsU');
-                if (!(npointsU != null && !isNaN(npointsU)))
-                    return "unable to parse npointsU of the primitive coordinates for ID = " + primitiveId;
+                // nPointsU
+                var nPointsU = this.reader.getFloat(grandChildren[0], 'npointsU');
+                if (!(nPointsU != null && !isNaN(nPointsU)))
+                    return "unable to parse nPointsU of the primitive coordinates for ID = " + primitiveId;
 
-                // npointsV
-                var npointsV = this.reader.getFloat(grandChildren[0], 'npointsV');
-                if (!(npointsV != null && !isNaN(npointsV)))
+                // nPointsV
+                var nPointsV = this.reader.getFloat(grandChildren[0], 'npointsV');
+                if (!(nPointsV != null && !isNaN(nPointsV)))
                     return "unable to parse npointsV of the primitive coordinates for ID = " + primitiveId;
 
                 // npartsU
@@ -1275,26 +1275,26 @@ class MySceneGraph {
                 // parse control points
                 var points = [];
                 var pointNodes = grandChildren[0].children;
-                if(pointNodes.length != npointsU * npointsV) {
+                if(pointNodes.length != nPointsU * nPointsV) {
                     console.warn("Primitive patch(" + primitiveId + ") doesn't contain enough control points." + 
-                        "Expected " + npointsU * npointsV + ", but got " + pointNodes.length + ". Will not be parsed");
+                        "Expected " + nPointsU * nPointsV + ", but got " + pointNodes.length + ". Will not be parsed");
                     continue;
                 }
                 for(let i = 0; i < pointNodes.length; i++) {
                     // parse xx
-                    const xx = this.reader.getFloat(currentKeyFrame, 'xx');
+                    const xx = this.reader.getFloat(pointNodes[i], 'xx');
                     if (xx == null) {
                         console.warn("Missing xx atribute in patch node: " + primitiveId);
                         continue;
                     }
                     // parse yy
-                    const yy = this.reader.getFloat(currentKeyFrame, 'yy');
+                    const yy = this.reader.getFloat(pointNodes[i], 'yy');
                     if (yy == null) {
                         console.warn("Missing yy atribute in patch node: " + primitiveId);
                         continue;
                     }
                     // parse zz
-                    const zz = this.reader.getFloat(currentKeyFrame, 'zz');
+                    const zz = this.reader.getFloat(pointNodes[i], 'zz');
                     if (zz == null) {
                         console.warn("Missing zz atribute in patch node: " + primitiveId);
                         continue;
