@@ -53,16 +53,10 @@ class MyInterface extends CGFinterface {
     }
 
 
-    addViews(views) {
-        var viewNames = [];
-        for(var view in views) {
-            viewNames.push(view);
-        }
-        var viewsFolder = this.gui.add(this.scene.graph, 'views', viewNames);
-        viewsFolder.onChange(viewName => {
-            this.scene.currentCameraID = viewName;
-            this.scene.cameraChanged = true;
-        });
+    addViews() {
+        this.gui.add(this.scene, 'currentCameraID', this.scene.cameraNames)
+            .name('Selected View')
+            .onChange(this.scene.onSelectedCameraChanged.bind(this.scene));
     }
   
 }

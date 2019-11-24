@@ -40,6 +40,7 @@ class XMLscene extends CGFscene {
         this.setUpdatePeriod(100);
         this.RTTtexture = new CGFtextureRTT(this,this.gl.canvas.width,this.gl.canvas.height);
         this.securityCamera = new MySecurityCamera(this);
+
     }
 
     /**
@@ -102,11 +103,20 @@ class XMLscene extends CGFscene {
     }
 
     addSceneViews() {
+        this.cameraNames = [];
+        for(var view in this.graph.views) {
+            this.cameraNames.push(view);
+        }
+
         this.currentCameraID = this.graph.defaultCameraID;
         this.camera = this.graph.views[this.currentCameraID] || this.fallBackCamera;
         this.interface.setActiveCamera(this.camera);
     }
 
+    onSelectedCameraChanged(newCameraID) {
+        this.currentCameraID = newCameraID;
+        this.camera = this.graph.views[this.currentCameraID];
+    }
 
     changeMaterialsMpressed(){
         this.graph.changeMaterialsMpressed();
@@ -129,10 +139,9 @@ class XMLscene extends CGFscene {
         this.setGlobalAmbientLight(this.graph.ambient[0], this.graph.ambient[1], this.graph.ambient[2], this.graph.ambient[3]);
 
         this.initLights();
-        this.interface.addLights(this.lightStates);
-        this.interface.addViews(this.graph.views);
-
         this.addSceneViews();
+        this.interface.addLights(this.lightStates);
+        this.interface.addViews();
 
         this.sceneInited = true;
     }
@@ -162,12 +171,6 @@ class XMLscene extends CGFscene {
 
         this.pushMatrix();
         this.axis.display();
-
-        if(this.cameraChanged === true) {
-            this.camera = this.graph.views[this.currentCameraID] || this.fallBackCamera;
-            this.interface.setActiveCamera(this.camera);
-            this.cameraChanged = false;
-        }
 
         if (this.sceneInited) {
 
