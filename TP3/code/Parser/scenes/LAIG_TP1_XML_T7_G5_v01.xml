@@ -1,0 +1,813 @@
+<lxs>
+    <scene root="root" axis_length="5" />
+
+    <views default="defaultCamera">
+        <perspective id="defaultCamera" near="0.1" far="500" angle="60">
+            <from x="20" y="20" z="20" />
+            <to x="0" y="0" z="0" />
+        </perspective>
+        <ortho id="orthoCamera" near="0.1" far="500" left="-15" right="15" top="7.5" bottom="-7.5">
+            <from x="1" y="15" z="100" />
+            <to x="1" y="5" z="0" />
+        </ortho>
+        <perspective id = "securityCamera" near="0.1" far="500" angle="60">
+          <from x="30" y="15" z="40" />
+          <to x="0" y="0" z="0" />
+        </perspective>
+    </views>
+
+    <globals>
+        <ambient r="0.6" g="0.6" b="0.6" a="1.0" />
+        <background r="0.05" g="0.3" b="1.0" a="1.0" />
+    </globals>
+
+    <lights>
+        <omni id="defaultLight" enabled="1">
+            <location x="9.8" y="11.9" z="10" w="1.0" />
+            <ambient r="1.0" g="1.0" b="1.0" a="1.0" />
+            <diffuse r="1.0" g="1.0" b="1.0" a="1.0" />
+            <specular r="1.0" g="1.0" b="1.0" a="1.0" />
+            <attenuation constant="0" linear="0.5" quadratic="0" />
+        </omni>
+        <omni id="sol" enabled="0">
+            <location x="2" y="0.5" z="-10" w="1" />
+            <ambient r="1" g="0.4" b="0" a="1" />
+            <diffuse r="1" g="0.4" b="0" a="1" />
+            <specular r="1" g="0.4" b="0" a="1" />
+            <attenuation constant="1" linear="0" quadratic="0" />
+        </omni>
+        <spot id="luz_spot" enabled="0" angle="10" exponent="1">
+            <location x="10" y="10" z="10" w="1" />
+            <target x="2" y="7" z="2" />
+            <ambient r="1" g="1" b="1" a="1" />
+            <diffuse r="1" g="1" b="1" a="1" />
+            <specular r="1" g="1" b="1" a="1" />
+            <attenuation constant="0" linear="0" quadratic="1" />
+        </spot>
+    </lights>
+
+    <textures>
+        <texture id="demoTexture" file="scenes/images/vidral.jpg" />
+        <texture id="sadCat" file="scenes/images/sadCat.jpg"/>
+        <texture id="mesa" file="scenes/images/madeiraMesa.jpg"/>
+        <texture id="parede" file="scenes/images/parede.jpg"/>
+        <texture id="sofaCentro" file="scenes/images/sofaCentro.jpg"/>
+        <texture id="sofaFora" file="scenes/images/soTextura1.jpg"/>
+         <texture id="bank" file="scenes/images/bank.jpg"/>
+    </textures>
+
+    <materials>
+        <material id="default" shininess="10">
+            <emission r="0.0" g="0.0" b="0.0" a="1.0" />
+            <ambient r="0.5" g="0.5" b="0.5" a="1.0" />
+            <diffuse r="0.0" g="0.0" b="0.0" a="1.0" />
+            <specular r="0.0" g="0.0" b="0.0" a="1.0" />
+        </material>
+
+        <material id="sofaMaterial" shininess="10">
+            <emission r="0.0" g="0.0" b="0.0" a="0.0" />
+            <ambient r="0.5" g="0.5" b="0.5" a="0.0" />
+            <diffuse r="0.5" g="0.5" b="0.5" a="0.0" />
+            <specular r="0.5" g="0.5" b="0.5" a="0.0" />
+        </material>
+
+        <material id="mesaMaterial" shininess="10">
+            <emission r="0.0" g="0.0" b="0.0" a="1.0" />
+            <ambient r="0.5" g="0.4" b="0.4" a="1.0" />
+            <diffuse r="0.5" g="0.4" b="0.4" a="1.0" />
+            <specular r="0.5" g="0.4" b="0.4" a="1.0" />
+        </material>
+
+        <material id="TVMaterial" shininess="10">
+            <emission r="0.0" g="0.0" b="0.0" a="1.0" />
+            <ambient r="0.0" g="0.0" b="0.0" a="1.0" />
+            <diffuse r="0.0" g="0.0" b="0.0" a="1.0" />
+            <specular r="0.0" g="0.0" b="0.0" a="1.0" />
+        </material>
+
+        <material id="screenMaterial" shininess="10">
+            <emission r="0.8" g="0.8" b="1.0" a="1.0" />
+            <ambient r="0.8" g="0.8" b="1.0" a="1.0" />
+            <diffuse r="0.8" g="0.8" b="1.0" a="1.0" />
+            <specular r="0.8" g="0.8" b="1.0" a="1.0" />
+        </material>
+
+        <material id="wallMaterial" shininess="5">
+            <emission r="0.0" g="0.0" b="0.0" a="1.0" />
+            <ambient r="0.7" g="0.7" b="0.7" a="0.0" />
+            <diffuse r="0.7" g="0.7" b="0.7" a="0.0" />
+            <specular r="0.7" g="0.7" b="0.7" a="0.0" />
+        </material>
+
+        <material id="floorMaterial" shininess="30">
+            <emission r="0.0" g="0.0" b="0.0" a="1" />
+            <ambient r="0.0" g="0.0" b="0.0" a="1" />
+            <diffuse r="1.0" g="0.9" b="0.8" a="1" />
+            <specular r="1.0" g="0.9" b="0.8" a="1" />
+        </material>
+
+           <material id="lampMaterial" shininess="10">
+            <emission r="0.0" g="0.0" b="0.0" a="1.0" />
+            <ambient r="0.2" g="0.1" b="0.0" a="1.0" />
+            <diffuse r="0.2" g="0.1" b="0.0" a="1.0" />
+            <specular r="0.2" g="0.1" b="0.0" a="1.0" />
+        </material>
+
+        <material id="lightBallMaterial" shininess="10">
+            <emission r="0.0" g="0.0" b="0.0" a="0.0" />
+            <ambient r="1.0" g="1.0" b="0.4" a="0.0" />
+            <diffuse r="1.0" g="1.0" b="0.4" a="0.0" />
+            <specular r="1.0" g="1.0" b="0.4" a="0.0" />
+        </material>
+    </materials>
+
+    <transformations>
+        <transformation id="demoTransform">
+            <scale x="5" y="1" z="5" />
+            <rotate axis="x" angle="-45" />
+            <translate x="5" y="1" z="5" />
+        </transformation>
+    </transformations>
+
+    <animations>
+        <animation id="demoAnimation">
+            <keyframe instant="6">
+                <translate x="0" y="5" z="0" />
+                <scale x="3" y="3" z="3" />
+                <rotate angle_x="0" angle_y="180" angle_z="0"/>
+            </keyframe>
+            <keyframe instant="10">
+                <translate x="0" y="0" z="0" />
+                <scale x="1" y="1" z="1" />
+                <rotate angle_x="0" angle_y="360" angle_z="0"/>
+            </keyframe>
+        </animation>
+
+        <animation id="ballSofa">
+            <keyframe instant="5">
+                <translate x="0" y="0" z="0" />
+                <scale x="1" y="1" z="1" />
+                <rotate angle_x="0" angle_y="360" angle_z="0"/>
+            </keyframe>
+            <keyframe instant="10">
+                <translate x="0" y="0" z="0" />
+                <scale x="1" y="1" z="1" />
+                <rotate angle_x="360" angle_y="0" angle_z="0"/>
+            </keyframe>
+             <keyframe instant="20">
+                <translate x="0" y="0" z="0" />
+                <scale x="1" y="1" z="1" />
+                <rotate angle_x="0" angle_y="0" angle_z="360"/>
+            </keyframe>
+        </animation>
+
+            <animation id="fallBall">
+            <keyframe instant="3">
+                <translate x="0" y="0" z="-16" />
+                <scale x="1" y="1" z="1" />
+                <rotate angle_x="360" angle_y="0" angle_z="0"/>
+            </keyframe>
+             <keyframe instant="6">
+                <translate x="0" y="-13.5" z="-20" />
+                <scale x="1" y="1" z="1" />
+                <rotate angle_x="360" angle_y="0" angle_z="0"/>
+            </keyframe>
+            <keyframe instant="20">
+                <translate x="0" y="-13.5" z="-127" />
+                <scale x="1" y="1" z="1" />
+                <rotate angle_x="360" angle_y="0" angle_z="0"/>
+            </keyframe>
+        </animation>
+
+</animations>
+
+    <primitives>
+        <primitive id="demoCylinder">
+            <cylinder base="2" top="1" height ="2" slices="30"  stacks="3" />
+        </primitive>
+        <primitive id="demoCylinder2">
+            <cylinder base="2" top="2" height ="2" slices="30"  stacks="3" />
+        </primitive>
+         <primitive id="demoCylinder3">
+            <cylinder base="2" top="1.5" height ="2" slices="30"  stacks="3" />
+        </primitive>
+        <primitive id="coneS4">
+            <cylinder2 base="2" top="1" height ="1" slices="4"  stacks="2" />
+        </primitive>
+        <primitive id="demoSphere">
+            <sphere radius="2" slices="20" stacks="10" />
+        </primitive>
+        <primitive id="basicSquare">
+            <rectangle x1="-0.5" y1="-0.5" x2="0.5" y2="0.5" />
+        </primitive>
+        <primitive id="basicPlane">
+            <plane npartsU="5" npartsV="10"/>
+        </primitive>
+        <primitive id="demoTorus">
+            <torus inner="1" outer="2" slices="30" loops="20" />
+        </primitive>
+    </primitives>
+
+    <components>
+        <component id="root">
+            <transformation>
+            <scale x="3" y="3" z="3" />
+            </transformation>
+            <materials>
+               <material id="default" />
+            </materials>
+            <texture id="none" length_s="1.0" length_t="1.0"/>
+            <children>
+                <componentref id="sofa" />
+                <componentref id="walls" />
+                <componentref id="floor" />
+                <componentref id="mesa" />
+                <componentref id="TV" />
+                <componentref id="lamp"/>
+                <componentref id="quadro"/>
+                <componentref id="fallingBall"/>
+            </children>
+        </component>
+
+<!-- Construcao das paredes -->
+        <component id = "walls">
+            <transformation>
+                <translate x="5" y="3" z="5" />
+                <scale x="10" y="6" z="10" />
+            </transformation>
+            <materials>
+                <material id="wallMaterial"/>
+                <material id="floorMaterial"/>
+            </materials>
+            <texture id="parede" length_s="1.0" length_t="1.0"/>
+            <children>
+                <componentref id="boxInner" />
+            </children>
+        </component>
+
+<!-- Construcao do chao -->
+        <component id = "floor">
+            <transformation>
+                <translate x="5" y="0" z="5" />
+                <scale x="10" y="10" z="10"/>
+            </transformation>
+            <materials>
+                <material id="floorMaterial"/>
+                <material id="wallMaterial"/>
+            </materials>
+            <texture id="none" length_s="1.0" length_t="1.0"/>
+            <children>
+                <primitiveref id="basicPlane"/>
+            </children>
+        </component>
+
+<!-- Construcao de uma mesa -->
+        <component id= "mesa">
+            <transformation>
+                <translate x="7.5" y="0" z="6.5"/>
+                <scale x="0.3" y="0.3" z="0.3" />
+            </transformation>
+            <materials>
+                <material id="mesaMaterial" />
+            </materials>
+            <texture id="mesa" length_s="1.0" length_t="1.0"/>
+            <children>
+                <componentref id="tampoMesa" />
+                <componentref id="baseMesa" />
+            </children>
+        </component>
+         <component id= "tampoMesa">
+            <transformation>
+                <translate x="0" y="2" z="0"/>
+                <scale x="5" y="0.5" z="5"/>
+            </transformation>
+            <materials>
+                <material id="inherit" />
+            </materials>
+            <texture id="inherit" length_s="1.0" length_t="1.0"/>
+            <children>
+                <componentref id="CubeFull" />
+            </children>
+        </component>
+         <component id= "baseMesa">
+            <transformation>
+                <rotate axis="x" angle="-90"/>
+            </transformation>
+            <materials>
+                <material id="inherit" />
+            </materials>
+            <texture id="inherit" length_s="1.0" length_t="1.0"/>
+            <children>
+                <primitiveref id="demoCylinder" />
+            </children>
+        </component>
+
+<!-- Construcao de uma TV -->
+        <component id= "TV">
+            <transformation>
+                <translate x="5" y="3" z="0.5"/>
+            </transformation>
+            <!--<animationref id="demoAnimation"/>-->
+            <materials>
+                <material id="TVMaterial" />
+            </materials>
+            <texture id="none" length_s="1.0" length_t="1.0"/>
+            <children>
+                <componentref id="TV_televisor" />
+            </children>
+        </component>
+         <component id= "TV_televisor">
+            <transformation>
+                <scale x="1" y="0.5" z="0.5" />
+            </transformation>
+            <materials>
+                <material id="inherit" />
+            </materials>
+            <texture id="none" length_s="1.0" length_t="1.0"/>
+            <children>
+                <componentref id="TV_televisor_exterior" />
+                <componentref id="TV_televisor_frame" />
+                <componentref id="TV_televisor_back" />
+                <componentref id="TV_televisor_screen" />
+            </children>
+        </component>
+         <component id= "TV_televisor_exterior">
+            <transformation>
+                <rotate axis="y" angle="180"/>
+                <rotate axis="z" angle="45"/>
+            </transformation>
+            <materials>
+                <material id="inherit" />
+            </materials>
+            <texture id="none" length_s="1.0" length_t="1.0"/>
+            <children>
+                <primitiveref id="coneS4" />
+            </children>
+        </component>
+        <component id= "TV_televisor_frame">
+            <transformation>
+                <scale x="1.415" y="1.415" z="1" />
+            </transformation>
+            <materials>
+                <material id="inherit" />
+            </materials>
+            <texture id="none" length_s="1.0" length_t="1.0"/>
+            <children>
+                <componentref id="frame" />
+            </children>
+        </component>
+         <component id= "TV_televisor_back">
+            <transformation>
+                <rotate axis="y" angle="180" />
+                <translate x="0" y="0" z="1"/>
+                <scale x="1.415" y="1.415" z="1" />
+            </transformation>
+            <materials>
+                <material id="inherit" />
+            </materials>
+            <texture id="none" length_s="1.0" length_t="1.0"/>
+            <children>
+                <primitiveref id="basicSquare" />
+            </children>
+        </component>
+        <component id= "TV_televisor_screen">
+            <transformation>
+                <scale x="2.2" y="2.2" z="1" />
+            </transformation>
+            <materials>
+                <material id="screenMaterial" />
+            </materials>
+            <texture id="none" length_s="1.0" length_t="1.0"/>
+            <children>
+                <primitiveref id="basicSquare" />
+            </children>
+        </component>
+
+<!-- Construcao de um sofa -->
+        <component id = "sofa">
+            <transformation>
+                <translate x="5" y="1" z="7" />
+                <scale x="0.5" y="0.5" z="0.5" />
+                <rotate axis="y" angle="180"/>
+            </transformation>
+            <materials>
+                <material id="sofaMaterial" />
+            </materials>
+            <texture id="none" length_s="1.0" length_t="1.0"/>
+            <children>
+                <componentref id="baseSofa" />
+               <componentref id="centroSofa"/>
+                <componentref id="topoSofa"/>
+            </children>
+        </component>
+        <component id = "baseSofa">
+            <transformation>
+                <translate x="0" y="-1" z="0"/>
+                <rotate axis="x" angle="90" />
+            </transformation>
+            <materials>
+                <material id="inherit" />
+            </materials>
+            <texture id="sofaFora" length_s="1.0" length_t="1.0"/>
+            <children>
+                <primitiveref id="demoTorus" />
+            </children>
+        </component>
+        <component id = "centroSofa">
+            <transformation>
+                <scale x="0.7" y= "0.7" z= "0.7"/>
+            </transformation>
+            <animationref id="ballSofa"/>
+            <materials>
+                <material id="inherit" />
+            </materials>
+            <texture id="sofaCentro" length_s="1.0" length_t="1.0"/>
+            <children>
+                <primitiveref id="demoSphere" />
+            </children>
+        </component>
+
+        <component id = "topoSofa">
+            <transformation>
+                <rotate axis= "x" angle="-45"/>
+                <translate x="0" y="1" z="0" />
+            </transformation>
+            <materials>
+                <material id="inherit" />
+            </materials>
+            <texture id="sofaFora" length_s="1.0" length_t="1.0"/>
+            <children>
+                <primitiveref id="demoTorus" />
+            </children>
+        </component>
+
+<!-- Construcao duma caixa com paredes viradas para dentro, sem chao -->
+        <component id = "boxInner">
+            <transformation>
+            </transformation>
+            <materials>
+                <material id="inherit" />
+            </materials>
+            <texture id="none" length_s="1.0" length_t="1.0"/>
+            <children>
+                <componentref id="boxInner_wall1" />
+                <componentref id="boxInner_wall2" />
+                <componentref id="boxInner_wall3" />
+                <componentref id="boxInner_wall4" />
+            </children>
+        </component>
+        <component id = "boxInner_wall1">
+            <transformation>
+                <translate x="0" y="0" z="-0.5" />
+            </transformation>
+            <materials>
+                <material id="inherit" />
+            </materials>
+            <texture id="none" length_s="1.0" length_t="1.0"/>
+            <children>
+                <primitiveref id="basicSquare" />
+            </children>
+        </component>
+        <component id = "boxInner_wall2">
+            <transformation>
+                <translate x="0" y="0" z="0.5" />
+                <rotate axis="y" angle="180" />
+            </transformation>
+            <materials>
+                <material id="inherit" />
+            </materials>
+            <texture id="none" length_s="1.0" length_t="1.0"/>
+            <children>
+                <primitiveref id="basicSquare" />
+            </children>
+        </component>
+        <component id = "boxInner_wall3">
+            <transformation>
+                <translate x="-0.5" y="0" z="0" />
+                <rotate axis="y" angle="90" />
+            </transformation>
+            <materials>
+                <material id="inherit" />
+            </materials>
+            <texture id="none" length_s="1.0" length_t="1.0"/>
+            <children>
+                <primitiveref id="basicSquare" />
+            </children>
+        </component>
+        <component id = "boxInner_wall4">
+            <transformation>
+                <translate x="0.5" y="0" z="0" />
+                <rotate axis="y" angle="-90" />
+            </transformation>
+            <materials>
+                <material id="inherit" />
+            </materials>
+            <texture id="none" length_s="1.0" length_t="1.0"/>
+            <children>
+                <primitiveref id="basicSquare" />
+            </children>
+        </component>
+
+<!-- Construcao dum retangulo (frame) com um retangulo cortado no centro -->
+        <component id = "frame">
+            <transformation>
+            </transformation>
+            <materials>
+                <material id="inherit" />
+            </materials>
+            <texture id="none" length_s="1.0" length_t="1.0"/>
+            <children>
+                <componentref id="frame_Top" />
+                <componentref id="frame_Bottom" />
+                <componentref id="frame_Left" />
+                <componentref id="frame_Right" />
+            </children>
+        </component>
+        <component id = "frame_Top">
+            <transformation>
+                <translate x="0" y="0.875" z="0" />
+                <scale x="1.5" y="0.25" z="1" />
+            </transformation>
+            <materials>
+                <material id="inherit" />
+            </materials>
+            <texture id="none" length_s="1.0" length_t="1.0"/>
+            <children>
+                <primitiveref id="basicSquare" />
+            </children>
+        </component>
+        <component id = "frame_Bottom">
+            <transformation>
+                <translate x="0" y="-0.875" z="0" />
+                <scale x="1.5" y="0.25" z="1" />
+            </transformation>
+            <materials>
+                <material id="inherit" />
+            </materials>
+            <texture id="none" length_s="1.0" length_t="1.0"/>
+            <children>
+                <primitiveref id="basicSquare" />
+            </children>
+        </component>
+        <component id = "frame_Left">
+            <transformation>
+                <translate x="-0.875" y="0" z="0" />
+                <scale x="0.25" y="2" z="1" />
+            </transformation>
+            <materials>
+                <material id="inherit" />
+            </materials>
+            <texture id="none" length_s="1.0" length_t="1.0"/>
+            <children>
+                <primitiveref id="basicSquare" />
+            </children>
+        </component>
+        <component id = "frame_Right">
+            <transformation>
+                <translate x="0.875" y="0" z="0" />
+                <scale x="0.25" y="2" z="1" />
+            </transformation>
+            <materials>
+                <material id="inherit" />
+            </materials>
+            <texture id="none" length_s="1.0" length_t="1.0"/>
+            <children>
+                <primitiveref id="basicSquare" />
+            </children>
+        </component>
+
+<!-- Construcao dum cubo com todas as faces viradas para fora-->
+        <component id = "CubeFull">
+            <transformation>
+                <translate x="0" y="0" z="0" />
+            </transformation>
+            <materials>
+                <material id="inherit" />
+            </materials>
+            <texture id="inherit" length_s="1.0" length_t="1.0"/>
+            <children>
+                <componentref id="CubeFull_front" />
+                <componentref id="CubeFull_back" />
+                <componentref id="CubeFull_left" />
+                <componentref id="CubeFull_rigth" />
+                <componentref id="CubeFull_top" />
+                <componentref id="CubeFull_bottom" />
+            </children>
+        </component>
+        <component id = "CubeFull_front">
+            <transformation>
+                <translate x="0" y="0" z="0.5" />
+            </transformation>
+            <materials>
+                <material id="inherit" />
+            </materials>
+            <texture id="inherit" length_s="1.0" length_t="1.0"/>
+            <children>
+                <primitiveref id="basicSquare" />
+            </children>
+        </component>
+        <component id = "CubeFull_back">
+            <transformation>
+                <translate x="0" y="0" z="-0.5" />
+                <rotate axis="y" angle="180" />
+            </transformation>
+            <materials>
+                <material id="inherit" />
+            </materials>
+            <texture id="inherit" length_s="1.0" length_t="1.0"/>
+            <children>
+                <primitiveref id="basicSquare" />
+            </children>
+        </component>
+        <component id = "CubeFull_left">
+            <transformation>
+                <translate x="-0.5" y="0" z="0" />
+                <rotate axis="y" angle="-90" />
+            </transformation>
+            <materials>
+                <material id="inherit" />
+            </materials>
+            <texture id="inherit" length_s="1.0" length_t="1.0"/>
+            <children>
+                <primitiveref id="basicSquare" />
+            </children>
+        </component>
+        <component id = "CubeFull_rigth">
+            <transformation>
+                <translate x="0.5" y="0" z="0" />
+                <rotate axis="y" angle="90" />
+            </transformation>
+            <materials>
+                <material id="inherit" />
+            </materials>
+            <texture id="inherit" length_s="1.0" length_t="1.0"/>
+            <children>
+                <primitiveref id="basicSquare" />
+            </children>
+        </component>
+        <component id = "CubeFull_top">
+            <transformation>
+                <translate x="0" y="0.5" z="0" />
+                <rotate axis="x" angle="-90" />
+            </transformation>
+            <materials>
+                <material id="inherit" />
+            </materials>
+            <texture id="inherit" length_s="1.0" length_t="1.0"/>
+            <children>
+                <primitiveref id="basicSquare" />
+            </children>
+        </component>
+        <component id = "CubeFull_bottom">
+            <transformation>
+                <translate x="0" y="-0.5" z="0" />
+                <rotate axis="x" angle="90" />
+            </transformation>
+            <materials>
+                <material id="inherit" />
+            </materials>
+            <texture id="inherit" length_s="1.0" length_t="1.0"/>
+            <children>
+                <primitiveref id="basicSquare" />
+            </children>
+        </component>
+
+        <!--lamp -->
+
+        <component id = "lamp">
+            <transformation>
+                <translate x="1.5" y="2.5" z="8"/>
+                <scale x="0.5" y="0.5" z="0.5"/>
+            </transformation>
+            <materials>
+                <material id="lampMaterial" />
+            </materials>
+            <texture id="none" length_s="1.0" length_t="1.0"/>
+            <children>
+                <componentref id="lampBase" />
+                <componentref id="lampTop"/>
+                <componentref id="lightBall"/>
+            </children>
+        </component>
+
+        <component id = "lampBase">
+            <transformation>
+                <scale  x="0.3" y="2.5" z="0.3"/>
+                <rotate axis = "x" angle="90"/>
+            </transformation>
+            <materials>
+                <material id = "inherit"/>
+            </materials>
+            <texture id="none" length_s="1.0" length_t="1.0"/>
+            <children>
+                <primitiveref id = "demoCylinder3"/>
+            </children>
+        </component>
+
+         <component id = "lampTop">
+            <transformation>
+                <scale x="1.5" y="1.5" z="1.5"/>
+                <rotate axis="x" angle="-90"/>
+            </transformation>
+            <materials>
+                <material id = "inherit"/>
+            </materials>
+            <texture id="none" length_s="1.0" length_t="1.0"/>
+            <children>
+                <primitiveref id = "demoCylinder"/>
+            </children>
+        </component>
+
+        <component id="lightBall">
+            <transformation>
+                <scale x="0.5" y="0.5" z="0.5"/>
+                <translate x="0" y="1" z="0"/>
+            </transformation>
+            <materials>
+                <material id="lightBallMaterial"/>
+            </materials>
+            <texture id="none" length_s="1.0" length_t="1.0"/>
+            <children>
+                <primitiveref id = "demoSphere"/>
+            </children>
+        </component>
+
+
+        <component id = "quadro">
+            <transformation>
+                <translate x="9.99" y="3" z="5"/>
+                <rotate axis="y" angle="-90"/>
+            </transformation>
+            <materials>
+                <material id="default" />
+            </materials>
+            <texture id="none" length_s="1.0" length_t="1.0"/>
+            <children>
+                <componentref id="eixo1" />
+                <componentref id="eixo2"/>
+                <componentref id="tela"/>
+            </children>
+        </component>
+
+        <component id="eixo1">
+            <transformation>
+                <translate x="0.4" y="1.3" z="0"/>
+                <rotate axis="z" angle="-60"/>
+                <scale x="2" y="0.15" z="1"/>
+            </transformation>
+            <materials>
+                <material id="inherit"/>
+            </materials>
+            <texture id="none" length_s="1.0" length_t="1.0"/>
+            <children>
+                <primitiveref id = "basicSquare"/>
+            </children>
+        </component>
+
+        <component id="eixo2">
+            <transformation>
+                <translate x="-0.4" y="1.3" z="0"/>
+                  <rotate axis="z" angle="60"/>
+                  <scale x="2" y="0.15" z="1"/>
+            </transformation>
+            <materials>
+                <material id="inherit"/>
+            </materials>
+            <texture id="none" length_s="1.0" length_t="1.0"/>
+            <children>
+                <primitiveref id = "basicSquare"/>
+            </children>
+        </component>
+
+        <component id="tela">
+            <transformation>
+                    <scale x="3" y="2" z="1"/>
+            </transformation>
+            <materials>
+                <material id="inherit"/>
+            </materials>
+            <texture id="sadCat" length_s="1.0" length_t="1.0"/>
+            <children>
+                <primitiveref id = "basicSquare"/>
+            </children>
+        </component>
+
+        <!-- Construção de uma bola a cair -->
+
+         <component id="fallingBall">
+            <transformation>
+                    <translate x="7.5" y="0.8" z="6.5"/>
+                     <scale x="0.05" y="0.05" z="0.05"/>
+            </transformation>
+                <animationref id="fallBall"/>
+            <materials>
+                <material id="screenMaterial"/>
+            </materials>
+            <texture id="bank" length_s="1.0" length_t="1.0"/>
+            <children>
+                <primitiveref id = "demoSphere"/>
+            </children>
+        </component>
+
+    </components>
+</lxs>
