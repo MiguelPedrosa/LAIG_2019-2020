@@ -1,10 +1,14 @@
 <lxs>
     <scene root="root" axis_length="5" />
 
-    <views default="defaultCamera">
+    <views default="tabuleiroCamera">
         <perspective id="defaultCamera" near="0.1" far="500" angle="60">
             <from x="20" y="20" z="20" />
             <to x="0" y="0" z="0" />
+        </perspective>
+        <perspective id="tabuleiroCamera" near="0.1" far="500" angle="60">
+            <from x="15.0" y="9" z="13.1" />
+            <to x="13.1" y="0.0" z="13.1" />
         </perspective>
         <ortho id="orthoCamera" near="0.1" far="500" left="-15" right="15" top="7.5" bottom="-7.5">
             <from x="1" y="15" z="100" />
@@ -206,6 +210,10 @@
         <primitive id="demoTorus">
             <torus inner="1" outer="2" slices="30" loops="20" />
         </primitive>
+        <primitive id="gameBoard">
+            <gameBoard/>
+        </primitive>
+        
     </primitives>
 
     <components>
@@ -226,6 +234,7 @@
                 <componentref id="lamp"/>
                 <componentref id="quadro"/>
                 <componentref id="fallingBall"/>
+                <componentref id="mbrane"/>
             </children>
         </component>
 
@@ -264,7 +273,7 @@
 <!-- Construcao de uma mesa -->
         <component id= "mesa">
             <transformation>
-                <translate x="7.5" y="0" z="6.5"/>
+                <translate x="4.5" y="0" z="4.5"/>
                 <scale x="0.3" y="0.3" z="0.3" />
             </transformation>
             <materials>
@@ -386,7 +395,7 @@
 <!-- Construcao de um sofa -->
         <component id = "sofa">
             <transformation>
-                <translate x="5" y="1" z="7" />
+                <translate x="8" y="1" z="7" />
                 <scale x="0.5" y="0.5" z="0.5" />
                 <rotate axis="y" angle="180"/>
             </transformation>
@@ -809,5 +818,248 @@
             </children>
         </component>
 
-    </components>
+              <component id = "mbrane">
+                    <transformation>
+                      <translate x="4.5" y="0.75" z="4.5"/>
+                       <rotate axis="y" angle="90" />
+                      <rotate axis="x" angle="-90" />
+                      <scale x="1.5" y="1.5" z="0.3"/>
+                    </transformation>
+                    <materials>
+                      <material id="screenMaterial"/>
+                    </materials>
+                    <texture id="mesa" length_s="1.0" length_t="1.0"/>
+                    <children>
+                        <componentref id="pecas"/>
+                        <componentref id="base_tabuleiro"/>
+                        <componentref id="tabuleiro_border_1"/>
+                        <componentref id="tabuleiro_border_2"/>
+                        <componentref id="tabuleiro_border_3"/>
+                        <componentref id="tabuleiro_border_4"/>
+                        <componentref id="tabuleiro_border_5"/>
+                        <componentref id="tabuleiro_border_6"/>
+                        <componentref id="tabuleiro_border_7"/>
+                        <componentref id="tabuleiro_border_8"/>
+                        <componentref id="tabuleiro_border_9"/>
+                        <componentref id="tabuleiro_border_10"/>
+                        <componentref id="tabuleiro_border_11"/>
+                        <componentref id="tabuleiro_border_12"/>
+                        <componentref id="tabuleiro_border_13"/>
+                    </children>
+        </component>
+
+         <component id = "pecas">
+                    <transformation>
+                    <translate x="-0.5" y="0.48" z="-0.15"/>
+                  
+                    <scale x="0.06" y="0.06" z="1.0"/>
+                    </transformation>
+                    <materials>
+                      <material id="screenMaterial"/>
+                    </materials>
+                    <texture id="parede" length_s="1.0" length_t="1.0"/>
+                    <children>
+                        <primitiveref id="gameBoard"/>
+                    </children>
+        </component>
+        <component id = "tabuleiro_border_1">
+                    <transformation>
+                      <translate x="0.0" y="0.0" z="-0.5"/>
+                      <rotate axis="x" angle="180"/>
+                      <scale x="1.5" y="1.5" z="1"/>
+                    </transformation>
+                    <materials>
+                      <material id="mesaMaterial"/>
+                    </materials>
+                    <texture id="mesa" length_s="1.0" length_t="1.0"/>
+                    <children>
+                        <primitiveref id="basicSquare"/>
+                    </children>
+        </component>
+        <component id = "tabuleiro_border_2">
+                    <transformation>
+                      <translate x="-0.75" y="0.0" z="-0.25"/>
+                      <rotate axis="z" angle="90"/>
+                      <rotate axis="x" angle="-90"/>
+                      <scale x="1.5" y="0.5" z="1"/>
+                    </transformation>
+                    <materials>
+                      <material id="mesaMaterial"/>
+                    </materials>
+                    <texture id="mesa" length_s="1.0" length_t="1.0"/>
+                    <children>
+                        <primitiveref id="basicSquare"/>
+                    </children>
+        </component>
+        <component id = "tabuleiro_border_3">
+                    <transformation>
+                      <translate x="+0.75" y="0.0" z="-0.25"/>
+                      <rotate axis="z" angle="90"/>
+                      <rotate axis="x" angle="90"/>
+                      <scale x="1.5" y="0.5" z="1"/>
+                    </transformation>
+                    <materials>
+                      <material id="mesaMaterial"/>
+                    </materials>
+                    <texture id="mesa" length_s="1.0" length_t="1.0"/>
+                    <children>
+                        <primitiveref id="basicSquare"/>
+                    </children>
+        </component>
+        <component id = "tabuleiro_border_4">
+                    <transformation>
+                      <translate x="0.0" y="0.75" z="-0.25"/>
+                      <rotate axis="x" angle="-90"/>
+                      <scale x="1.5" y="0.5" z="1"/>
+                    </transformation>
+                    <materials>
+                      <material id="mesaMaterial"/>
+                    </materials>
+                    <texture id="mesa" length_s="1.0" length_t="1.0"/>
+                    <children>
+                        <primitiveref id="basicSquare"/>
+                    </children>
+        </component>
+        <component id = "tabuleiro_border_5">
+                    <transformation>
+                      <translate x="0.0" y="-0.75" z="-0.25"/>
+                      <rotate axis="x" angle="90"/>
+                      <scale x="1.5" y="0.5" z="1"/>
+                    </transformation>
+                    <materials>
+                      <material id="mesaMaterial"/>
+                    </materials>
+                    <texture id="mesa" length_s="1.0" length_t="1.0"/>
+                    <children>
+                        <primitiveref id="basicSquare"/>
+                    </children>
+        </component>
+        <component id = "tabuleiro_border_6">
+                    <transformation>
+                      <translate x="0.0" y="0.65" z="0.0"/>
+                      <scale x="1.5" y="0.2" z="1.0"/>
+                    </transformation>
+                    <materials>
+                      <material id="mesaMaterial"/>
+                    </materials>
+                    <texture id="mesa" length_s="1.0" length_t="1.0"/>
+                    <children>
+                        <primitiveref id="basicSquare"/>
+                    </children>
+        </component>
+        <component id = "tabuleiro_border_7">
+                    <transformation>
+                      <translate x="0.0" y="-0.65" z="0.0"/>
+                      <scale x="1.5" y="0.2" z="1.0"/>
+                    </transformation>
+                    <materials>
+                      <material id="mesaMaterial"/>
+                    </materials>
+                    <texture id="mesa" length_s="1.0" length_t="1.0"/>
+                    <children>
+                        <primitiveref id="basicSquare"/>
+                    </children>
+        </component>
+        <component id = "tabuleiro_border_8">
+                    <transformation>
+                      <translate x="-0.65" y="0.0" z="0.0"/>
+                      <rotate axis="z" angle="-90"/>
+                      <scale x="1.5" y="0.2" z="1.0"/>
+                    </transformation>
+                    <materials>
+                      <material id="mesaMaterial"/>
+                    </materials>
+                    <texture id="mesa" length_s="1.0" length_t="1.0"/>
+                    <children>
+                        <primitiveref id="basicSquare"/>
+                    </children>
+        </component>
+        <component id = "tabuleiro_border_9">
+                    <transformation>
+                      <translate x="0.65" y="0.0" z="0.0"/>
+                      <rotate axis="z" angle="-90"/>
+                      <scale x="1.5" y="0.2" z="1.0"/>
+                    </transformation>
+                    <materials>
+                      <material id="mesaMaterial"/>
+                    </materials>
+                    <texture id="mesa" length_s="1.0" length_t="1.0"/>
+                    <children>
+                        <primitiveref id="basicSquare"/>
+                    </children>
+        </component>
+        <component id = "tabuleiro_border_10">
+                    <transformation>
+                      <translate x="-0.65" y="0.0" z="-0.1"/>
+                      <rotate axis="z" angle="90"/>
+                      <rotate axis="x" angle="90"/>
+                      <scale x="1.5" y="0.2" z="1.0"/>
+                    </transformation>
+                    <materials>
+                      <material id="mesaMaterial"/>
+                    </materials>
+                    <texture id="mesa" length_s="1.0" length_t="1.0"/>
+                    <children>
+                        <primitiveref id="basicSquare"/>
+                    </children>
+        </component>
+        <component id = "tabuleiro_border_11">
+                    <transformation>
+                      <translate x="0.65" y="0.0" z="-0.1"/>
+                      <rotate axis="z" angle="90"/>
+                      <rotate axis="x" angle="-90"/>
+                      <scale x="1.5" y="0.2" z="1.0"/>
+                    </transformation>
+                    <materials>
+                      <material id="mesaMaterial"/>
+                    </materials>
+                    <texture id="mesa" length_s="1.0" length_t="1.0"/>
+                    <children>
+                        <primitiveref id="basicSquare"/>
+                    </children>
+        </component>
+        <component id = "tabuleiro_border_12">
+                    <transformation>
+                      <translate x="0.0" y="0.65" z="-0.1"/>
+                      <rotate axis="x" angle="90"/>
+                      <scale x="1.5" y="0.2" z="1.0"/>
+                    </transformation>
+                    <materials>
+                      <material id="mesaMaterial"/>
+                    </materials>
+                    <texture id="mesa" length_s="1.0" length_t="1.0"/>
+                    <children>
+                        <primitiveref id="basicSquare"/>
+                    </children>
+        </component>
+        <component id = "tabuleiro_border_13">
+                    <transformation>
+                      <translate x="0.0" y="-0.65" z="-0.1"/>
+                      <rotate axis="x" angle="-90"/>
+                      <scale x="1.5" y="0.2" z="1.0"/>
+                    </transformation>
+                    <materials>
+                      <material id="mesaMaterial"/>
+                    </materials>
+                    <texture id="mesa" length_s="1.0" length_t="1.0"/>
+                    <children>
+                        <primitiveref id="basicSquare"/>
+                    </children>
+        </component>
+         <component id = "base_tabuleiro">
+                    <transformation>
+                    <translate x="0" y="0" z="-0.2"/>
+                      <scale x="1.5" y="1.5" z="1"/>
+                    </transformation>
+                    <materials>
+                      <material id="wallMaterial"/>
+
+                    </materials>
+                    <texture id="inherit" length_s="1.0" length_t="1.0"/>
+                    <children>
+                        <primitiveref id="basicSquare"/>
+                    </children>
+        </component>
+  </components>
 </lxs>
+      

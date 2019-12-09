@@ -1053,7 +1053,7 @@ class MySceneGraph {
                 (grandChildren[0].nodeName != 'rectangle' && grandChildren[0].nodeName != 'triangle' &&
                     grandChildren[0].nodeName != 'cylinder' && grandChildren[0].nodeName != 'sphere' &&
                     grandChildren[0].nodeName != 'torus' && grandChildren[0].nodeName != 'cylinder2' &&
-                    grandChildren[0].nodeName != 'plane' && grandChildren[0].nodeName != 'patch')) {
+                    grandChildren[0].nodeName != 'plane' && grandChildren[0].nodeName != 'patch' && grandChildren[0].nodeName != 'gameBoard')) {
                 console.warn("There must be exactly 1 primitive type (rectangle, triangle, cylinder, sphere or torus)");
                 continue;
             }
@@ -1275,12 +1275,12 @@ class MySceneGraph {
                 // parse control points
                 var points = [];
                 var pointNodes = grandChildren[0].children;
-                if(pointNodes.length != nPointsU * nPointsV) {
+                if (pointNodes.length != nPointsU * nPointsV) {
                     console.warn("Primitive patch(" + primitiveId + ") doesn't contain enough control points." +
                         "Expected " + nPointsU * nPointsV + ", but got " + pointNodes.length + ". Will not be parsed");
                     continue;
                 }
-                for(let i = 0; i < pointNodes.length; i++) {
+                for (let i = 0; i < pointNodes.length; i++) {
                     // parse xx
                     const xx = this.reader.getFloat(pointNodes[i], 'xx');
                     if (xx == null) {
@@ -1304,7 +1304,7 @@ class MySceneGraph {
 
                 var patch = new Patch(this.scene, primitiveId, nPointsU, nPointsV, npartsU, npartsV, points);
                 this.primitives[primitiveId] = patch;
-            }  else if (primitiveType == 'cylinder2') {
+            } else if (primitiveType == 'cylinder2') {
                 // slices
                 var slices = this.reader.getFloat(grandChildren[0], 'slices');
                 if (!(slices != null && !isNaN(slices)))
@@ -1332,6 +1332,8 @@ class MySceneGraph {
 
                 let cylinder2 = new Cylinder2(this.scene, primitiveId, base, top, height, slices, stacks);
                 this.primitives[primitiveId] = cylinder2;
+            } else if (primitiveType == 'gameBoard') {
+                this.primitives[primitiveId] = new MyGameBoard(this.scene);
             } else {
                 console.warn("To do: Parse other primitives.");
             }
@@ -1572,8 +1574,7 @@ class MySceneGraph {
             }
             if (childrenChildren[j].nodeName === "componentref") {
                 componentChildren.push(childID);
-            }
-            else if(childrenChildren[j].nodeName === "primitiveref") {
+            } else if (childrenChildren[j].nodeName === "primitiveref") {
                 primitiveChildren.push(childID);
             } else {
                 console.warn("Node name of component " + componentID + " couldn't be identified: " + childrenChildren[j].nodeName);
@@ -1707,6 +1708,7 @@ class MySceneGraph {
      */
     displayScene() {
         // Display loop for transversing the scene graph
+
         this.processNode(this.idRoot, null, null, 1.0, 1.0);
     }
 
@@ -1770,7 +1772,7 @@ class MySceneGraph {
 
         // Process children primitives
         for (var i = 0; i < currentNode["primitiveChildren"].length; i++) {
-            if(currentNode["primitiveChildren"][i] != null) {
+            if (currentNode["primitiveChildren"][i] != null) {
                 this.drawPrimitive(currentNode["primitiveChildren"][i], textureS, textureT);
             }
         }
@@ -1778,7 +1780,7 @@ class MySceneGraph {
         this.scene.popMatrix();
     }
 
-    drawPrimitive(id, textureS, textureT) {
+    drawPrimitive(id, textureS, textureT, parentID, grandParent) {
         const primitiveNode = this.primitives[id];
         primitiveNode.modifyTextCoords(textureS, textureT);
         primitiveNode.display();
@@ -1795,5 +1797,7 @@ class MySceneGraph {
             this.components[key]["materialsIndex"] = index;
         }
     }
+
+
 
 }
