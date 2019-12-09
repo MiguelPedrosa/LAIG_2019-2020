@@ -59,6 +59,8 @@ serialInclude(['../lib/CGF.js',
     // Animations
     './Animations/Animation.js',
     './Animations/KeyframeAnimation.js',
+    // Number pieces
+    './Primitives/Number.js',
 
     main = function () {
         // Standard application, scene and interface setup
