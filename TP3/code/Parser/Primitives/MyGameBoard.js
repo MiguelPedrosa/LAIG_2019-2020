@@ -26,26 +26,35 @@ class MyGameBoard extends CGFobject {
             }
         }
         this.scene.popMatrix();
+
         this.scene.translate(0, -19, 0.2);
+        this.scene.registerForPick(1 + 81, this.number0);
         this.number0.display();
         this.scene.translate(2, 0, 0);
+        this.scene.registerForPick(2 + 81, this.number1);
         this.number1.display();
         this.scene.translate(2, 0, 0);
+        this.scene.registerForPick(3 + 81, this.number2);
         this.number2.display();
         this.scene.translate(2, 0, 0);
+        this.scene.registerForPick(4 + 81, this.number3);
         this.number3.display();
         this.scene.translate(2, 0, 0);
+        this.scene.registerForPick(5 + 81, this.number4);
         this.number4.display();
         this.scene.translate(2, 0, 0);
+        this.scene.registerForPick(6 + 81, this.number5);
         this.number5.display();
         this.scene.translate(2, 0, 0);
+        this.scene.registerForPick(7 + 81, this.number6);
         this.number6.display();
         this.scene.translate(2, 0, 0);
+        this.scene.registerForPick(8 + 81, this.number7);
         this.number7.display();
         this.scene.translate(2, 0, 0);
+        this.scene.registerForPick(9 + 81, this.number8);
         this.number8.display();
-
-
+        this.scene.clearPickRegistration();
 
     }
     modifyTextCoords(lengthS, lengthT) {}
