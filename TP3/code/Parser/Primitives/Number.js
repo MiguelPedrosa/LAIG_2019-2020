@@ -1,11 +1,11 @@
 class Number extends CGFobject {
-	constructor(scene, bools) {
+	constructor(scene, length, width, bools) {
         super(scene);
         this.scene  = scene;
 
         // Pieces variables/measurements
-        this.length = 15;
-        this.width = 5;
+        this.length = length;
+        this.width = width;
 
         const realWidth = Math.sqrt(Math.pow(this.width, 2)/2);
 		this.piece = new MyCylinder(this.scene, null, realWidth, realWidth, this.length, 4, 20);
