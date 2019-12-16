@@ -38,8 +38,10 @@ class XMLscene extends CGFscene {
 
         this.axis = new CGFaxis(this);
         this.setUpdatePeriod(100);
-        this.RTTtexture = new CGFtextureRTT(this,this.gl.canvas.width,this.gl.canvas.height);
+        this.RTTtexture = new CGFtextureRTT(this, this.gl.canvas.width, this.gl.canvas.height);
         this.securityCamera = new MySecurityCamera(this);
+
+        this.setPickEnabled(true);
 
     }
 
@@ -62,7 +64,7 @@ class XMLscene extends CGFscene {
         // Reads the lights from the scene graph.
         for (var key in this.graph.lights) {
             if (i >= 8)
-                break;              // Only eight lights allowed by WebGL.
+                break; // Only eight lights allowed by WebGL.
 
             if (this.graph.lights.hasOwnProperty(key)) {
                 var light = this.graph.lights[key];
@@ -82,15 +84,14 @@ class XMLscene extends CGFscene {
                     this.lights[i].setSpotCutOff(light[7]);
                     this.lights[i].setSpotExponent(light[8]);
                     this.lights[i].setSpotDirection(light[9][0], light[9][1], light[9][2]);
-                } else if(light[1] == "omni") {
+                } else if (light[1] == "omni") {
                     // Do nothing, all functions should have been called already
                 }
 
                 if (this.lightStates[key] === true) {
                     this.lights[i].setVisible(true);
                     this.lights[i].enable();
-                }
-                else {
+                } else {
                     this.lights[i].setVisible(false);
                     this.lights[i].disable();
                 }
@@ -104,7 +105,7 @@ class XMLscene extends CGFscene {
 
     addSceneViews() {
         this.cameraNames = [];
-        for(var view in this.graph.views) {
+        for (var view in this.graph.views) {
             this.cameraNames.push(view);
         }
 
@@ -118,7 +119,7 @@ class XMLscene extends CGFscene {
         this.camera = this.graph.views[this.currentCameraID];
     }
 
-    changeMaterialsMpressed(){
+    changeMaterialsMpressed() {
         this.graph.changeMaterialsMpressed();
     }
     setDefaultAppearance() {
@@ -147,7 +148,7 @@ class XMLscene extends CGFscene {
     }
 
     update(t) {
-        for(var key in this.graph.animations)
+        for (var key in this.graph.animations)
             this.graph.animations[key].update(t);
         this.securityCamera.update(t);
     }
@@ -155,8 +156,10 @@ class XMLscene extends CGFscene {
     /**
      * Displays the scene.
      */
+
     render(camera) {
         // ---- BEGIN Background, camera and axis setup
+
         this.camera = camera;
         // Clear image and depth buffer everytime we update the scene
         this.gl.viewport(0, 0, this.gl.canvas.width, this.gl.canvas.height);
@@ -176,12 +179,11 @@ class XMLscene extends CGFscene {
 
             var lightIterator = 0;
             for (var id in this.lightStates) {
-                if(this.lightStates.hasOwnProperty(id)) {
+                if (this.lightStates.hasOwnProperty(id)) {
                     if (this.lightStates[id] === true) {
                         this.lights[lightIterator].enable();
                         this.lights[lightIterator].setVisible(true);
-                    }
-                    else {
+                    } else {
                         this.lights[lightIterator].disable();
                         this.lights[lightIterator].setVisible(false);
                     }
@@ -189,7 +191,6 @@ class XMLscene extends CGFscene {
                     lightIterator++;
                 }
             }
-
             // Draw axis
             this.setDefaultAppearance();
 
@@ -202,15 +203,32 @@ class XMLscene extends CGFscene {
         // ---- END Background, camera and axis setup
     }
 
+    logPicking() {
+        if (this.pickMode == false) {
+            if (this.pickResults != null && this.pickResults.length > 0) {
+                for (var i = 0; i < this.pickResults.length; i++) {
+                    var obj = this.pickResults[i][0];
+                    if (obj) {
+                        var customId = this.pickResults[i][1];
+                        console.log("Picked object: " + obj + ", with pick id " + customId);
+                    }
+                }
+                this.pickResults.splice(0, this.pickResults.length);
+            }
+        }
+    }
+
     display() {
+        this.logPicking();
+
         var cameraAux = this.camera;
         this.RTTtexture.attachToFrameBuffer();
-        for(var i in this.graph.views){
-          if(i == 'securityCamera'){
-            this.render(this.graph.views[i]);
+        for (var i in this.graph.views) {
+            if (i == 'securityCamera') {
+                this.render(this.graph.views[i]);
 
-            break;
-          }
+                break;
+            }
         }
         this.RTTtexture.detachFromFrameBuffer();
         this.render(cameraAux);
