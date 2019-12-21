@@ -16,7 +16,9 @@ class XMLscene extends CGFscene {
 
         this.currentCameraID = null;
         this.cameraChanged = false;
-
+        this.selectorCounter = 0;
+        this.objectSelect = 0;
+        this.squareSelect = 0;
         this.interface = myinterface;
     }
 
@@ -204,6 +206,7 @@ class XMLscene extends CGFscene {
     }
 
     logPicking() {
+
         if (this.pickMode == false) {
             if (this.pickResults != null && this.pickResults.length > 0) {
                 for (var i = 0; i < this.pickResults.length; i++) {
@@ -211,6 +214,14 @@ class XMLscene extends CGFscene {
                     if (obj) {
                         var customId = this.pickResults[i][1];
                         console.log("Picked object: " + obj + ", with pick id " + customId);
+                    }
+                    if (this.selectorCounter == 0 && this.pickResults[i][1] >= 82 && this.pickResults[i][1] <= 90) {
+                        this.selectorCounter++;
+                        this.objectSelect = this.pickResults[i][1];
+                    } else if (this.selectorCounter == 1 && this.pickResults[i][1] >= 1 && this.pickResults[i][1] <= 81) {
+                        this.squareSelect = this.pickResults[i][1];
+                        console.log("Object:" + this.objectSelect + "Square:" + this.squareSelect);
+                        this.selectorCounter = 0;
                     }
                 }
                 this.pickResults.splice(0, this.pickResults.length);
