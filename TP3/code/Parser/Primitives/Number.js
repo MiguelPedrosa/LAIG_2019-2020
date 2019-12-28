@@ -41,6 +41,18 @@ class Number extends CGFobject {
         this.scene.popMatrix();
     }
 
+    setID(newID) {
+        this.id = newID;
+    }
+
+    getID() {
+        return this.id;
+    }
+
+    getBools() {
+        return this.booleans;
+    }
+
     modifyTextCoords(lengthS, lengthT) {
     }
 
