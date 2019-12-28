@@ -218,28 +218,38 @@ class XMLscene extends CGFscene {
                     if (this.selectorCounter == 0 && this.pickResults[i][1] >= 82 && this.pickResults[i][1] <= 90) {
                         this.selectorCounter++;
                         this.objectSelect = this.pickResults[i][1];
+                        this.selectedNumber = this.pickResults[i][0];
                     } else if (this.selectorCounter == 1 && this.pickResults[i][1] >= 1 && this.pickResults[i][1] <= 81) {
                         this.squareSelect = this.pickResults[i][1];
                         console.log("Object:" + this.objectSelect + "Square:" + this.squareSelect);
                         this.selectorCounter = 0;
 
-                        const startPosition = [0, 0, 0];
-                        const endPosition = [0, 0, 2];
-                        const newAnimationID = "movementAnimation" + this.squareSelect;
-                        const newPieceID = "piece" + this.squareSelect;
-                        const bools = this.objectSelect.getBools();
-                        const newNumber = new Number(this.graph.scene, 0.6, 0.2, bools);
-
-                        this.graph.animations[newAnimationID]
-                            = new AngularAnimation(this.graph.scene, startPosition, endPosition, 3);                        
-
-                        this.graph.components[newPieceID] = newNumber;
-                        this.graph.components[newPieceID]["animationID"] = newAnimationID;
+                        this.movePiece(this.selectedNumber, obj, this.squareSelect);
                     }
                 }
                 this.pickResults.splice(0, this.pickResults.length);
             }
         }
+    }
+
+    movePiece(piece, square, squareID) {
+
+        const startMatrix = piece.getCurrentPosition();
+        const startPosition = [startMatrix[0], startMatrix[4], startMatrix[8] ];
+        const endMatrix = square.getCurrentPosition();
+        const endPosition = [endMatrix[0], endMatrix[4], endMatrix[8] ];
+
+        const newAnimationID = "movementAnimation" + squareID;
+        const newPieceID = "piece" + squareID;
+        const bools = piece.getBools();
+        const newNumber = new Number(this.graph.scene, 0.6, 0.2, bools);
+
+        this.graph.animations[newAnimationID]
+            = new AngularAnimation(this.graph.scene, startPosition, endPosition, 3);                        
+
+        this.graph.components[newPieceID] = newNumber;
+        this.graph.components[newPieceID]["animationID"] = newAnimationID;
+        console.log("Animation added");
     }
 
     display() {
