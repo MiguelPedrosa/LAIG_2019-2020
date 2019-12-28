@@ -5,7 +5,13 @@ class MySquareOnly extends CGFobject {
         this.squareOnly = new MyRectangle(scene, id, -0.5, 0.5, -0.5, 0.5);
     }
     display() {
+        this.currentPosition = this.scene.getMatrix();
         this.squareOnly.display();
     }
+
+    getCurrentPosition() {
+        return this.currentPosition;
+    }
+
     modifyTextCoords(lengthS, lengthT) {}
 }
