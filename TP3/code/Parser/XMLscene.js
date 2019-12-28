@@ -222,6 +222,19 @@ class XMLscene extends CGFscene {
                         this.squareSelect = this.pickResults[i][1];
                         console.log("Object:" + this.objectSelect + "Square:" + this.squareSelect);
                         this.selectorCounter = 0;
+
+                        const startPosition = [0, 0, 0];
+                        const endPosition = [0, 0, 2];
+                        const newAnimationID = "movementAnimation" + this.squareSelect;
+                        const newPieceID = "piece" + this.squareSelect;
+                        const bools = this.objectSelect.getBools();
+                        const newNumber = new Number(this.graph.scene, 0.6, 0.2, bools);
+
+                        this.graph.animations[newAnimationID]
+                            = new AngularAnimation(this.graph.scene, startPosition, endPosition, 3);                        
+
+                        this.graph.components[newPieceID] = newNumber;
+                        this.graph.components[newPieceID]["animationID"] = newAnimationID;
                     }
                 }
                 this.pickResults.splice(0, this.pickResults.length);
