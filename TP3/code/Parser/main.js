@@ -62,6 +62,7 @@ serialInclude(['../lib/CGF.js',
     // Animations
     './Animations/Animation.js',
     './Animations/KeyframeAnimation.js',
+    './Animations/AngularAnimation.js',
     // Number pieces
     './Primitives/Number.js',
 
