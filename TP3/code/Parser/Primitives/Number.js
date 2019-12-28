@@ -11,6 +11,7 @@ class Number extends CGFobject {
 		this.piece = new MyCylinder(this.scene, null, realWidth, realWidth, this.length, 4, 20);
 
         this.booleans = bools;
+        this.currentPosition;
     }
 
     display() {
@@ -37,6 +38,7 @@ class Number extends CGFobject {
         }
         this.scene.rotate(Math.PI/4, 0, 0, 1);
         this.scene.translate(0, 0, -this.length/2);
+        this.currentPosition = this.scene.getMatrix();
         this.piece.display();
         this.scene.popMatrix();
     }
@@ -51,6 +53,10 @@ class Number extends CGFobject {
 
     getBools() {
         return this.booleans;
+    }
+
+    getCurrentPosition() {
+        return this.currentPosition;
     }
 
     modifyTextCoords(lengthS, lengthT) {
