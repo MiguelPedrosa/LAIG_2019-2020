@@ -28,7 +28,7 @@ class XMLscene extends CGFscene {
      */
     init(application) {
         super.init(application);
-
+        this.endPosition = [];
         this.initCameras();
 
         this.enableTextures(true);
@@ -223,7 +223,6 @@ class XMLscene extends CGFscene {
                         this.squareSelect = this.pickResults[i][1];
                         console.log("Object:" + this.objectSelect + "Square:" + this.squareSelect);
                         this.selectorCounter = 0;
-
                         this.movePiece(this.selectedNumber, obj, this.squareSelect);
                     }
                 }
@@ -231,28 +230,166 @@ class XMLscene extends CGFscene {
             }
         }
     }
-
+    parseEndPositions() {
+        /*Square 1*/
+        /*--------------------------------*/
+        this.endPosition[1] = [-10, 9.9, -0.25];
+        this.endPosition[2] = [-8.15, 9.9, -0.25];
+        this.endPosition[3] = [-6.35, 9.9, -0.25];
+        /*--------------------------------*/
+        this.endPosition[4] = [-10, 8.05, -0.25];
+        this.endPosition[5] = [-8.15, 8.05, -0.25];
+        this.endPosition[6] = [-6.35, 8.05, -0.25];
+        /*--------------------------------*/
+        this.endPosition[7] = [-10, 6.25, -0.25];
+        this.endPosition[8] = [-8.15, 6.25, -0.25];
+        this.endPosition[9] = [-6.35, 6.25, -0.25];
+        /*--------------------------------*/
+        /*--------------------------------*/
+        /*Square 2*/
+        /*--------------------------------*/
+        this.endPosition[10] = [-2.2, 9.9, -0.25];
+        this.endPosition[11] = [-0.4, 9.9, -0.25];
+        this.endPosition[12] = [1.5, 9.9, -0.25];
+        /*--------------------------------*/
+        this.endPosition[13] = [-2.2, 8.05, -0.25];
+        this.endPosition[14] = [-0.4, 8.05, -0.25];
+        this.endPosition[15] = [1.5, 8.05, -0.25];
+        /*--------------------------------*/
+        this.endPosition[16] = [-2.2, 6.25, -0.25];
+        this.endPosition[17] = [-0.4, 6.25, -0.25];
+        this.endPosition[18] = [1.5, 6.25, -0.25];
+        /*--------------------------------*/
+        /*--------------------------------*/
+        /*Square 3*/
+        /*--------------------------------*/
+        this.endPosition[19] = [5.5, 9.9, -0.25];
+        this.endPosition[20] = [7.3, 9.9, -0.25];
+        this.endPosition[21] = [9.2, 9.9, -0.25];
+        /*--------------------------------*/
+        this.endPosition[22] = [5.5, 8.05, -0.25];
+        this.endPosition[23] = [7.3, 8.05, -0.25];
+        this.endPosition[24] = [9.2, 8.05, -0.25];
+        /*--------------------------------*/
+        this.endPosition[25] = [5.5, 6.25, -0.25];
+        this.endPosition[26] = [7.3, 6.25, -0.25];
+        this.endPosition[27] = [9.2, 6.25, -0.25];
+        /*--------------------------------*/
+        /*--------------------------------*/
+        /*Square 4*/
+        /*--------------------------------*/
+        this.endPosition[28] = [-10, 2.0, -0.25];
+        this.endPosition[29] = [-8.15, 2.0, -0.25];
+        this.endPosition[30] = [-6.35, 2.0, -0.25];
+        /*--------------------------------*/
+        this.endPosition[31] = [-10, 0.2, -0.25];
+        this.endPosition[32] = [-8.15, 0.2, -0.25];
+        this.endPosition[33] = [-6.35, 0.2, -0.25];
+        /*--------------------------------*/
+        this.endPosition[34] = [-10, -1.5, -0.25];
+        this.endPosition[35] = [-8.15, -1.5, -0.25];
+        this.endPosition[36] = [-6.35, -1.5, -0.25];
+        /*--------------------------------*/
+        /*--------------------------------*/
+        /*Square 5*/
+        /*--------------------------------*/
+        this.endPosition[37] = [-2.2, 2.0, -0.25];
+        this.endPosition[38] = [-0.4, 2.0, -0.25];
+        this.endPosition[39] = [1.5, 2.0, -0.25];
+        /*--------------------------------*/
+        this.endPosition[40] = [-2.2, 0.2, -0.25];
+        this.endPosition[41] = [-0.4, 0.2, -0.25];
+        this.endPosition[42] = [1.5, 0.2, -0.25];
+        /*--------------------------------*/
+        this.endPosition[43] = [-2.2, -1.5, -0.25];
+        this.endPosition[44] = [-0.4, -1.5, -0.25];
+        this.endPosition[45] = [1.5, -1.5, -0.25];
+        /*--------------------------------*/
+        /*--------------------------------*/
+        /*Square 6*/
+        /*--------------------------------*/
+        this.endPosition[46] = [5.5, 2.0, -0.25];
+        this.endPosition[47] = [7.3, 2.0, -0.25];
+        this.endPosition[48] = [9.2, 2.0, -0.25];
+        /*--------------------------------*/
+        this.endPosition[49] = [5.5, 0.2, -0.25];
+        this.endPosition[50] = [7.3, 0.2, -0.25];
+        this.endPosition[51] = [9.2, 0.2, -0.25];
+        /*--------------------------------*/
+        this.endPosition[52] = [5.5, -1.5, -0.25];
+        this.endPosition[53] = [7.3, -1.5, -0.25];
+        this.endPosition[54] = [9.2, -1.5, -0.25];
+        /*--------------------------------*/
+        /*--------------------------------*/
+        /*Square 7*/
+        /*--------------------------------*/
+        this.endPosition[55] = [-10, -5.7, -0.25];
+        this.endPosition[56] = [-8.15, -5.7, -0.25];
+        this.endPosition[57] = [-6.35, -5.7, -0.25];
+        /*--------------------------------*/
+        this.endPosition[58] = [-10, -7.5, -0.25];
+        this.endPosition[59] = [-8.15, -7.5, -0.25];
+        this.endPosition[60] = [-6.35, -7.5, -0.25];
+        /*--------------------------------*/
+        this.endPosition[61] = [-10, -9.3, -0.25];
+        this.endPosition[62] = [-8.15, -9.3, -0.25];
+        this.endPosition[63] = [-6.35, -9.3, -0.25];
+        /*--------------------------------*/
+        /*--------------------------------*/
+        /*Square 8*/
+        /*--------------------------------*/
+        this.endPosition[64] = [-2.2, -5.7, -0.25];
+        this.endPosition[65] = [-0.4, -5.7, -0.25];
+        this.endPosition[66] = [1.5, -5.7, -0.25];
+        /*--------------------------------*/
+        this.endPosition[67] = [-2.2, -7.5, -0.25];
+        this.endPosition[68] = [-0.4, -7.5, -0.25];
+        this.endPosition[69] = [1.5, -7.5, -0.25];
+        /*--------------------------------*/
+        this.endPosition[70] = [-2.2, -9.3, -0.25];
+        this.endPosition[71] = [-0.4, -9.3, -0.25];
+        this.endPosition[72] = [1.5, -9.3, -0.25];
+        /*--------------------------------*/
+        /*--------------------------------*/
+        /*Square 9*/
+        /*--------------------------------*/
+        this.endPosition[73] = [5.5, -5.7, -0.25];
+        this.endPosition[74] = [7.3, -5.7, -0.25];
+        this.endPosition[75] = [9.2, -5.7, -0.25];
+        /*--------------------------------*/
+        this.endPosition[76] = [5.5, -7.5, -0.25];
+        this.endPosition[77] = [7.3, -7.5, -0.25];
+        this.endPosition[78] = [9.2, -7.5, -0.25];
+        /*--------------------------------*/
+        this.endPosition[79] = [5.5, -9.3, -0.25];
+        this.endPosition[80] = [7.3, -9.3, -0.25];
+        this.endPosition[81] = [9.2, -9.3, -0.25];
+        /*--------------------------------*/
+        /*--------------------------------*/
+    }
     movePiece(piece, square, squareID) {
-
         const startMatrix = piece.getCurrentPosition();
-        const startPosition = [startMatrix[0], startMatrix[5], startMatrix[10] ];
-        const endMatrix = square.getCurrentPosition();
-        const endPosition = [endMatrix[0], endMatrix[5], endMatrix[10] ];
-
+        const startPosition = [startMatrix[0], startMatrix[5], startMatrix[10]];
+        //const endMatrix = square.getCurrentPosition();
+        //const endPosition = [endMatrix[0], endMatrix[5], endMatrix[10]];
+        this.parseEndPositions();
         const newAnimationID = "movementAnimation" + squareID;
         const newPieceID = "piece" + squareID;
         const bools = piece.getBools();
         const newNumber = new Number(this.graph.scene, 0.6, 0.2, bools);
 
-        this.graph.animations[newAnimationID]
-            = new AngularAnimation(this.graph.scene, startPosition, endPosition, 3);                        
+        this.graph.animations[newAnimationID] = new AngularAnimation(this.graph.scene, startPosition, this.endPosition[squareID], 3);
 
         var newComponent = {
             transformation: mat4.create(),
             animationID: newAnimationID,
             materials: ["screenMaterial"],
             materialsIndex: 0,
-            texture: {"ID": "mesa", "length_s": 1.0, "length_t": 1.0},
+            texture: {
+                "ID": "mesa",
+                "length_s": 1.0,
+                "length_t": 1.0
+            },
             componentChildren: [],
             primitiveChildren: [newPieceID]
         };

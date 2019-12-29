@@ -1159,8 +1159,10 @@
 
      <component id="player1">
             <transformation>
+                  
                     <translate x="7.5" y="1.2" z="2"/>
                     <scale x="1" y="1" z="1"/>
+                      <rotate axis = "x" angle = "-40"/>
             </transformation>
             <materials>
                 <material id="screenMaterial"/>
@@ -1173,8 +1175,10 @@
     
          <component id="player2">
             <transformation>
+             
                     <translate x="7.5" y="1.2" z="7"/>
                     <scale x="1" y="1" z="1"/>
+                     <rotate axis = "x" angle = "40"/>
                     <rotate axis="y" angle="180"/>
             </transformation>
             <materials>
