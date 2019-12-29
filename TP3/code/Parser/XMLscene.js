@@ -235,9 +235,9 @@ class XMLscene extends CGFscene {
     movePiece(piece, square, squareID) {
 
         const startMatrix = piece.getCurrentPosition();
-        const startPosition = [startMatrix[0], startMatrix[4], startMatrix[8] ];
+        const startPosition = [startMatrix[0], startMatrix[5], startMatrix[10] ];
         const endMatrix = square.getCurrentPosition();
-        const endPosition = [endMatrix[0], endMatrix[4], endMatrix[8] ];
+        const endPosition = [endMatrix[0], endMatrix[5], endMatrix[10] ];
 
         const newAnimationID = "movementAnimation" + squareID;
         const newPieceID = "piece" + squareID;
@@ -247,9 +247,20 @@ class XMLscene extends CGFscene {
         this.graph.animations[newAnimationID]
             = new AngularAnimation(this.graph.scene, startPosition, endPosition, 3);                        
 
-        this.graph.components[newPieceID] = newNumber;
-        this.graph.components[newPieceID]["animationID"] = newAnimationID;
-        console.log("Animation added");
+        var newComponent = {
+            transformation: mat4.create(),
+            animationID: newAnimationID,
+            materials: ["screenMaterial"],
+            materialsIndex: 0,
+            texture: {"ID": "mesa", "length_s": 1.0, "length_t": 1.0},
+            componentChildren: [],
+            primitiveChildren: [newPieceID]
+        };
+        this.graph.components["mbrane"]["componentChildren"].push(newPieceID);
+        this.graph.components[newPieceID] = newComponent;
+        this.graph.primitives[newPieceID] = newNumber;
+
+        console.log("Piece movement added");
     }
 
     display() {
