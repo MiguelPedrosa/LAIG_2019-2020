@@ -383,7 +383,7 @@ class XMLscene extends CGFscene {
         var newComponent = {
             transformation: mat4.create(),
             animationID: newAnimationID,
-            materials: ["screenMaterial"],
+            materials: ["TVMaterial"],
             materialsIndex: 0,
             texture: {
                 "ID": "mesa",
