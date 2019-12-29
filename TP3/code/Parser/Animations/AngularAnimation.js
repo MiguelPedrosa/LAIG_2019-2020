@@ -22,9 +22,9 @@ class AngularAnimation {
             return;
         }
 
-        const timeDiff = (t - this.startTime)/1000;
+        const timeDiff = (t - this.startTime) / 1000;
 
-        if(timeDiff >= this.duration) {
+        if (timeDiff >= this.duration) {
             this.currentOffsetX = this.distanceX;
             this.currentOffsetY = this.distanceY;
             this.currentOffsetZ = this.distanceZ;
@@ -35,8 +35,9 @@ class AngularAnimation {
         this.currentOffsetY = this.distanceY * (timeDiff / this.duration);
         this.currentOffsetZ = this.distanceZ * (timeDiff / this.duration);
     }
-   
+
     apply() {
+        this.scene.scale(0.05, 0.05, 0.5);
         this.scene.translate(this.currentOffsetX, this.currentOffsetY, this.currentOffsetZ);
     }
 
