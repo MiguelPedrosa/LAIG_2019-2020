@@ -1,5 +1,9 @@
 <lxs>
-    <scene root="root" axis_length="5" />
+    <scene root="root" axis_length="5">
+        <startingPoint id="root"/>
+        <startingPoint id = "Ibiza"/>
+          <startingPoint id = "Spaces"/>
+    </scene>
 
     <views default="tabuleiroCamera">
         <perspective id="defaultCamera" near="0.1" far="500" angle="60">
@@ -51,6 +55,7 @@
     </lights>
 
     <textures>
+        <!-- Default -->
         <texture id="demoTexture" file="scenes/images/vidral.jpg" />
         <texture id="sadCat" file="scenes/images/sadCat.jpg"/>
         <texture id="mesa" file="scenes/images/madeiraMesa.jpg"/>
@@ -61,6 +66,17 @@
         <texture id="cadeiras" file="scenes/images/cadeiras.jpg"/>
         <texture id="girls" file="scenes/images/girls.jpg"/>
         <texture id="kingcat" file="scenes/images/kingcat.jpg"/>
+
+        <!-- Ibiza -->
+        <texture id="areia" file="scenes/images/areia.jpg"/>
+        <texture id="sky" file="scenes/images/sky2.jpg"/>
+        <texture id="palmeiraTopo" file="scenes/images/palmeiraTopo.jpg"/>
+        <texture id="palmeiraBase" file="scenes/images/palmeiraBase.jpg"/>
+        <texture id="fire" file="scenes/images/fire.jpg"/>
+
+         <!-- Space -->
+        <texture id="space" file="scenes/images/space.jpg"/>
+        
     </textures>
 
     <materials>
@@ -219,6 +235,8 @@
         
     </primitives>
 
+   
+    
     <components>
         <component id="root">
             <transformation>
@@ -553,7 +571,7 @@
             <materials>
                 <material id="inherit" />
             </materials>
-            <texture id="none" length_s="1.0" length_t="1.0"/>
+            <texture id="inherit" length_s="1.0" length_t="1.0"/>
             <children>
                 <componentref id="boxInner_wall1" />
                 <componentref id="boxInner_wall2" />
@@ -568,7 +586,7 @@
             <materials>
                 <material id="inherit" />
             </materials>
-            <texture id="none" length_s="1.0" length_t="1.0"/>
+            <texture id="inherit" length_s="1.0" length_t="1.0"/>
             <children>
                 <primitiveref id="basicSquare" />
             </children>
@@ -581,7 +599,7 @@
             <materials>
                 <material id="inherit" />
             </materials>
-            <texture id="none" length_s="1.0" length_t="1.0"/>
+            <texture id="inherit" length_s="1.0" length_t="1.0"/>
             <children>
                 <primitiveref id="basicSquare" />
             </children>
@@ -594,7 +612,7 @@
             <materials>
                 <material id="inherit" />
             </materials>
-            <texture id="none" length_s="1.0" length_t="1.0"/>
+            <texture id="inherit" length_s="1.0" length_t="1.0"/>
             <children>
                 <primitiveref id="basicSquare" />
             </children>
@@ -607,7 +625,7 @@
             <materials>
                 <material id="inherit" />
             </materials>
-            <texture id="none" length_s="1.0" length_t="1.0"/>
+            <texture id="inherit" length_s="1.0" length_t="1.0"/>
             <children>
                 <primitiveref id="basicSquare" />
             </children>
@@ -1175,7 +1193,6 @@
     
          <component id="player2">
             <transformation>
-             
                     <translate x="7.5" y="1.2" z="7"/>
                     <scale x="1" y="1" z="1"/>
                      <rotate axis = "x" angle = "40"/>
@@ -1189,6 +1206,304 @@
                 <primitiveref id = "basicSquare"/>
             </children>
         </component>
+
+
+<!-- CONSTRUÇÃO IBIZA TEMA-->
+        <component id="Ibiza">
+             <transformation>
+            <scale x="3" y="3" z="3" />
+            </transformation>
+            <materials>
+               <material id="default" />
+            </materials>
+            <texture id="sky" length_s="1.0" length_t="1.0"/>
+            <children>
+                <componentref id="areal"/>
+                <componentref id="mbrane"/>
+                <componentref id="wallsIbiza"/>
+                <componentref id="mesa"/>
+                <componentref id="chair1"/>
+                <componentref id="chair2"/>
+                <componentref id="player1"/>
+                <componentref id="player2"/>
+                 <componentref id="fogueira"/>
+            </children>
+        </component>
+             <component id="areal">
+                    <transformation>
+                        <translate x="5" y="0" z="5" />
+                        <scale x="10" y="10" z="10"/>
+                    </transformation>
+                    <materials>
+                        <material id="wallMaterial"/>
+                    </materials>
+                    <texture id="areia" length_s="1.0" length_t="1.0"/>
+                    <children>
+                        <primitiveref id="basicPlane"/>
+                    </children>
+        </component>
+        <component id = "wallsIbiza">
+            <transformation>
+                <translate x="5" y="3" z="5" />
+                <scale x="10" y="6" z="10" />
+            </transformation>
+            <materials>
+                <material id="screenMaterial"/>
+            </materials>
+            <texture id="sky" length_s="1.0" length_t="1.0"/>
+            <children>
+                <componentref id="boxInner" />
+            </children>
+        </component>
+
+        <component id = "fogueira">
+            <transformation>
+                <translate x="4.5" y="0.1" z="4.5" />
+                
+            </transformation>
+            <materials>
+                <material id="default"/>
+            </materials>
+            <texture id="none" length_s="1.0" length_t="1.0"/>
+            <children>
+                <componentref id="tronco1" />
+                <componentref id="tronco2" />
+                <componentref id="tronco3" />
+                <componentref id="tronco4" />
+                <componentref id="tronco5" />
+                <componentref id="tronco6" />
+                <componentref id="tronco7" />
+                <componentref id="tronco8" />
+                <componentref id="tronco9" />
+                <componentref id="fire" />
+         
+            </children>
+        </component>
+
+        <component id = "tronco1">
+            <transformation>
+                  <scale  x="0.05" y="0.05" z="0.55"/>
+             <rotate axis="z" angle="90"/>
+        
+            </transformation>
+            <materials>
+                <material id = "inherit"/>
+            </materials>
+            <texture id="palmeiraBase" length_s="1.0" length_t="1.0"/>
+            <children>
+                <primitiveref id = "demoCylinder3"/>
+            </children>
+        </component>
+
+         <component id = "tronco2">
+            <transformation>
+             <rotate axis="y" angle="45"/>
+                   <scale  x="0.05" y="0.05" z="0.55"/>
+            </transformation>
+            <materials>
+                <material id = "inherit"/>
+            </materials>
+            <texture id="palmeiraBase" length_s="1.0" length_t="1.0"/>
+            <children>
+                <primitiveref id = "demoCylinder3"/>
+            </children>
+        </component>
+
+         <component id = "tronco3">
+            <transformation>
+             <rotate axis="y" angle="90"/>
+                   <scale  x="0.05" y="0.05" z="0.55"/>
+            </transformation>
+            <materials>
+                <material id = "inherit"/>
+            </materials>
+            <texture id="palmeiraBase" length_s="1.0" length_t="1.0"/>
+            <children>
+                <primitiveref id = "demoCylinder3"/>
+            </children>
+        </component>
+        <component id = "tronco4">
+            <transformation>
+                  <scale  x="0.05" y="0.05" z="0.55"/>
+             <rotate axis="z" angle="-90"/>
+        
+            </transformation>
+            <materials>
+                <material id = "inherit"/>
+            </materials>
+            <texture id="palmeiraBase" length_s="1.0" length_t="1.0"/>
+            <children>
+                <primitiveref id = "demoCylinder3"/>
+            </children>
+        </component>
+
+         <component id = "tronco5">
+            <transformation>
+             <rotate axis="y" angle="-45"/>
+                   <scale  x="0.05" y="0.05" z="0.55"/>
+            </transformation>
+            <materials>
+                <material id = "inherit"/>
+            </materials>
+            <texture id="palmeiraBase" length_s="1.0" length_t="1.0"/>
+            <children>
+                <primitiveref id = "demoCylinder3"/>
+            </children>
+        </component>
+
+         <component id = "tronco6">
+            <transformation>
+             <rotate axis="y" angle="-90"/>
+                   <scale  x="0.05" y="0.05" z="0.55"/>
+            </transformation>
+            <materials>
+                <material id = "inherit"/>
+            </materials>
+            <texture id="palmeiraBase" length_s="1.0" length_t="1.0"/>
+            <children>
+                <primitiveref id = "demoCylinder3"/>
+            </children>
+        </component>
+
+        <component id = "tronco7">
+            <transformation>
+             <rotate axis="y" angle="225"/>
+             <rotate axis="z" angle="90"/>
+             <scale  x="0.05" y="0.05" z="0.55"/>
+
+            </transformation>
+            <materials>
+                <material id = "inherit"/>
+            </materials>
+            <texture id="palmeiraBase" length_s="1.0" length_t="1.0"/>
+            <children>
+                <primitiveref id = "demoCylinder3"/>
+            </children>
+        </component>
+
+         <component id = "tronco8">
+            <transformation>
+             <rotate axis="y" angle="45"/>
+             <rotate axis="y" angle="90"/>
+            <scale  x="0.05" y="0.05" z="0.55"/>
+            </transformation>
+            <materials>
+                <material id = "inherit"/>
+            </materials>
+            <texture id="palmeiraBase" length_s="1.0" length_t="1.0"/>
+            <children>
+                <primitiveref id = "demoCylinder3"/>
+            </children>
+        </component>
+
+         <component id = "tronco9">
+            <transformation>
+             <rotate axis="y" angle="90"/>
+             <rotate axis="y" angle="90"/>
+            <scale  x="0.05" y="0.05" z="0.55"/>
+            </transformation>
+            <materials>
+                <material id = "inherit"/>
+            </materials>
+            <texture id="palmeiraBase" length_s="1.0" length_t="1.0"/>
+            <children>
+                <primitiveref id = "demoCylinder3"/>
+            </children>
+        </component>
+            <component id = "fire">
+                    <transformation>
+                        <translate x="0.0" y="0.2" z="0.0"/>
+                        <scale x="0.2" y="0.2" z="0.2"/>
+                      
+                    </transformation>
+                    <materials>
+                        <material id="default"/>
+                    </materials>
+                    <texture id="fire" length_s="1.0" length_t="1.0"/>
+                    <children>
+                        <primitiveref id = "demoSphere"/>
+                    </children>
+            </component>
+
+
+    <!-- Space theme-->
+    <component id="Spaces">
+             <transformation>
+            <scale x="3" y="3" z="3" />
+            </transformation>
+            <materials>
+               <material id="default" />
+            </materials>
+            <texture id="space" length_s="1.0" length_t="1.0"/>
+            <children>
+                <componentref id="mbrane"/>
+                <componentref id="wallsSpace"/>
+                <componentref id="floorSpace"/>
+                <componentref id="player1Space"/>
+                <componentref id="player2Space"/>
+            </children>
+        </component>
+         <component id = "wallsSpace">
+            <transformation>
+                <translate x="5" y="3" z="5" />
+                <scale x="10" y="6" z="10" />
+            </transformation>
+            <materials>
+                <material id="screenMaterial"/>
+            </materials>
+            <texture id="space" length_s="1.0" length_t="1.0"/>
+            <children>
+                <componentref id="boxInner" />
+            </children>
+        </component>
+        <component id = "floorSpace">
+            <transformation>
+                <translate x="5" y="0" z="5" />
+                <scale x="10" y="10" z="10"/>
+            </transformation>
+            <materials>
+                <material id="screenMaterial"/>
+    
+            </materials>
+            <texture id="space" length_s="1.0" length_t="1.0"/>
+            <children>
+                <primitiveref id="basicPlane"/>
+            </children>
+        </component>
+
+     <component id="player1Space">
+            <transformation>
+                    <translate x="7.5" y="1.2" z="2"/>
+                    <scale x="0.3" y="0.3" z="0.3"/>
+            <rotate axis="y" angle="120"/>
+                     <rotate axis="x" angle="-90"/>
+            </transformation>
+            <materials>
+                <material id="screenMaterial"/>
+            </materials>
+            <texture id="girls" length_s="1.0" length_t="1.0"/>
+            <children>
+                <primitiveref id = "demoSphere"/>
+            </children>
+        </component>
+
+        <component id="player2Space">
+            <transformation>
+                    <translate x="7.5" y="1.2" z="7"/>
+                    <scale x="0.3" y="0.3" z="0.3"/>
+                    <rotate axis="y" angle="230"/>
+                     <rotate axis="x" angle="-90"/>
+            </transformation>
+            <materials>
+                <material id="screenMaterial"/>
+            </materials>
+            <texture id="kingcat" length_s="1.0" length_t="1.0"/>
+            <children>
+                <primitiveref id = "demoSphere"/>
+            </children>
+        </component>
+
+        
   </components>
 </lxs>
       
