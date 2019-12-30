@@ -218,11 +218,25 @@ class MySceneGraph {
     parseScene(sceneNode) {
 
         // Get root of the scene.
-        var root = this.reader.getString(sceneNode, 'root')
-        if (root == null)
-            return "no root defined for scene";
+        var defaultRoot = this.reader.getString(sceneNode, 'root')
+        if (defaultRoot == null)
+            return "no default root defined for scene";
 
-        this.idRoot = root;
+        this.roots = [];
+        const children = sceneNode.children;
+        for(let i = 0; i < children.length; i++) {
+            if (children[i].nodeName === "startingPoint") {
+                const rootID = this.reader.getString(children[i], 'id');
+                if(rootID != null) {
+                    this.roots.push(rootID);
+                }
+            }
+        }
+        if (this.roots.length < 1)
+            return "no roots defined for scene";
+        
+        this.currentRoot = 0;
+        this.idRoot = this.roots[this.currentRoot];
 
         // Get axis length
         var axis_length = this.reader.getFloat(sceneNode, 'axis_length');

@@ -38,6 +38,11 @@ class MyInterface extends CGFinterface {
         if (event.code == "KeyM") {
             this.scene.changeMaterialsMpressed();
         }
+        if(event.code == "KeyR") {
+            this.scene.graph.currentRoot++;
+            this.scene.graph.currentRoot %= this.scene.graph.roots.length;
+            this.scene.graph.idRoot = this.scene.graph.roots[this.scene.graph.currentRoot];
+        }
     };
 
     isKeyPressed(keyCode) {
