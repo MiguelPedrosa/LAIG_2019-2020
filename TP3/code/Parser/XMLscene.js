@@ -22,6 +22,14 @@ class XMLscene extends CGFscene {
         this.player1 = true;
         this.player2 = false;
         this.resetCam = false;
+        this.usedMaterial;
+
+        this.redMaterial = new CGFappearance(this.scene);
+        this.redMaterial.setShininess(10.0);
+        this.redMaterial.setEmission(1.0, 0.0, 0.0, 0.0);
+        this.redMaterial.setAmbient(1.0, 0.0, 0.0, 0.0);
+        this.redMaterial.setDiffuse(1.0, 0.0, 0.0, 0.0);
+        this.redMaterial.setSpecular(1.0, 0.0, 0.0, 0.0);
     }
 
 
@@ -233,16 +241,19 @@ class XMLscene extends CGFscene {
                         this.squareSelect = this.pickResults[i][1];
                         console.log("Object:" + this.objectSelect + "Square:" + this.squareSelect);
                         this.selectorCounter = 0;
-                        this.movePiece(this.selectedNumber, obj, this.squareSelect);
                         if (this.player1 == true) {
                             this.camera.orbit("Y", DEGREE_TO_RAD * 60);
+                            this.usedMaterial = ["TVMaterial"];
                             this.player1 = false;
                             this.player2 = true;
-                        } else if (this.player2) {
+                        } else if (this.player2 == true) {
                             this.camera.orbit("Y", DEGREE_TO_RAD * -60);
+                            this.usedMaterial = ["redMaterial"];
+                            console.log("floor");
                             this.player1 = true;
                             this.player2 = false;
                         }
+                        this.movePiece(this.selectedNumber, obj, this.squareSelect);
                     }
                 }
                 this.pickResults.splice(0, this.pickResults.length);
@@ -410,7 +421,8 @@ class XMLscene extends CGFscene {
         var newComponent = {
             transformation: mat4.create(),
             animationID: newAnimationID,
-            materials: ["TVMaterial"],
+
+            materials: this.usedMaterial,
             materialsIndex: 0,
             texture: {
                 "ID": "mesa",
