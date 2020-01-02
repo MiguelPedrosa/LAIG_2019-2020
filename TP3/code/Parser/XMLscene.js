@@ -45,8 +45,7 @@ class XMLscene extends CGFscene {
         this.setUpdatePeriod(100);
         this.RTTtexture = new CGFtextureRTT(this, this.gl.canvas.width, this.gl.canvas.height);
         this.securityCamera = new MySecurityCamera(this);
-
-        this.themeIbiza = false;
+        this.marcador = new Marcador(this, [true, true, true, true, true, false, true, true], [true, true, true, true, true, false, true, true]);
         this.setPickEnabled(true);
 
     }
@@ -164,7 +163,6 @@ class XMLscene extends CGFscene {
             this.graph.animations[key].update(t);
         this.securityCamera.update(t);
 
-
     }
 
     /**
@@ -189,6 +187,7 @@ class XMLscene extends CGFscene {
 
         this.pushMatrix();
         this.axis.display();
+        this.marcador.display();
 
         if (this.sceneInited) {
 

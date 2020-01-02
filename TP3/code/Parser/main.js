@@ -59,6 +59,7 @@ serialInclude(['../lib/CGF.js',
     './Primitives/MyGameBoard.js',
     './Primitives/MyGameSquare.js',
     './Primitives/MySquareOnly.js',
+    './Primitives/Marcador.js',
     // Animations
     './Animations/Animation.js',
     './Animations/KeyframeAnimation.js',
