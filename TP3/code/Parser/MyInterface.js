@@ -1,6 +1,6 @@
 /**
-* MyInterface class, creating a GUI interface.
-*/
+ * MyInterface class, creating a GUI interface.
+ */
 class MyInterface extends CGFinterface {
     /**
      * @constructor
@@ -28,9 +28,9 @@ class MyInterface extends CGFinterface {
      * initKeys
      */
     initKeys() {
-        this.scene.gui=this;
-        this.processKeyboard=function(){};
-        this.activeKeys={};
+        this.scene.gui = this;
+        this.processKeyboard = function () {};
+        this.activeKeys = {};
     }
 
     processKeyUp(event) {
@@ -38,10 +38,14 @@ class MyInterface extends CGFinterface {
         if (event.code == "KeyM") {
             this.scene.changeMaterialsMpressed();
         }
-        if(event.code == "KeyR") {
+        if (event.code == "KeyR") {
             this.scene.graph.currentRoot++;
             this.scene.graph.currentRoot %= this.scene.graph.roots.length;
             this.scene.graph.idRoot = this.scene.graph.roots[this.scene.graph.currentRoot];
+        }
+        if (event.code == "KeyC") {
+            if (this.scene.player2) this.scene.camera.orbit("Y", DEGREE_TO_RAD * -60);
+            else if (this.scene.player1) this.scene.camera.orbit("Y", DEGREE_TO_RAD * 60);
         }
     };
 
@@ -52,7 +56,7 @@ class MyInterface extends CGFinterface {
     addLights(lights) {
         var lightsFolder = this.gui.addFolder("Lights");
         lightsFolder.open();
-        for(var key in lights) {
+        for (var key in lights) {
             lightsFolder.add(this.scene.lightStates, key);
         }
     }
@@ -63,5 +67,5 @@ class MyInterface extends CGFinterface {
             .name('Selected View')
             .onChange(this.scene.onSelectedCameraChanged.bind(this.scene));
     }
-  
+
 }

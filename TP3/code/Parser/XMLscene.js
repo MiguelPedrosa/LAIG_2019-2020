@@ -13,14 +13,17 @@ class XMLscene extends CGFscene {
 
         // Altered by the interface. Used to check if light should be on/off
         this.lightStates = [];
-
         this.currentCameraID = null;
         this.cameraChanged = false;
         this.selectorCounter = 0;
         this.objectSelect = 0;
         this.squareSelect = 0;
         this.interface = myinterface;
+        this.player1 = true;
+        this.player2 = false;
+        this.resetCam = false;
     }
+
 
     /**
      * Initializes the scene, setting some WebGL defaults, initializing the camera and the axis.
@@ -43,10 +46,10 @@ class XMLscene extends CGFscene {
         this.RTTtexture = new CGFtextureRTT(this, this.gl.canvas.width, this.gl.canvas.height);
         this.securityCamera = new MySecurityCamera(this);
 
+        this.themeIbiza = false;
         this.setPickEnabled(true);
 
     }
-
     /**
      * Initializes the scene cameras.
      */
@@ -54,7 +57,6 @@ class XMLscene extends CGFscene {
         this.fallBackCamera = new CGFcamera(0.4, 0.1, 500, vec3.fromValues(15, 15, 15), vec3.fromValues(0, 0, 0));
         this.camera = this.fallBackCamera;
     }
-
 
     /**
      * Initializes the scene lights with the values read from the XML file.
@@ -104,16 +106,24 @@ class XMLscene extends CGFscene {
             }
         }
     }
-
     addSceneViews() {
         this.cameraNames = [];
         for (var view in this.graph.views) {
             this.cameraNames.push(view);
         }
-
         this.currentCameraID = this.graph.defaultCameraID;
         this.camera = this.graph.views[this.currentCameraID] || this.fallBackCamera;
         this.interface.setActiveCamera(this.camera);
+    }
+
+    addSceneThemes() {
+        this.themeNames = [];
+        for (var theme in this.graph.theme) {
+            this.themeNames.push(theme);
+        }
+        this.currentThemeID = this.graph.defaultThemeID;
+        this.theme = this.graph.theme[this.currentThemeID];
+        this.interface.setActiveTheme(this.theme);
     }
 
     onSelectedCameraChanged(newCameraID) {
@@ -153,6 +163,8 @@ class XMLscene extends CGFscene {
         for (var key in this.graph.animations)
             this.graph.animations[key].update(t);
         this.securityCamera.update(t);
+
+
     }
 
     /**
@@ -172,6 +184,7 @@ class XMLscene extends CGFscene {
         this.loadIdentity();
 
         // Apply transformations corresponding to the camera position relative to the origin
+
         this.applyViewMatrix();
 
         this.pushMatrix();
@@ -195,11 +208,9 @@ class XMLscene extends CGFscene {
             }
             // Draw axis
             this.setDefaultAppearance();
-
             // Displays the scene (MySceneGraph function).
             this.graph.displayScene();
         }
-
 
         this.popMatrix();
         // ---- END Background, camera and axis setup
@@ -224,10 +235,28 @@ class XMLscene extends CGFscene {
                         console.log("Object:" + this.objectSelect + "Square:" + this.squareSelect);
                         this.selectorCounter = 0;
                         this.movePiece(this.selectedNumber, obj, this.squareSelect);
+                        if (this.player1 == true) {
+                            this.camera.orbit("Y", DEGREE_TO_RAD * 60);
+                            this.player1 = false;
+                            this.player2 = true;
+                        } else if (this.player2) {
+                            this.camera.orbit("Y", DEGREE_TO_RAD * -60);
+                            this.player1 = true;
+                            this.player2 = false;
+                        }
                     }
                 }
                 this.pickResults.splice(0, this.pickResults.length);
             }
+        }
+    }
+
+    wait(ms) {
+        var start = new Date().getTime();
+        var end = start;
+        while (end < start + ms) {
+            end = new Date().getTime();
+            this.camera.orbit("Y", DEGREE_TO_RAD * -5);
         }
     }
     parseEndPositions() {
@@ -370,8 +399,7 @@ class XMLscene extends CGFscene {
     movePiece(piece, square, squareID) {
         const startMatrix = piece.getCurrentPosition();
         const startPosition = [startMatrix[0], startMatrix[5], startMatrix[10]];
-        //const endMatrix = square.getCurrentPosition();
-        //const endPosition = [endMatrix[0], endMatrix[5], endMatrix[10]];
+
         this.parseEndPositions();
         const newAnimationID = "movementAnimation" + squareID;
         const newPieceID = "piece" + squareID;
@@ -397,18 +425,18 @@ class XMLscene extends CGFscene {
         this.graph.components[newPieceID] = newComponent;
         this.graph.primitives[newPieceID] = newNumber;
 
+
         console.log("Piece movement added");
+
     }
 
     display() {
         this.logPicking();
-
         var cameraAux = this.camera;
         this.RTTtexture.attachToFrameBuffer();
         for (var i in this.graph.views) {
             if (i == 'securityCamera') {
                 this.render(this.graph.views[i]);
-
                 break;
             }
         }
