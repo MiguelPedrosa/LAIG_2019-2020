@@ -22,6 +22,7 @@ class XMLscene extends CGFscene {
         this.player1 = true;
         this.player2 = false;
         this.resetCam = false;
+        this.number = -1;
         this.usedMaterial;
 
         this.redMaterial = new CGFappearance(this.scene);
@@ -436,11 +437,49 @@ class XMLscene extends CGFscene {
         this.graph.components[newPieceID] = newComponent;
         this.graph.primitives[newPieceID] = newNumber;
 
+        this.parseIDToBoard(squareID);
 
+        this.parsePieceToNumber(piece.getBools());
+
+        console.log(this.number);
         console.log("Piece movement added");
 
     }
 
+    parseIDToBoard(squareID) {
+        var value = squareID - 1;
+
+        var y1 = parseInt(value / 27);
+
+        value -= y1 * 27;
+
+        var x1 = parseInt(value / 9);
+
+        value -= x1 * 9;
+
+        var y2 = parseInt(value / 3);
+
+        var x2 = value % 3;
+
+        var column = 3 * x1 + x2;
+
+        var line = 3 * y1 + y2;
+
+        console.log(" LINHA : " + line + "     Coluna :" + column);
+    }
+
+    parsePieceToNumber(bools) {
+        console.log(bools);
+        if (JSON.stringify(bools) == JSON.stringify([true, true, true, true, true, false, true, true])) this.number = 0;
+        else if (JSON.stringify(bools) == JSON.stringify([true, true, false, false, false, false, false])) this.number = 1;
+        else if (JSON.stringify(bools) == JSON.stringify([false, true, true, false, true, true, true, true])) this.number = 2;
+        else if (JSON.stringify(bools) == JSON.stringify([false, false, true, true, true, true, true, true])) this.number = 3;
+        else if (JSON.stringify(bools) == JSON.stringify([true, false, true, true, false, true, false, true])) this.number = 4;
+        else if (JSON.stringify(bools) == JSON.stringify([true, false, false, true, true, true, true, true])) this.number = 5;
+        else if (JSON.stringify(bools) == JSON.stringify([true, true, false, true, false, true, true, true])) this.number = 6;
+        else if (JSON.stringify(bools) == JSON.stringify([false, false, true, true, true, false, false, true])) this.number = 7;
+        else if (JSON.stringify(bools) == JSON.stringify([true, true, true, true, true, true, true, true])) this.number = 8;
+    }
     display() {
         this.logPicking();
         var cameraAux = this.camera;
