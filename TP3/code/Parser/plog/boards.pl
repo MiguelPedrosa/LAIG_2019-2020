@@ -1,0 +1,35 @@
+empty_board([ 
+                [[e,e],[e,e],[e,e],[e,e],[e,e],[e,e],[e,e],[e,e],[e,e]],
+                [[e,e],[e,e],[e,e],[e,e],[e,e],[e,e],[e,e],[e,e],[e,e]],
+                [[e,e],[e,e],[e,e],[e,e],[e,e],[e,e],[e,e],[e,e],[e,e]],
+                [[e,e],[e,e],[e,e],[e,e],[e,e],[e,e],[e,e],[e,e],[e,e]],
+                [[e,e],[e,e],[e,e],[e,e],[e,e],[e,e],[e,e],[e,e],[e,e]],
+                [[e,e],[e,e],[e,e],[e,e],[e,e],[e,e],[e,e],[e,e],[e,e]],
+                [[e,e],[e,e],[e,e],[e,e],[e,e],[e,e],[e,e],[e,e],[e,e]],
+                [[e,e],[e,e],[e,e],[e,e],[e,e],[e,e],[e,e],[e,e],[e,e]],
+                [[e,e],[e,e],[e,e],[e,e],[e,e],[e,e],[e,e],[e,e],[e,e]]
+]).
+
+test_board([ 
+                [[7,1],[e,e],[e,e],[2,1],[e,e],[e,e],[e,e],[e,e],[e,e]],
+                [[e,e],[e,e],[e,e],[e,e],[e,e],[e,e],[e,e],[e,e],[e,e]],
+                [[e,e],[e,e],[e,e],[e,e],[e,e],[e,e],[e,e],[e,e],[e,e]],
+                [[e,e],[e,e],[e,e],[e,e],[e,e],[e,e],[e,e],[e,e],[e,e]],
+                [[e,e],[e,e],[4,2],[e,e],[e,e],[e,e],[e,e],[e,e],[e,e]],
+                [[e,e],[e,e],[e,e],[e,e],[e,e],[e,e],[e,e],[e,e],[e,e]],
+                [[e,e],[e,e],[e,e],[e,e],[e,e],[e,e],[e,e],[e,e],[e,e]],
+                [[e,e],[e,e],[e,e],[e,e],[e,e],[e,e],[e,e],[e,e],[e,e]],
+                [[e,e],[e,e],[e,e],[e,e],[e,e],[e,e],[e,e],[e,e],[e,e]]
+]).
+
+test_board2([
+                [[7,1],[1,2],[3,2],[2,1],[e,e],[e,e],[e,e],[e,e],[e,e]],
+                [[2,1],[6,2],[5,2],[e,e],[e,e],[e,e],[e,e],[e,e],[e,e]],
+                [[8,2],[0,1],[4,1],[e,e],[e,e],[e,e],[e,e],[e,e],[e,e]],
+                [[e,e],[e,e],[e,e],[e,e],[e,e],[e,e],[e,e],[e,e],[e,e]],
+                [[e,e],[e,e],[4,2],[e,e],[e,e],[e,e],[e,e],[e,e],[e,e]],
+                [[e,e],[e,e],[e,e],[e,e],[e,e],[e,e],[e,e],[e,e],[e,e]],
+                [[e,e],[e,e],[e,e],[e,e],[e,e],[e,e],[e,e],[e,e],[e,e]],
+                [[e,e],[e,e],[e,e],[e,e],[e,e],[e,e],[e,e],[e,e],[e,e]],
+                [[e,e],[e,e],[e,e],[e,e],[e,e],[e,e],[e,e],[e,e],[e,e]]
+]).

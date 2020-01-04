@@ -23,7 +23,10 @@ class XMLscene extends CGFscene {
         this.player2 = false;
         this.resetCam = false;
         this.number = -1;
+        this.angle = 0;
         this.usedMaterial;
+        this.animateCamera1=false;
+        this.animateCamera2=false;
 
         this.redMaterial = new CGFappearance(this.scene);
         this.redMaterial.setShininess(10.0);
@@ -172,6 +175,24 @@ class XMLscene extends CGFscene {
             this.graph.animations[key].update(t);
         this.securityCamera.update(t);
 
+        if(this.animateCamera2==true){
+            if(this.angle<=60){
+                this.camera.setPosition([23.1, 9, 13.1+this.angle/9]);
+                this.angle +=2;
+            } 
+        }
+        if(this.animateCamera1==true){
+            if(this.angle<=60){
+                this.camera.setPosition([23.1, 9, 13.1-this.angle/9]);
+                this.angle +=2;
+            }   
+        }
+        if(this.angle==60){
+            this.animateCamera2=false;
+            this.animateCamera1=false;
+            this.camera.setPosition([23.1, 9, 13.1]);
+            this.angle=0;
+          }
     }
 
     /**
@@ -225,7 +246,7 @@ class XMLscene extends CGFscene {
     }
 
     logPicking() {
-
+       
         if (this.pickMode == false) {
             if (this.pickResults != null && this.pickResults.length > 0) {
                 for (var i = 0; i < this.pickResults.length; i++) {
@@ -243,12 +264,12 @@ class XMLscene extends CGFscene {
                         console.log("Object:" + this.objectSelect + "Square:" + this.squareSelect);
                         this.selectorCounter = 0;
                         if (this.player1 == true) {
-                            this.camera.orbit("Y", DEGREE_TO_RAD * 60);
+                            this.animateCamera1 = true;                          
                             this.usedMaterial = ["TVMaterial"];
                             this.player1 = false;
                             this.player2 = true;
                         } else if (this.player2 == true) {
-                            this.camera.orbit("Y", DEGREE_TO_RAD * -60);
+                            this.animateCamera2=true;
                             this.usedMaterial = ["redMaterial"];
                             console.log("floor");
                             this.player1 = true;
@@ -261,7 +282,7 @@ class XMLscene extends CGFscene {
             }
         }
     }
-
+/*Not used yet*/
     wait(ms) {
         var start = new Date().getTime();
         var end = start;
