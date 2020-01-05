@@ -43,6 +43,12 @@ let myServer={
         JSON.stringify(Line)+","+JSON.stringify(Col)+","+JSON.stringify(Number2)+","+
         JSON.parse(JSON.stringify(Board))+")";
         this.makeRequest(requestString,handleReply);
-    }
+    },
+
+    getValue: function(Board,Player,handleReply){
+        let requestString = "getValue(" +
+        JSON.parse(JSON.stringify(Board))+"," +   JSON.stringify(Player) + ")";
+        this.makeRequest(requestString,handleReply);
+    },
 
 };

@@ -38,7 +38,8 @@ class XMLscene extends CGFscene {
         //PLOG
 
         this.mbrane =new MyMbrane(this);
-
+        this.boolP1 = [true, true, true, true, true, false, true, true];
+        this.boolP2 = [true, true, true, true, true, false, true, true];
     }
 
 
@@ -62,7 +63,7 @@ class XMLscene extends CGFscene {
         this.setUpdatePeriod(100);
         this.RTTtexture = new CGFtextureRTT(this, this.gl.canvas.width, this.gl.canvas.height);
         this.securityCamera = new MySecurityCamera(this);
-        this.marcador = new Marcador(this, [true, true, true, true, true, false, true, true], [true, true, true, true, true, false, true, true]);
+        this.marcador = null;
         this.setPickEnabled(true);
 
     }
@@ -269,11 +270,13 @@ class XMLscene extends CGFscene {
                         console.log("Object:" + this.objectSelect + "Square:" + this.squareSelect);
                         this.selectorCounter = 0;
                         if (this.player1 == true) {
+                           
                             this.animateCamera1 = true;                          
                             this.usedMaterial = ["TVMaterial"];
                             this.player1 = false;
                             this.player2 = true;
                         } else if (this.player2 == true) {
+                            
                             this.animateCamera2=true;
                             this.usedMaterial = ["redMaterial"];
                             this.player1 = true;
@@ -433,10 +436,11 @@ class XMLscene extends CGFscene {
         /*--------------------------------*/
     }
     movePiece(piece, square, squareID) {
-
-        this.parseIDToBoard(squareID,piece.getBools());
+        this.parsePieceToNumber(piece.getBools());
+        this.parseIDToBoard(squareID);
 
         if(this.mbrane.validPlay==1){
+
             const startMatrix = piece.getCurrentPosition();
             const startPosition = [startMatrix[0], startMatrix[5], startMatrix[10]];
 
@@ -471,8 +475,8 @@ class XMLscene extends CGFscene {
 
     }
 
-    parseIDToBoard(squareID,bools) {
-        this.parsePieceToNumber(bools);
+    parseIDToBoard(squareID) {
+      
         var value = squareID - 1;
         var y1 = parseInt(value / 27);
         value -= y1 * 27;
@@ -483,15 +487,24 @@ class XMLscene extends CGFscene {
         var x2 = value % 3;
         var column = 3 * x1 + x2;
         var line = 3 * y1 + y2;
-
+    
         this.mbrane.checkMove(line,column,this.number);
 
-        if(this.mbrane.validPlay==1){
-            if(this.player1)
-                this.mbrane.makeMoveP1(line,column,this.number);
+        if(this.mbrane.validPlay===1){
 
-            else if(this.player2)
-                this.mbrane.makeMoveP2(line,column,this.number);
+                if(this.player1){
+                this.mbrane.makeMoveP1(line,column,this.number);
+                this.mbrane.getValue(this.mbrane.myGameBoard, 1);
+              
+                this.parseNumberToBools(this.mbrane.valueP1,1,0);
+                }
+
+                else{
+                    this.mbrane.getValue(this.mbrane.myGameBoard, 2);
+                   
+                    this.mbrane.makeMoveP2(line,column,this.number);
+                    this.parseNumberToBools(this.mbrane.valueP2,0,1);
+                }
             }
         else{
             console.log("Invalid Play");
@@ -511,6 +524,32 @@ class XMLscene extends CGFscene {
         else if (JSON.stringify(bools) == JSON.stringify([false, false, true, true, true, false, false, true])) this.number = 7;
         else if (JSON.stringify(bools) == JSON.stringify([true, true, true, true, true, true, true, true])) this.number = 8;
     }
+
+    parseNumberToBools(Number1,P1,P2){
+     
+        if(P1==1){
+            if(Number1==0) this.boolP1 = [true, true, true, true, true, false, true, true];
+            else if(Number1==1)this.boolP1 = [false, false, true, true, false, false, false, false];
+            else if(Number1==2)this.boolP1 =  [false, true, true, false, true, true, true, true];
+            else if(Number1 == 3)this.boolP1 = [false, false, true, true, true, true, true, true];
+            else if(Number1 == 4)this.boolP1 = [true, false, true, true, false, true, false, true];
+            else if(Number1 == 5)this.boolP1 =  [true, false, false, true, true, true, true, true];
+            else if(Number1 == 6)this.boolP1 = [true, true, false, true, false, true, true, true];
+            else if(Number1 == 7)this.boolP1 =  [false, false, true, true, true, false, false, true];
+            else if(Number1 == 8)this.boolP1 = [true, true, true, true, true, true, true, true]
+        }
+        else if(P2 == 1){
+            if(Number1==0) this.boolP2 = [true, true, true, true, true, false, true, true];
+            else if(Number1==1)this.boolP2 = [false, false, true, true, false, false, false, false];
+            else if(Number1==2)this.boolP2 =  [false, true, true, false, true, true, true, true];
+            else if(Number1 == 3)this.boolP2 = [false, false, true, true, true, true, true, true];
+            else if(Number1 == 4)this.boolP2 = [true, false, true, true, false, true, false, true];
+            else if(Number1 == 5)this.boolP2 =  [true, false, false, true, true, true, true, true];
+            else if(Number1 == 6)this.boolP2 = [true, true, false, true, false, true, true, true];
+            else if(Number1 == 7)this.boolP2 =  [false, false, true, true, true, false, false, true];
+            else if(Number1 == 8)this.boolP2 = [true, true, true, true, true, true, true, true]
+        }
+    }
     display() {
         this.logPicking();
         var cameraAux = this.camera;
@@ -521,6 +560,8 @@ class XMLscene extends CGFscene {
                 break;
             }
         }
+        this.marcador = new Marcador(this, this.boolP1, this.boolP2);
+        
         this.RTTtexture.detachFromFrameBuffer();
         this.render(cameraAux);
         this.interface.setActiveCamera(this.camera);

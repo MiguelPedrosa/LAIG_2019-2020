@@ -117,8 +117,7 @@ parse_input(makeMoveP1(Line,Col,Number,Board), ReturnBoard):-
 	Index is Col,
 	replace(X, Index, [Number,Player], L),
 	replace(Board, Line, L, ReturnBoard).
-
-parse_input(makeMoveP1(Line,Col,Number,Board), []).
+parse_input(makeMoveP1(Line,Col,Number,Board), Board).
 
 parse_input(makeMoveP2(Line,Col,Number,Board), ReturnBoard):-
 	Player is 2,
@@ -127,13 +126,13 @@ parse_input(makeMoveP2(Line,Col,Number,Board), ReturnBoard):-
 	Index is Col,
 	replace(X, Index, [Number,Player], L),
 	replace(Board, Line, L, ReturnBoard).
-
-parse_input(makeMoveP2(Line,Col,Number,Board), []).
+parse_input(makeMoveP2(Line,Col,Number,Board), Board).
 
 parse_input(checkMove(Line,Col,Number,Board),1):- check_move(Line,Col,Number,Board).
-
 parse_input(checkMove(Line,Col,Number,Board),2).
 
+parse_input(getValue(Board,Player),Value):-value(Board, Player, Value).
+parse_input(getValue(Board,Player),-1).
 test(_,[],N) :- N =< 0.
 test(A,[A|Bs],N) :- N1 is N-1, test(A,Bs,N1).
 	
