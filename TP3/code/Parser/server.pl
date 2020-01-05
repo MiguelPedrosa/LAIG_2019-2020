@@ -107,7 +107,32 @@ print_header_line(_).
 parse_input(handshake, handshake).
 parse_input(test(C,N), Res) :- test(C,Res,N).
 parse_input(quit, goodbye).
-	
+
+parse_input(init_board,B):-empty_board(B).
+
+parse_input(makeMoveP1(Line,Col,Number,Board), ReturnBoard):-
+	Player is 1,
+	check_move(Line,Col,Number,Board),
+	nth0(Line, Board, X),
+	Index is Col,
+	replace(X, Index, [Number,Player], L),
+	replace(Board, Line, L, ReturnBoard).
+
+parse_input(makeMoveP1(Line,Col,Number,Board), []).
+
+parse_input(makeMoveP2(Line,Col,Number,Board), ReturnBoard):-
+	Player is 2,
+	check_move(Line,Col,Number,Board),
+	nth0(Line, Board, X),
+	Index is Col,
+	replace(X, Index, [Number,Player], L),
+	replace(Board, Line, L, ReturnBoard).
+
+parse_input(makeMoveP2(Line,Col,Number,Board), []).
+
+parse_input(checkMove(Line,Col,Number,Board),1):- check_move(Line,Col,Number,Board).
+
+parse_input(checkMove(Line,Col,Number,Board),2).
 
 test(_,[],N) :- N =< 0.
 test(A,[A|Bs],N) :- N1 is N-1, test(A,Bs,N1).

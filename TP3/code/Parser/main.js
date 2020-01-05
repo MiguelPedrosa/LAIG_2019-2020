@@ -66,6 +66,9 @@ serialInclude(['../lib/CGF.js',
     './Animations/AngularAnimation.js',
     // Number pieces
     './Primitives/Number.js',
+    //Prolog
+    'MyServer.js',
+    'MyMbrane.js',
 
     main = function () {
         // Standard application, scene and interface setup

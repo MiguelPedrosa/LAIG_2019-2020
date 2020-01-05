@@ -27,13 +27,18 @@ class XMLscene extends CGFscene {
         this.usedMaterial;
         this.animateCamera1=false;
         this.animateCamera2=false;
-
+      
         this.redMaterial = new CGFappearance(this.scene);
         this.redMaterial.setShininess(10.0);
         this.redMaterial.setEmission(1.0, 0.0, 0.0, 0.0);
         this.redMaterial.setAmbient(1.0, 0.0, 0.0, 0.0);
         this.redMaterial.setDiffuse(1.0, 0.0, 0.0, 0.0);
         this.redMaterial.setSpecular(1.0, 0.0, 0.0, 0.0);
+
+        //PLOG
+
+        this.mbrane =new MyMbrane(this);
+
     }
 
 
@@ -271,7 +276,6 @@ class XMLscene extends CGFscene {
                         } else if (this.player2 == true) {
                             this.animateCamera2=true;
                             this.usedMaterial = ["redMaterial"];
-                            console.log("floor");
                             this.player1 = true;
                             this.player2 = false;
                         }
@@ -429,64 +433,70 @@ class XMLscene extends CGFscene {
         /*--------------------------------*/
     }
     movePiece(piece, square, squareID) {
-        const startMatrix = piece.getCurrentPosition();
-        const startPosition = [startMatrix[0], startMatrix[5], startMatrix[10]];
 
-        this.parseEndPositions();
-        const newAnimationID = "movementAnimation" + squareID;
-        const newPieceID = "piece" + squareID;
-        const bools = piece.getBools();
-        const newNumber = new Number(this.graph.scene, 0.6, 0.2, bools);
+        this.parseIDToBoard(squareID,piece.getBools());
 
-        this.graph.animations[newAnimationID] = new AngularAnimation(this.graph.scene, startPosition, this.endPosition[squareID], 3);
+        if(this.mbrane.validPlay==1){
+            const startMatrix = piece.getCurrentPosition();
+            const startPosition = [startMatrix[0], startMatrix[5], startMatrix[10]];
 
-        var newComponent = {
-            transformation: mat4.create(),
-            animationID: newAnimationID,
+            this.parseEndPositions();
+            const newAnimationID = "movementAnimation" + squareID;
+            const newPieceID = "piece" + squareID;
+            const bools = piece.getBools();
+            const newNumber = new Number(this.graph.scene, 0.6, 0.2, bools);
 
-            materials: this.usedMaterial,
-            materialsIndex: 0,
-            texture: {
-                "ID": "mesa",
-                "length_s": 1.0,
-                "length_t": 1.0
-            },
-            componentChildren: [],
-            primitiveChildren: [newPieceID]
-        };
-        this.graph.components["mbrane"]["componentChildren"].push(newPieceID);
-        this.graph.components[newPieceID] = newComponent;
-        this.graph.primitives[newPieceID] = newNumber;
+            this.graph.animations[newAnimationID] = new AngularAnimation(this.graph.scene, startPosition, this.endPosition[squareID], 3);
 
-        this.parseIDToBoard(squareID);
+            var newComponent = {
+                transformation: mat4.create(),
+                animationID: newAnimationID,
 
-        this.parsePieceToNumber(piece.getBools());
+                materials: this.usedMaterial,
+                materialsIndex: 0,
+                texture: {
+                    "ID": "mesa",
+                    "length_s": 1.0,
+                    "length_t": 1.0
+                },
+                componentChildren: [],
+                primitiveChildren: [newPieceID]
+            };
+            this.graph.components["mbrane"]["componentChildren"].push(newPieceID);
+            this.graph.components[newPieceID] = newComponent;
+            this.graph.primitives[newPieceID] = newNumber;
 
-        console.log(this.number);
-        console.log("Piece movement added");
+            console.log("Piece movement added");
+        }
 
     }
 
-    parseIDToBoard(squareID) {
+    parseIDToBoard(squareID,bools) {
+        this.parsePieceToNumber(bools);
         var value = squareID - 1;
-
         var y1 = parseInt(value / 27);
-
         value -= y1 * 27;
-
         var x1 = parseInt(value / 9);
-
         value -= x1 * 9;
-
+        
         var y2 = parseInt(value / 3);
-
         var x2 = value % 3;
-
         var column = 3 * x1 + x2;
-
         var line = 3 * y1 + y2;
 
-        console.log(" LINHA : " + line + "     Coluna :" + column);
+        this.mbrane.checkMove(line,column,this.number);
+
+        if(this.mbrane.validPlay==1){
+            if(this.player1)
+                this.mbrane.makeMoveP1(line,column,this.number);
+
+            else if(this.player2)
+                this.mbrane.makeMoveP2(line,column,this.number);
+            }
+        else{
+            console.log("Invalid Play");
+        }
+        
     }
 
     parsePieceToNumber(bools) {
